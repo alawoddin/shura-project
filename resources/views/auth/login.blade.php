@@ -2,119 +2,188 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="author" content="Softnio">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="shortcut icon" href="{{ asset('backend/images/favicon.png') }}">
-    <title>Login Page  </title>
-    <link rel="stylesheet" href="{{ asset('backend/assets/css/style.css') }}">
 
-     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css" >
+    <meta charset="utf-8" />
+    <title>Log In Page</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A fully featured admin theme which can be used to build CRM, CMS, etc." />
+    <meta name="author" content="Zoyothemes" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <!-- App favicon -->
+    <link rel="shortcut icon" href="{{ asset('backend/assets/images/favicon.ico') }}">
+
+    <!-- App css -->
+    <link href="{{ asset('backend/assets/css/app.min.css') }}" rel="stylesheet" type="text/css" id="app-style" />
+
+    <!-- Icons -->
+    <link href="{{ asset('backend/assets/css/icons.min.css') }}" rel="stylesheet" type="text/css" />
+
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css">
+
 </head>
 
-<body class="nk-body ">
-    <div class="nk-app-root " data-sidebar-collapse="lg">
-        <div class="nk-main">
-            <div class="nk-wrap has-shape flex-column">
-                <div class="nk-shape bg-shape-blur-a start-0 top-0"></div>
-                <div class="nk-shape bg-shape-blur-b end-0 bottom-0"></div>
-                <div class="text-center pt-5">
-                    <a href="index.html" class="logo-link">
-    <div class="logo-wrap">
-        <img class="logo-img logo-light" src="{{ asset('backend/images/logo.png') }}" srcset="{{ asset('backend/images/logo2x.png') }}" alt="">
-        
-        <img class="logo-img logo-dark" src="{{ asset('backend/images/logo-dark.png') }}" srcset="{{ asset('backend/images/logo-dark2x.png') }}" alt="">
+<body class="bg-white">
+    <!-- Begin page -->
+    <div class="account-page">
+        <div class="container-fluid p-0">
+            <div class="row align-items-center g-0">
+                <div class="col-xl-5">
+                    <div class="row">
+                        <div class="col-md-7 mx-auto">
+                            <div class="mb-0 border-0 p-md-5 p-lg-0 p-4">
+                                <div class="mb-4 p-0">
+                                    <a href="index.html" class="auth-logo">
+                                        <img src="{{ asset('backend/assets/images/logo-dark.png') }}" alt="logo-dark"
+                                            class="mx-auto" height="28" />
+                                    </a>
+                                </div>
 
-        <img class="logo-img logo-icon" src="{{ asset('backend/images/logo-icon.png') }}" srcset="{{ asset('backend/images/logo-icon2x.png') }}" alt="">
-    </div>
-                    </a>
-                </div>
-<div class="container p-2 p-sm-4 mt-auto">
-    <div class="row justify-content-center">
-        <div class="col-md-7 col-lg-5 col-xl-5 col-xxl-4">
-            <div class="nk-block">
-                <div class="nk-block-head text-center mb-4 pb-2">
-                    <div class="nk-block-head-content">
-                        <h1 class="nk-block-title mb-1">Log into Your Account</h1>
-                        <p class="small">Sign in to your account to customize your content generation settings and view your history.</p>
+                                <div class="pt-0">
+                                    <form method="POST" action="{{ route('login') }}" class="my-4">
+                                        @csrf
+
+                                        @if (session('error'))
+                                            <div class="alert alert-danger">
+                                                {{ session('error') }}
+                                            </div>
+                                        @endif
+
+                                        <div class="form-group mb-3">
+                                            <label for="emailaddress" class="form-label">Email address</label>
+                                            <input class="form-control" name="email" type="email" id="email"
+                                                required="" placeholder="Enter your email">
+                                            @error('email')
+                                                <small class="text-danger">{{ $message }}</small>
+                                            @enderror
+                                        </div>
+
+                                        <div class="form-group mb-3">
+                                            <label for="password" class="form-label">Password</label>
+                                            <input class="form-control" name="password" type="password" required=""
+                                                id="password" placeholder="Enter your password">
+                                            @error('password')
+                                                <small class="text-danger">{{ $message }}</small>
+                                            @enderror
+                                        </div>
+
+                                        <div class="form-group d-flex mb-3">
+                                            <div class="col-sm-6">
+                                                <div class="form-check">
+                                                    <input type="checkbox" class="form-check-input" id="checkbox-signin"
+                                                        checked>
+                                                    <label class="form-check-label" for="checkbox-signin">Remember
+                                                        me</label>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6 text-end">
+                                                {{-- <a class='text-muted fs-14'
+                                                    href='{{ route('admin.forget_password') }}'>Forgot password?</a> --}}
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group mb-0 row">
+                                            <div class="col-12">
+                                                <div class="d-grid">
+                                                    <button class="btn btn-primary" type="submit"> Log In </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+
+                                    <div class="saprator my-4"><span>or sign in with</span></div>
+
+                                    <div class="text-center text-muted mb-4">
+                                        <p class="mb-0">Don't have an account ?<a class='text-primary ms-2 fw-medium'
+                                                href='{{ route('register') }}'>Sing up</a></p>
+                                    </div>
+
+                                    {{-- <div class="row">
+                                        <div class="col-12">
+                                            <a href="{{ route('google.redirect') }}"
+                                                class="btn text-dark border fw-normal d-flex align-items-center justify-content-center mb-3">
+                                                <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.6.2/dist/dotlottie-wc.js" type="module"></script>
+
+                                                <dotlottie-wc
+                                                    src="https://lottie.host/4cb787e7-8472-4712-8db1-faf6e7946fc2/LMVlwDw0GA.lottie"
+                                                    style="width: 500px;height: 100px" speed="1" autoplay
+                                                    loop></dotlottie-wc>
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 48 48" class="me-2">
+                                                        <path fill="#ffc107" d="M43.611 20.083H42V20H24v8h11.303c-1.649 4.657-6.08 8-11.303 8c-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4C12.955 4 4 12.955 4 24s8.955 20 20 20s20-8.955 20-20c0-1.341-.138-2.65-.389-3.917"/><path fill="#ff3d00" d="m6.306 14.691l6.571 4.819C14.655 15.108 18.961 12 24 12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4C16.318 4 9.656 8.337 6.306 14.691"/><path fill="#4caf50" d="M24 44c5.166 0 9.86-1.977 13.409-5.192l-6.19-5.238A11.91 11.91 0 0 1 24 36c-5.202 0-9.619-3.317-11.283-7.946l-6.522 5.025C9.505 39.556 16.227 44 24 44"/>
+                                                        <path fill="#1976d2" d="M43.611 20.083H42V20H24v8h11.303a12.04 12.04 0 0 1-4.087 5.571l.003-.002l6.19 5.238C36.971 39.205 44 34 44 24c0-1.341-.138-2.65-.389-3.917"/>
+                                                    </svg> 
+                                                <span class="d-flex align-items-center justify-content-center">Sign in with Google</span>
+                                            </a>
+                                        </div>
+
+                                    </div> --}}
+
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-    <form method="POST" action="{{ route('login') }}">
-        @csrf
+                <div class="col-xl-7">
+                    <div class="account-page-bg p-md-5 p-4">
+                        <div class="text-center">
+                            <h3 class="text-dark mb-3 pera-title">Login Page For Shura Managament System </h3>
+                            <div class="auth-image d-flex justify-content-center align-items-center">
 
-        <div class="row gy-3">
-            <div class="col-12">
-                <div class="form-group">
-                    <label class="form-label" for="email">Email Address</label>
-                    <div class="form-control-wrap">
-                        <input class="form-control" type="email" id="email" name="email" placeholder="Enter email address" />
+                                <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.6.2/dist/dotlottie-wc.js" type="module"></script>
+
+                                <dotlottie-wc
+                                    src="https://lottie.host/9802ef85-87b5-4ca0-9b52-c67db1524fd1/iiJMXFyqNX.lottie"
+                                    style="width: 300px;height: 300px" speed="1" autoplay loop></dotlottie-wc>
+
+                                {{-- <img src="{{asset('backend/assets/images/authentication.svg')}}" class="mx-auto img-fluid"  alt="images"> --}}
+                            </div>
+                        </div>
                     </div>
-                </div><!-- .form-group -->
-            </div>
-            <div class="col-12">
-                <div class="form-group">
-                    <label class="form-label" for="password">Password</label>
-                    <div class="form-control-wrap">
-                        <a href="password" class="password-toggle form-control-icon end" title="Toggle show/hide password">
-                            <em class="icon ni ni-eye inactive"></em>
-                            <em class="icon ni ni-eye-off active"></em>
-                        </a>
-                        <input class="form-control" type="password" id="password" name="password" placeholder="Enter password" />
-                    </div>
-                </div><!-- .form-group -->
-            </div>
-            <div class="col-12">
-                <a class="link small" href="{{ route('password.request') }}">Forgot password?</a>
-            </div>
-            <div class="col-12">
-                <div class="d-grid">
-                    <button class="btn btn-primary" type="submit">Login</button>
                 </div>
             </div>
         </div>
-    </form>
-                <div class="text-center mt-3">
-                    <p class="small">Don’t have an account? <a href="{{ route('register') }}">Sign up</a></p>
-                </div>
-                
-            </div>
-        </div>
     </div>
-</div>
 
-     @include('admin.body.footer') 
+    <!-- END wrapper -->
 
-            </div>
-        </div>
-    </div>
-    <script src="{{ asset('backend/assets/js/bundle.js') }}"></script>
-    <script src="{{ asset('backend/assets/js/scripts.js') }}"></script>
+    <!-- Vendor -->
+    <script src="{{ asset('backend/assets/libs/jquery/jquery.min.js') }}"></script>
+    <script src="{{ asset('backend/assets/libs/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ asset('backend/assets/libs/simplebar/simplebar.min.js') }}"></script>
+    <script src="{{ asset('backend/assets/libs/node-waves/waves.min.js') }}"></script>
+    <script src="{{ asset('backend/assets/libs/waypoints/lib/jquery.waypoints.min.js') }}"></script>
+    <script src="{{ asset('backend/assets/libs/jquery.counterup/jquery.counterup.min.js') }}"></script>
+    <script src="{{ asset('backend/assets/libs/feather-icons/feather.min.js') }}"></script>
+
+    <!-- App js-->
+    <script src="{{ asset('backend/assets/js/app.js') }}"></script>
 
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
-<script>
- @if(Session::has('message'))
- var type = "{{ Session::get('alert-type','info') }}"
- switch(type){
-    case 'info':
-    toastr.info(" {{ Session::get('message') }} ");
-    break;
+    <script>
+        @if (Session::has('message'))
+            var type = "{{ Session::get('alert-type', 'info') }}"
+            switch (type) {
+                case 'info':
+                    toastr.info(" {{ Session::get('message') }} ");
+                    break;
 
-    case 'success':
-    toastr.success(" {{ Session::get('message') }} ");
-    break;
+                case 'success':
+                    toastr.success(" {{ Session::get('message') }} ");
+                    break;
 
-    case 'warning':
-    toastr.warning(" {{ Session::get('message') }} ");
-    break;
+                case 'warning':
+                    toastr.warning(" {{ Session::get('message') }} ");
+                    break;
 
-    case 'error':
-    toastr.error(" {{ Session::get('message') }} ");
-    break; 
- }
- @endif 
-</script>
+                case 'error':
+                    toastr.error(" {{ Session::get('message') }} ");
+                    break;
+            }
+        @endif
+    </script>
+
 
 </body>
 

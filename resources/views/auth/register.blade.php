@@ -2,143 +2,143 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="author" content="Softnio">
+
+    <meta charset="utf-8" />
+    <title>Register | Page</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="shortcut icon" href="{{ asset('backend/images/favicon.png') }}">
-    <title>Register Page  </title>
-    <link rel="stylesheet" href="{{ asset('backend/assets/css/style.css?v1.0.0') }}">
-     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css" >
+    <meta name="description" content="A fully featured admin theme which can be used to build CRM, CMS, etc." />
+    <meta name="author" content="Zoyothemes" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <!-- App favicon -->
+    <link rel="shortcut icon" href="{{ asset('backend/assets/images/favicon.ico') }}">
+
+    <!-- App css -->
+    <link href="{{ asset('backend/assets/css/app.min.css') }}" rel="stylesheet" type="text/css" id="app-style" />
+
+    <!-- Icons -->
+    <link href="{{ asset('backend/assets/css/icons.min.css') }}" rel="stylesheet" type="text/css" />
+
 </head>
 
-<body class="nk-body ">
-    <div class="nk-app-root " data-sidebar-collapse="lg">
-        <div class="nk-main">
-            <div class="nk-wrap has-shape flex-column">
-                <div class="nk-shape bg-shape-blur-a start-0 top-0"></div>
-                <div class="nk-shape bg-shape-blur-b end-0 bottom-0"></div>
-                <div class="text-center pt-5">
-                    <a href="index.html" class="logo-link">
-    <div class="logo-wrap">
-        <img class="logo-img logo-light" src="{{ asset('backend/images/logo.png') }}" srcset="{{ asset('backend/images/logo2x.png 2x') }}" alt="">
-        
-        <img class="logo-img logo-dark" src="{{ asset('backend/images/logo-dark.png') }}" srcset="{{ asset('backend/images/logo-dark2x.png 2x') }}" alt="">
+<body class="bg-white">
 
-        <img class="logo-img logo-icon" src="{{ asset('backend/images/logo-icon.png') }}" srcset="{{ asset('backend/images/logo-icon2x.png 2x') }}" alt="">
-    </div>
-                    </a>
-                </div>
-<div class="container p-2 p-sm-4 mt-auto">
-    <div class="row justify-content-center">
-        <div class="col-md-7 col-lg-5 col-xl-5 col-xxl-4">
-            <div class="nk-block">
-                <div class="nk-block-head text-center mb-4 pb-2">
-                    <div class="nk-block-head-content">
-                        <h1 class="nk-block-title mb-1">Register into Your Account</h1> 
+    <!-- Begin page -->
+    <div class="account-page">
+        <div class="container-fluid p-0">
+            <div class="row align-items-center g-0">
+                <div class="col-xl-5">
+                    <div class="row">
+                        <div class="col-md-7 mx-auto">
+                            <div class="mb-0 border-0 p-md-5 p-lg-0 p-4">
+                                <div class="mb-4 p-0">
+                                    <a href="index.html" class="auth-logo">
+                                        <img src="{{ asset('backend/assets/images/logo-dark.png') }}" alt="logo-dark"
+                                            class="mx-auto" height="28" />
+                                    </a>
+                                </div>
+
+                                <div class="pt-0">
+                                    <form method="POST" action="{{ route('register') }}" class="my-4">
+
+                                        @csrf
+                                        <div class="form-group mb-3">
+                                            <label for="username" class="form-label">name</label>
+                                            <input class="form-control" name="name" type="text" id="name"
+                                                required="" placeholder="Enter your name">
+                                        </div>
+
+
+
+
+                                        <div class="form-group mb-3">
+                                            <label for="emailaddress" class="form-label">Email address</label>
+                                            <input class="form-control" type="email" id="email" name="email"
+                                                required="" placeholder="Enter your email">
+                                        </div>
+
+                                        <div class="form-group mb-3">
+                                            <label for="password" class="form-label">Password</label>
+                                            <input class="form-control" type="password" name="password" required=""
+                                                id="password" placeholder="Enter your password">
+                                        </div>
+
+                                        <div class="form-group mb-3">
+                                            <label for="password" class="form-label">Confirm Password</label>
+                                            <input class="form-control" type="password" required=""
+                                                id="password_confirmation" name="password_confirmation"
+                                                placeholder="Enter your password confirmation">
+                                        </div>
+
+                                        <div class="form-group d-flex mb-3">
+                                            <div class="col-12">
+                                                <div class="form-check">
+                                                    <input type="checkbox" class="form-check-input"
+                                                        id="checkbox-signin">
+                                                    <label class="form-check-label" for="checkbox-signin">I agree to the
+                                                        <a href="#" class="text-primary fw-medium"> Terms and
+                                                            Conditions</a></label>
+                                                </div>
+                                            </div><!--end col-->
+                                        </div>
+
+                                        <div class="form-group mb-0 row">
+                                            <div class="col-12">
+                                                <div class="d-grid">
+                                                    <button class="btn btn-primary" type="submit"> Register</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+
+                                    <div class="saprator my-4"><span>or sign in with</span></div>
+
+                                    <div class="text-center text-muted mb-4">
+                                        <p class="mb-0">Already have an account ?<a
+                                                class='text-primary ms-2 fw-medium' href='{{ route('login') }}'>Sign
+                                                here</a></p>
+                                    </div>
+
+                             
+                                </div>
+
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-    <form method="POST" action="{{ route('register') }}">
-        @csrf
+                <div class="col-xl-7">
+                    <div class="account-page-bg p-md-5 p-4">
+                        <div class="text-center">
+                            <h3 class="text-dark mb-3 pera-title">Register Page For Shura Managament System </h3>
+                            <div class="auth-image d-flex justify-content-center align-items-center">
+                                <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.6.2/dist/dotlottie-wc.js" type="module"></script>
 
-        <div class="row gy-3">
-            
-            <div class="col-12">
-                <div class="form-group">
-                    <label class="form-label" for="name">Name</label>
-                    <div class="form-control-wrap">
-                        <input class="form-control" type="text" id="name" name="name" placeholder="Enter Your Name" />
+                                <dotlottie-wc
+                                    src="https://lottie.host/9802ef85-87b5-4ca0-9b52-c67db1524fd1/iiJMXFyqNX.lottie"
+                                    style="width: 300px;height: 300px" speed="1" autoplay loop></dotlottie-wc>
+                                {{-- <img src="{{asset('backend/assets/images/authentication.svg')}}" class="mx-auto img-fluid"  alt="images"> --}}
+                            </div>
+                        </div>
                     </div>
-                </div><!-- .form-group -->
-            </div>
-
-            <div class="col-12">
-                <div class="form-group">
-                    <label class="form-label" for="email">Email Address</label>
-                    <div class="form-control-wrap">
-                        <input class="form-control" type="email" id="email" name="email" placeholder="Enter email address" />
-                    </div>
-                </div><!-- .form-group -->
-            </div>
-            
-            <div class="col-12">
-                <div class="form-group">
-                    <label class="form-label" for="password">Password</label>
-                    <div class="form-control-wrap">
-                        <a href="password" class="password-toggle form-control-icon end" title="Toggle show/hide password">
-                            <em class="icon ni ni-eye inactive"></em>
-                            <em class="icon ni ni-eye-off active"></em>
-                        </a>
-                        <input class="form-control" type="password" id="password" name="password" placeholder="Enter password" />
-                    </div>
-                </div><!-- .form-group -->
-            </div>
-
-            <div class="col-12">
-                <div class="form-group">
-                    <label class="form-label" for="password_confirmation">Confirm Password</label>
-                    <div class="form-control-wrap">
-                        <a href="password" class="password-toggle form-control-icon end" title="Toggle show/hide password">
-                            <em class="icon ni ni-eye inactive"></em>
-                            <em class="icon ni ni-eye-off active"></em>
-                        </a>
-                        <input class="form-control" type="password" id="password_confirmation" name="password_confirmation" placeholder="Enter password" />
-                    </div>
-                </div><!-- .form-group -->
-            </div>
-
-
-            <div class="col-12">
-                <a class="link small" href="{{ route('password.request') }}">Forgot password?</a>
-            </div>
-            <div class="col-12">
-                <div class="d-grid">
-                    <button class="btn btn-primary" type="submit">Register</button>
                 </div>
+
             </div>
         </div>
-    </form>
-                <div class="text-center mt-3">
-                    <p class="small">Have an account? <a href="{{ route('login') }}">Sing In</a></p>
-                </div>
-                
-            </div>
-        </div>
     </div>
-</div>
+    <!-- END wrapper -->
 
-     @include('admin.body.footer') 
+    <!-- Vendor -->
+    <script src="{{ asset('backend/assets/libs/jquery/jquery.min.js') }}"></script>
+    <script src="{{ asset('backend/assets/libs/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ asset('backend/assets/libs/simplebar/simplebar.min.js') }}"></script>
+    <script src="{{ asset('backend/assets/libs/node-waves/waves.min.js') }}"></script>
+    <script src="{{ asset('backend/assets/libs/waypoints/lib/jquery.waypoints.min.js') }}"></script>
+    <script src="{{ asset('backend/assets/libs/jquery.counterup/jquery.counterup.min.js') }}"></script>
+    <script src="{{ asset('backend/assets/libs/feather-icons/feather.min.js') }}"></script>
 
-            </div>
-        </div>
-    </div>
-    
-    <script src="{{ asset('backend/assets/js/bundle.js?v1.0.0') }}"></script>
-    <script src="{{ asset('backend/assets/js/scripts.js?v1.0.0') }}"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-
-<script>
- @if(Session::has('message'))
- var type = "{{ Session::get('alert-type','info') }}"
- switch(type){
-    case 'info':
-    toastr.info(" {{ Session::get('message') }} ");
-    break;
-
-    case 'success':
-    toastr.success(" {{ Session::get('message') }} ");
-    break;
-
-    case 'warning':
-    toastr.warning(" {{ Session::get('message') }} ");
-    break;
-
-    case 'error':
-    toastr.error(" {{ Session::get('message') }} ");
-    break; 
- }
- @endif 
-</script>
+    <!-- App js-->
+    <script src="{{ asset('backend/assets/js/app.js') }}"></script>
 
 </body>
 
