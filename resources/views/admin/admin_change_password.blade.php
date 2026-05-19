@@ -7,7 +7,7 @@
     <div class="nk-block-head nk-page-head">
         <div class="nk-block-head-between">
             <div class="nk-block-head-content">
-                <h2 class="display-6">Change Password  </h2>
+                <h2 class="display-6">تغیر رمز</h2>
                  
             </div>
         </div>
@@ -28,7 +28,7 @@
                     
     <div class="col-md-6">
         <div class="form-group">
-            <label for="exampleFormControlInputText1" class="form-label">Old Password </label>
+            <label for="exampleFormControlInputText1" class="form-label">رمز گذشته</label>
             <div class="form-control-wrap">
                 <input type="password" name="old_password" id="old_password" class="form-control @error('old_password') is-invalid @enderror " placeholder="Old Password"  >
                 @error('old_password')
@@ -40,7 +40,7 @@
 
     <div class="col-md-6">
         <div class="form-group">
-            <label for="exampleFormControlInputText1" class="form-label">New Password </label>
+            <label for="exampleFormControlInputText1" class="form-label">رمز جدید</label>
             <div class="form-control-wrap">
                 <input type="password" name="new_password" id="new_password" class="form-control @error('new_password') is-invalid @enderror " placeholder="New Password"  >
                 @error('new_password')
@@ -52,7 +52,7 @@
 
     <div class="col-md-6">
         <div class="form-group">
-            <label for="exampleFormControlInputText1" class="form-label">Confirm Password </label>
+            <label for="exampleFormControlInputText1" class="form-label">تایید رمز جدید</label>
             <div class="form-control-wrap">
                 <input type="password" name="new_password_confirmation" id="new_password_confirmation" class="form-control" placeholder="New Password Confirmation"  > 
             </div>
@@ -61,7 +61,7 @@
   
                
     <div class="col-lg-12 col-xl-12">
-<button type="submit" class="btn btn-secondary">Save Changes</button> 
+<button type="submit" class="btn btn-secondary">ذخیره</button> 
     </div>
             
                     
