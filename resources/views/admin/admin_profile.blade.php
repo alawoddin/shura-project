@@ -7,7 +7,7 @@
     <div class="nk-block-head nk-page-head">
         <div class="nk-block-head-between">
             <div class="nk-block-head-content">
-                <h2 class="display-6">Personal Profile </h2>
+                <h2 class="display-6">پروفایل کاربر </h2>
                  
             </div>
         </div>
@@ -27,7 +27,7 @@
                     
     <div class="col-md-6">
         <div class="form-group">
-            <label for="exampleFormControlInputText1" class="form-label">Name </label>
+            <label for="exampleFormControlInputText1" class="form-label">اسم </label>
             <div class="form-control-wrap">
                 <input type="text" name="name" class="form-control" value="{{ $profileData->name }}"  >
             </div>
@@ -36,7 +36,7 @@
 
      <div class="col-md-6">
         <div class="form-group">
-            <label for="exampleFormControlInputText1" class="form-label">Email </label>
+            <label for="exampleFormControlInputText1" class="form-label">ایمیل </label>
             <div class="form-control-wrap">
                 <input type="email" name="email" class="form-control" value="{{ $profileData->email }}"  >
             </div>
@@ -46,7 +46,7 @@
 
     <div class="col-md-6">
         <div class="form-group">
-            <label for="exampleFormControlInputText1" class="form-label">Phone </label>
+            <label for="exampleFormControlInputText1" class="form-label">شماره تماس </label>
             <div class="form-control-wrap">
                 <input type="text" name="phone" class="form-control" value="{{ $profileData->phone }}"  >
             </div>
@@ -55,7 +55,7 @@
 
     <div class="col-md-6">
         <div class="form-group">
-            <label for="exampleFormControlInputText1" class="form-label">Address </label>
+            <label for="exampleFormControlInputText1" class="form-label">آدرس </label>
             <div class="form-control-wrap">
                 <input type="text" name="address" class="form-control" value="{{ $profileData->address }}"  >
             </div>
@@ -64,7 +64,7 @@
 
     <div class="col-md-6">
         <div class="form-group">
-            <label for="exampleFormControlInputText1" class="form-label">Profile Image </label>
+            <label for="exampleFormControlInputText1" class="form-label">پروفایل </label>
             <div class="form-control-wrap">
                 <input type="file" name="photo" class="form-control" id="image" >
             </div>
@@ -81,7 +81,7 @@
     </div>
                
     <div class="col-lg-12 col-xl-12">
-<button type="submit" class="btn btn-secondary">Save Changes</button> 
+<button type="submit" class="btn btn-secondary">ذخیره</button> 
     </div>
             
                     
