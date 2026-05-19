@@ -37,16 +37,17 @@ Route::prefix('admin')->middleware(['auth' ,IsAdmin::class ])->group(function ()
     Route::get('/change/password', [AdminController::class, 'AdminChangePassword'])->name('admin.change.password');
     Route::post('/password/update', [AdminController::class, 'AdminPasswordUpdate'])->name('admin.password.update');
     
-    // Projects
+    // User Management Routes
     Route::controller(UsersController::class)->group(function () {
         Route::get('/all/users', 'AllUsers')->name('all.users');
         Route::get('/add/user', 'AddUser')->name('add.user');
         Route::post('/store/user', 'StoreUser')->name('store.user');
         Route::get('/edit/users/{id}', 'EditUsers')->name('edit.users');
         Route::post('/update/users',  'UpdateUsers')->name('update.users');
-        // Route::get('/show/project/{id}', 'ShowProject')->name('show.project');
         Route::get('/delete/user/{id}', 'DeleteUser')->name('delete.user');
-        // Route::post('/get-project-districts', 'getProjectDistricts');
+        Route::get('/users/details/{id}', 'UsersDetails')->name('users.details');
+
+        
     });
 });
 

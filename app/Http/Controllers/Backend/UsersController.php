@@ -151,4 +151,9 @@ class UsersController extends Controller
         );
         return redirect()->route('all.users')->with($notification);
     }
+
+    public function UsersDetails(int $id){
+        $users = User::findOrFail($id);
+        return view('admin.pages.users.users_details', compact('users'));
+    }
 }

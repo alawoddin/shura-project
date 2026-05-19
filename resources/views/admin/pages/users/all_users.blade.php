@@ -135,6 +135,7 @@
                                                     <a href="{{ route('edit.users', $item->id) }}" class="btn btn-success btn-sm">ویرایش</a>
 
                                                     <a href="{{ route('delete.user', $item->id) }}" class="btn btn-danger btn-sm" id="delete">حذف</a>
+                                                    <a href="{{ route('users.details', $item->id) }}" class="btn btn-info btn-sm">جزئیات</a>
                                                 </td>
                                             </tr>
                                         @endforeach
