@@ -34,14 +34,14 @@
                     </a>
                 </li>
 
-
                 <li class="menu-title">مینیو</li>
 
-         
-
-
-     
-
+                <li>
+                    <a href="{{ route('all.users') }}" class="tp-link">
+                        <i data-feather="home"></i>
+                        <span> کاربران </span>
+                    </a>
+                </li>     
 
             </ul>
 

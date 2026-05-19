@@ -42,14 +42,14 @@ class AdminController extends Controller
      $data->name = $request->name;
      $data->email = $request->email;
      $data->phone = $request->phone;
-     $data->address = $request->address;
+     $data->current_address = $request->current_address;
 
      $oldPhotoPath = $data->photo;
 
      if ($request->hasFile('photo')) {
         $file = $request->file('photo');     
         $filename = time().'.'.$file->getClientOriginalExtension();
-        $file->move(public_path('upload/admin_images'),$filename);
+        $file->move(public_path('upload/user_images'),$filename);
         $data->photo = $filename;
 
         if ($oldPhotoPath && $oldPhotoPath !== $filename) {
@@ -60,7 +60,7 @@ class AdminController extends Controller
      $data->save();
 
       $notification = array(
-        'message' => 'Admin Profile Updated Successfully',
+        'message' => 'Profile Updated Successfully',
         'alert-type' => 'success'
      );
 
@@ -71,7 +71,7 @@ class AdminController extends Controller
    //End Method 
 
   private function deleteOldImage(string $oldPhotoPath) : void {
-    $fullPath = public_path('upload/admin_images/'.$oldPhotoPath);
+    $fullPath = public_path('upload/user_images/'.$oldPhotoPath);
     if (file_exists($fullPath)) {
        unlink($fullPath);
     }

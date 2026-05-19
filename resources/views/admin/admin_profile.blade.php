@@ -57,7 +57,7 @@
         <div class="form-group">
             <label for="exampleFormControlInputText1" class="form-label">آدرس </label>
             <div class="form-control-wrap">
-                <input type="text" name="address" class="form-control" value="{{ $profileData->address }}"  >
+                <input type="text" name="current_address" class="form-control" value="{{ $profileData->current_address }}"  >
             </div>
         </div>
     </div>
@@ -75,7 +75,7 @@
         <div class="form-group">
             <label for="exampleFormControlInputText1" class="form-label">  </label>
             <div class="form-control-wrap">
-                 <img id="showImage" src="{{ (!empty($profileData->photo)) ? url('upload/admin_images/'.$profileData->photo) : url('upload/no_image.jpg') }}" class="rounded-circle avatar-xl img-thumbnail float-start" style="width: 80px; height:80px;">
+                 <img id="showImage" src="{{ (!empty($profileData->photo)) ? url('upload/user_images/'.$profileData->photo) : url('upload/no_image.jpg') }}" class="rounded-circle avatar-xl img-thumbnail float-start" style="width: 80px; height:80px;">
             </div>
         </div>
     </div>

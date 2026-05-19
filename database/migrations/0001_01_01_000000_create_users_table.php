@@ -14,16 +14,32 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->string('father_name')->nullable();
+            $table->string('grandfather_name')->nullable();
+            $table->string('lastname')->nullable();
+            $table->enum('gender', ['male', 'female'])->default('male');
+            $table->date('birth_date')->nullable();
+            $table->string('marital_status')->nullable();
+            $table->text('permanent_address')->nullable();
+            $table->text('current_address')->nullable();
+            $table->string('education_level')->nullable(); 
+            $table->string('job')->nullable();
+            $table->string('work_place')->nullable();
+            $table->string('phone')->nullable();
+            $table->string('economic_status')->nullable();
+            $table->integer('family_members')->nullable();
+            $table->date('register_date')->nullable();
+            $table->string('status')->default('active');
+            $table->string('member_type')->nullable();
+            $table->string('photo')->nullable();
+            $table->string('documents')->nullable();
+            $table->decimal('monthly_fee', 10, 2)->default(0);
+            $table->string('ethnic_branch')->nullable();
+            $table->string('representative_name')->nullable();
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->string('photo')->nullable();
-            $table->string('phone')->nullable();
-            $table->text('address')->nullable();
             $table->enum('role' , ['admin' , 'user'])->default('user');
-            $table->integer('current_word_usage')->default(1000);
-            $table->string('words_used')->default(0);
-            $table->string('status')->default('1');
             $table->rememberToken();
             $table->timestamps();
 
