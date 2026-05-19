@@ -40,11 +40,11 @@
                                             <th class="text-center">جنسیت</th>
                                             <th class="text-center">حالت مدنی</th>
                                             <th class="text-center">نوعیت وضعیت</th>
-                                            <th class="text-center">وضعیت عضو</th>
                                             <th class="text-center">فیس ماهانه</th>
                                             <th class="text-center">شاخه قومی</th>
                                             <th class="text-center">اسم نماینده</th>
                                             <th class="text-center">عکس</th>
+                                            <th class="text-center">وضعیت عضو</th>
                                             <th class="text-center">عملیات</th>
                                         </tr>
                                     </thead>
@@ -59,8 +59,37 @@
                                                 <td class="text-center">{{ $item->lastname }}</td>
                                                 <td class="text-center">{{ $item->gender }}</td>
                                                 <td class="text-center">{{ $item->marital_status }}</td>
-                                                <td class="text-center">{{ $item->member_type }}</td>
-                                                <td class="text-center">{{ $item->status }}</td>
+                                                <td class="text-center">
+                                                    <span 
+                                                        class="badge px-3 py-2"
+                                                        style="
+                                                            @if($item->member_type == 'golden')
+                                                                background: linear-gradient(45deg, #FFD700, #FFC107, #FFEB3B);
+                                                                color:#000;
+                                                                box-shadow:0 0 10px rgba(255,215,0,0.8);
+
+                                                            @elseif($item->member_type == 'silver')
+                                                                background: linear-gradient(45deg, #C0C0C0, #E0E0E0);
+                                                                color:#000;
+
+                                                            @else
+                                                                background: linear-gradient(45deg, #0d6efd, #4da3ff);
+                                                                color:#fff;
+                                                            @endif
+
+                                                            border-radius:10px;
+                                                            font-size:13px;
+                                                        "
+                                                    >
+                                                        @if($item->member_type == 'gold')
+                                                            طلایی
+                                                        @elseif($item->member_type == 'silver')
+                                                            نقره‌ای
+                                                        @else
+                                                            معمولی
+                                                        @endif
+                                                    </span>
+                                                </td>
                                                 <td class="text-center">{{ $item->monthly_fee }}</td>
                                                 <td class="text-center">{{ $item->ethnic_branch }}</td>
                                                 <td class="text-center">{{ $item->representative_name }}</td>
@@ -76,9 +105,36 @@
                                                 </td>
 
                                                 <td class="text-center">
-                                                    {{-- <a href="{{ route('edit.users', $item->id) }}" class="btn btn-success btn-sm">ویرایش</a>
+                                                    <span 
+                                                        class="badge px-2 py-2
+                                                            @if($item->status == 'active')
+                                                                bg-success
+                                                            @elseif($item->status == 'inactive')
+                                                                bg-danger
+                                                            @elseif($item->status == 'pending')
+                                                                bg-warning text-dark
+                                                            @elseif($item->status == 'dead')
+                                                                bg-dark
+                                                            @endif
+                                                        "
+                                                        style="border-radius:10px; font-size:13px;"
+                                                    >
+                                                        @if($item->status == 'active')
+                                                            فعال
+                                                        @elseif($item->status == 'inactive')
+                                                            غیرفعال
+                                                        @elseif($item->status == 'pending')
+                                                            تعلیق
+                                                        @elseif($item->status == 'dead')
+                                                            فوت شده
+                                                        @endif
+                                                    </span>
+                                                </td>
 
-                                                    <a href="{{ route('delete.user', $item->id) }}" class="btn btn-danger btn-sm" id="delete">حذف</a> --}}
+                                                <td class="text-center">
+                                                    <a href="{{ route('edit.users', $item->id) }}" class="btn btn-success btn-sm">ویرایش</a>
+
+                                                    <a href="{{ route('delete.user', $item->id) }}" class="btn btn-danger btn-sm" id="delete">حذف</a>
                                                 </td>
                                             </tr>
                                         @endforeach
