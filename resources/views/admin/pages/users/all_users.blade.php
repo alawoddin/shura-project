@@ -38,6 +38,7 @@
                                             <th class="text-center">ولدیت</th>
                                             <th class="text-center">تخلص</th>
                                             <th class="text-center">جنسیت</th>
+                                            <th class="text-center">تعداد فرزندان</th>
                                             <th class="text-center">حالت مدنی</th>
                                             <th class="text-center">نوعیت وضعیت</th>
                                             <th class="text-center">فیس ماهانه</th>
@@ -58,6 +59,7 @@
                                                 <td class="text-center">{{ $item->grandfather_name }}</td>
                                                 <td class="text-center">{{ $item->lastname }}</td>
                                                 <td class="text-center">{{ $item->gender }}</td>
+                                                <td class="text-center">{{ $item->family_members }}</td>
                                                 <td class="text-center">{{ $item->marital_status }}</td>
                                                 <td class="text-center">
                                                     <span 
