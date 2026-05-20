@@ -29,7 +29,6 @@
                                             <th class="text-center">آیدی</th>
                                             <th class="text-center">اسم</th>
                                             <th class="text-center">اعضای فامیل</th>
-                                            
                                             <th class="text-center">عملیات</th>
                                         </tr>
                                     </thead>
