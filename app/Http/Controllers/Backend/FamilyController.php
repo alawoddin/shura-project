@@ -11,7 +11,7 @@ class FamilyController extends Controller
 {
 
     public function AllUsersFamily(){
-        
+
         $familyMembers = FamilyMembers::latest()->get();
         return view('admin.pages.family.all_users_family', compact('familyMembers'));
     }
@@ -36,5 +36,37 @@ class FamilyController extends Controller
 
         return redirect()->route('all.users.family')->with($notification);
 
+    }
+
+    public function EditUsersFamily(int $id){
+
+        $familyMember = FamilyMembers::findOrFail($id);
+        return view('admin.pages.family.edit_users_family', compact('familyMember'));
+    }
+
+    public function UpdateUsersFamily(Request $request)  {
+        $familyMember = FamilyMembers::findOrFail($request->id);
+        $familyMember->update([
+            'name' => implode(',', $request->family_members),
+        ]);
+
+          $notification = array(
+            'message' => 'کاربر موفقانه اپدیت شد',
+            'alert-type' => 'success'
+        );
+
+        return redirect()->route('all.users.family')->with($notification);
+
+    }
+
+    public function DeleteUsersFamily(int $id){
+        FamilyMembers::findOrFail($id)->delete();
+
+         $notification = array(
+            'message' => 'کاربر موفقانه حذف شد',
+            'alert-type' => 'success'
+        );
+
+        return redirect()->route('all.users.family')->with($notification);
     }
 }
