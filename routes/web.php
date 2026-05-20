@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Backend\AdminController;
+use App\Http\Controllers\Backend\FamilyController;
 use App\Http\Controllers\Backend\UsersController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Middleware\IsAdmin;
@@ -46,8 +47,15 @@ Route::prefix('admin')->middleware(['auth' ,IsAdmin::class ])->group(function ()
         Route::post('/update/users',  'UpdateUsers')->name('update.users');
         Route::get('/delete/user/{id}', 'DeleteUser')->name('delete.user');
         Route::get('/users/details/{id}', 'UsersDetails')->name('users.details');
+    });
 
-        
+    Route::controller(FamilyController::class)->group(function () {
+        Route::get('/all/users/family', 'AllUsersFamily')->name('all.users.family');
+        Route::get('/add/users/family/{id}', 'AddUsersFamily')->name('add.users.family');
+        Route::post('/store/users/family', 'StoreUsersFamily')->name('store.users.family');
+        // Route::get('/edit/users/family/{id}', 'EditUsersFamily')->name('edit.users.family');
+        // Route::post('/update/users/family',  'UpdateUsersFamily')->name('update.users.family');
+        // Route::get('/delete/users/family/{id}', 'DeleteUsersFamily')->name('delete.users.family');
     });
 });
 

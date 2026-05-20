@@ -59,7 +59,9 @@
                                                 <td class="text-center">{{ $item->grandfather_name }}</td>
                                                 <td class="text-center">{{ $item->lastname }}</td>
                                                 <td class="text-center">{{ $item->gender }}</td>
-                                                <td class="text-center">{{ $item->family_members }}</td>
+                                                <td class="text-center">
+                                                    <a href="{{ route('add.users.family', $item->id) }}" class="btn btn-success btn-sm">{{ $item->family_members }}</a>
+                                                </td>
                                                 <td class="text-center">{{ $item->marital_status }}</td>
                                                 <td class="text-center">
                                                     <span 
