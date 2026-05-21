@@ -43,4 +43,41 @@ class IncomeController extends Controller
         return redirect()->route('all.income')->with($notification);
     }
 
+    public function EditIncome($id){
+        $editdata = Income::findOrFail($id);
+        $categories = Category::all();
+        return view('admin.pages.income.edit_income', compact('editdata', 'categories'));
+    }
+
+    public function UpdateIncome(Request $request){
+        $income_id = $request->id;
+
+        Income::findOrFail($income_id)->update([
+            'category_id' => $request->category_id,
+            'creditor_name' => $request->creditor_name,
+            'amount' => $request->amount,
+            'date' => $request->date,
+            'note' => $request->note,
+        ]);
+
+          $notification = array(
+            'message' => 'کاربر موفقانه اپدیت شد',
+            'alert-type' => 'success'
+        );
+
+        return redirect()->route('all.income')->with($notification);
+
+    }
+
+    public function DeleteIncome($id){
+        Income::findOrFail($id)->delete();
+
+          $notification = array(
+            'message' => 'کاربر موفقانه حذف شد',
+            'alert-type' => 'success'
+        );
+
+        return redirect()->route('all.income')->with($notification);
+    }
+
 }

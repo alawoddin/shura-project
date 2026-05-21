@@ -53,9 +53,9 @@
                                                 
 
                                                 <td class="text-center">
-                                                    <a href="{{ route('edit.category', $item->id) }}" class="btn btn-success btn-sm">ویرایش</a>
+                                                    <a href="{{ route('edit.income', $item->id) }}" class="btn btn-success btn-sm">ویرایش</a>
 
-                                                    <a href="{{ route('delete.category', $item->id) }}" class="btn btn-danger btn-sm" id="delete">حذف</a>
+                                                    <a href="{{ route('delete.income', $item->id) }}" class="btn btn-danger btn-sm" id="delete">حذف</a>
                                                 </td>
                                             </tr>
                                         @endforeach

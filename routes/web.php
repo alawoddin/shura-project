@@ -75,9 +75,9 @@ Route::prefix('admin')->middleware(['auth' ,IsAdmin::class ])->group(function ()
         Route::get('/all/income', 'AllIncome')->name('all.income');
         Route::get('/add/income', 'AddIncome')->name('add.income');
         Route::post('/store/income', 'StoreIncome')->name('store.income');
-        // Route::get('/edit/income/{id}', 'EditIncome')->name('edit.income');
-        // Route::post('/update/income',  'UpdateIncome')->name('update.income');
-        // Route::get('/delete/income/{id}', 'DeleteIncome')->name('delete.income');
+        Route::get('/edit/income/{id}', 'EditIncome')->name('edit.income');
+        Route::post('/update/income',  'UpdateIncome')->name('update.income');
+        Route::get('/delete/income/{id}', 'DeleteIncome')->name('delete.income');
     });
 
 
