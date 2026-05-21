@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Backend\AdminController;
 use App\Http\Controllers\Backend\CategoryController;
+use App\Http\Controllers\Backend\ExpenseController;
 use App\Http\Controllers\Backend\FamilyController;
 use App\Http\Controllers\Backend\IncomeController;
 use App\Http\Controllers\Backend\UsersController;
@@ -79,6 +80,18 @@ Route::prefix('admin')->middleware(['auth' ,IsAdmin::class ])->group(function ()
         Route::post('/update/income',  'UpdateIncome')->name('update.income');
         Route::get('/delete/income/{id}', 'DeleteIncome')->name('delete.income');
     });
+
+    
+        Route::controller(ExpenseController::class)->group(function () {
+        Route::get('/all/expense', 'AllExpense')->name('all.expense');
+        Route::get('/add/expense', 'AddExpense')->name('add.expense');
+        // Route::post('/store/expense', 'StoreExpense')->name('store.expense');
+        // Route::get('/edit/expense/{id}', 'EditExpense')->name('edit.expense');
+        // Route::post('/update/expense',  'UpdateExpense')->name('update.expense');
+        // Route::get('/delete/expense/{id}', 'DeleteExpense')->name('delete.expense');
+    });
+
+
 
 
 });
