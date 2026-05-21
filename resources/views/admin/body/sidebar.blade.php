@@ -63,7 +63,14 @@
                     <li>
                     <a href="{{ route('all.income') }}" class="tp-link">
                         <i data-feather="home"></i>
-                        <span> Category </span>
+                        <span> Income </span>
+                    </a>
+                 </li>
+
+                   <li>
+                    <a href="{{ route('all.expense') }}" class="tp-link">
+                        <i data-feather="home"></i>
+                        <span> Expense </span>
                     </a>
                  </li>
 
