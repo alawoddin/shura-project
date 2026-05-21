@@ -26,6 +26,45 @@ class CategoryController extends Controller
             'description' => $request->description,
         ]);
 
-        return redirect()->route('all.category')->with('success', 'Category Inserted Successfully');
+          $notification = array(
+            'message' => 'کاربر موفقانه اضافه شد',
+            'alert-type' => 'success'
+        );
+
+        return redirect()->route('all.category')->with($notification);
+    }
+
+    public function EditCategory($id){
+        $category = Category::findOrFail($id);
+
+        return view('admin.pages.category.edit_category', compact('category'));
+    }
+
+    public function UpdateCategory(Request $request){
+        $category_id = $request->id;
+
+        Category::findOrFail($category_id)->update([
+            'name' => $request->name,
+            'slug' => strtolower(str_replace(' ', '-', $request->name)),
+            'description' => $request->description,
+        ]);
+
+        $notification = array(
+            'message' => 'دسته بندی موفقانه به روزرسانی شد',
+            'alert-type' => 'success'
+        );
+
+        return redirect()->route('all.category')->with($notification);
+    }
+
+    public function DeleteCategory($id){
+        Category::findOrFail($id)->delete();
+
+        $notification = array(
+            'message' => 'دسته بندی موفقانه حذف شد',
+            'alert-type' => 'success'
+        );
+
+        return redirect()->route('all.category')->with($notification);
     }
 }
