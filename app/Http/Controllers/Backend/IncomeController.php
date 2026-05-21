@@ -43,7 +43,7 @@ class IncomeController extends Controller
         return redirect()->route('all.income')->with($notification);
     }
 
-    public function EditIncome($id){
+    public function EditIncome(int $id){
         $editdata = Income::findOrFail($id);
         $categories = Category::all();
         return view('admin.pages.income.edit_income', compact('editdata', 'categories'));
@@ -69,7 +69,7 @@ class IncomeController extends Controller
 
     }
 
-    public function DeleteIncome($id){
+    public function DeleteIncome(int $id){
         Income::findOrFail($id)->delete();
 
           $notification = array(
