@@ -3,6 +3,7 @@
 use App\Http\Controllers\Backend\AdminController;
 use App\Http\Controllers\Backend\CategoryController;
 use App\Http\Controllers\Backend\FamilyController;
+use App\Http\Controllers\Backend\IncomeController;
 use App\Http\Controllers\Backend\UsersController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Middleware\IsAdmin;
@@ -68,6 +69,17 @@ Route::prefix('admin')->middleware(['auth' ,IsAdmin::class ])->group(function ()
         Route::post('/update/category',  'UpdateCategory')->name('update.category');
         Route::get('/delete/category/{id}', 'DeleteCategory')->name('delete.category');
     });
+
+
+        Route::controller(IncomeController::class)->group(function () {
+        Route::get('/all/income', 'AllIncome')->name('all.income');
+        Route::get('/add/income', 'AddIncome')->name('add.income');
+        Route::post('/store/income', 'StoreIncome')->name('store.income');
+        // Route::get('/edit/income/{id}', 'EditIncome')->name('edit.income');
+        // Route::post('/update/income',  'UpdateIncome')->name('update.income');
+        // Route::get('/delete/income/{id}', 'DeleteIncome')->name('delete.income');
+    });
+
 
 });
 
