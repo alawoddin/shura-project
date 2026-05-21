@@ -50,6 +50,14 @@
                         <i data-feather="home"></i>
                         <span> اعضای فامیل </span>
                     </a>
+                 </li>
+
+                    <li>
+                    <a href="{{ route('all.category') }}" class="tp-link">
+                        <i data-feather="home"></i>
+                        <span> Category </span>
+                    </a>
+                 </li>
 
             </ul>
 
