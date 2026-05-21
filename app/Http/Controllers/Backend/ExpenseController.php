@@ -38,4 +38,40 @@ class ExpenseController extends Controller
 
         return redirect()->route('all.expense')->with($notification);
     }
+
+    public function EditExpense(int $id){
+        $editdata = Expense::findOrFail($id);
+        $categories = Category::all();
+        return view('admin.pages.expense.edit_expense', compact('editdata', 'categories'));
+    }
+
+    public function UpdateExpense(Request $request){
+        $expense_id = $request->id;
+
+        Expense::findOrFail($expense_id)->update([
+            'category_id' => $request->category_id,
+            'expense_name' => $request->expense_name,
+            'amount' => $request->amount,
+            'date' => $request->date,
+            'description' => $request->description,
+        ]);
+
+        $notification = array(
+            'message' => 'Expense Updated Successfully',
+            'alert-type' => 'success'
+        );
+
+        return redirect()->route('all.expense')->with($notification);
+    }
+
+    public function DeleteExpense(int $id){
+        Expense::findOrFail($id)->delete();
+
+        $notification = array(
+            'message' => 'Expense Deleted Successfully',
+            'alert-type' => 'success'
+        );
+
+        return redirect()->route('all.expense')->with($notification);
+    }
 }

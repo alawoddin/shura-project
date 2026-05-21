@@ -86,9 +86,9 @@ Route::prefix('admin')->middleware(['auth' ,IsAdmin::class ])->group(function ()
         Route::get('/all/expense', 'AllExpense')->name('all.expense');
         Route::get('/add/expense', 'AddExpense')->name('add.expense');
         Route::post('/store/expense', 'StoreExpense')->name('store.expense');
-        // Route::get('/edit/expense/{id}', 'EditExpense')->name('edit.expense');
-        // Route::post('/update/expense',  'UpdateExpense')->name('update.expense');
-        // Route::get('/delete/expense/{id}', 'DeleteExpense')->name('delete.expense');
+        Route::get('/edit/expense/{id}', 'EditExpense')->name('edit.expense');
+        Route::post('/update/expense',  'UpdateExpense')->name('update.expense');
+        Route::get('/delete/expense/{id}', 'DeleteExpense')->name('delete.expense');
     });
 
 
