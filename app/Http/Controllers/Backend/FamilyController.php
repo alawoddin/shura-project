@@ -26,20 +26,39 @@ class FamilyController extends Controller
         return view('admin.pages.family.add_users_family', compact('user'));
     }
 
-    public function StoreUsersFamily(Request $request)  {
+    public function StoreUsersFamily(Request $request)
+{
+    foreach ($request->family_members as $key => $member) {
+
         FamilyMembers::create([
+
             'user_id' => $request->user_id,
-            'name' => implode(',', $request->family_members),
+
+            'name' => $member,
+
+            'birth_date' => $request->birth_date[$key] ?? null,
+
+            'age' => $request->age[$key] ?? null,
+
+            'qualification' => $request->qualification[$key] ?? null,
+
+            'degree' => $request->degree[$key] ?? null,
+
+            'note' => $request->note[$key] ?? null,
+
         ]);
-
-          $notification = array(
-            'message' => 'کاربر موفقانه اضافه شد',
-            'alert-type' => 'success'
-        );
-
-        return redirect()->route('all.users.family',$request->user_id)->with($notification);
-
     }
+
+    return redirect()
+        ->route(
+            'all.users.family',
+            $request->user_id
+        )
+        ->with([
+            'message' => 'اعضای فامیل موفقانه اضافه شد',
+            'alert-type' => 'success'
+        ]);
+}
 
     public function EditUsersFamily($id){
 
@@ -51,6 +70,12 @@ class FamilyController extends Controller
         $familyMember = FamilyMembers::findOrFail($request->id);
         $familyMember->update([
             'name' => implode(',', $request->family_members),
+            'gender' => $request->gender,
+            'birth_date' => $request->birth_date,
+            'age' => $request->age,
+            'qualification' => $request->qualification,
+            'degree' => $request->degree,
+            'note' => $request->note,
         ]);
 
           $notification = array(

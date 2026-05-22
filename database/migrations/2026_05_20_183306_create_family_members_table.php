@@ -15,6 +15,12 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->string('name');
+            $table->enum('gender', ['male', 'female'])->default('male');
+            $table->date('birth_date')->nullable();
+            $table->integer('age')->nullable();
+            $table->string('qualification')->nullable();
+            $table->string('degree')->nullable();
+            $table->text('note')->nullable();
             $table->timestamps();
         });
     }

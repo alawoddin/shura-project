@@ -38,7 +38,13 @@
                                         <tr>
                                             <th class="text-center">آیدی</th>
                                             <th class="text-center">اسم</th>
-                                            <th class="text-center">اعضای فامیل</th>
+                                            <th class="text-center">اسم</th>
+                                            <th class="text-center">gender</th>
+                                            <th class="text-center">تاریخ تولد</th>
+                                            <th class="text-center">سن</th>
+                                            <th class="text-center">qualification</th>
+                                            <th class="text-center">degree</th>
+                                            <th class="text-center">note</th>
                                             <th class="text-center">عملیات</th>
                                         </tr>
                                     </thead>
@@ -47,8 +53,13 @@
                                             <tr>
                                                 <td class="text-center">{{ $key + 1 }}</td>
                                                 <td class="text-center">{{ $item->user->name }}</td>
-
                                                 <td class="text-center">{{ $item->name }}</td>
+                                                <td class="text-center">{{ $item->gender }}</td>
+                                                <td class="text-center">{{ $item->birth_date }}</td>
+                                                <td class="text-center">{{ $item->age }}</td>
+                                                <td class="text-center">{{ $item->qualification }}</td>
+                                                <td class="text-center">{{ $item->degree }}</td>
+                                                <td class="text-center">{{ $item->note }}</td>
                                                 
 
                                                 <td class="text-center">
