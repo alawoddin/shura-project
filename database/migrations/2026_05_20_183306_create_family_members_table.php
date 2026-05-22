@@ -13,13 +13,13 @@ return new class extends Migration
     {
         Schema::create('family_members', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->string('name');
-            $table->enum('gender', ['male', 'female'])->default('male');
-            $table->date('birth_date')->nullable();
-            $table->integer('age')->nullable();
-            $table->string('qualification')->nullable();
-            $table->string('degree')->nullable();
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->text('name');
+            $table->text('gender')->nullable();
+            $table->text('birth_date')->nullable();
+            $table->text('age')->nullable();
+            $table->text('qualification')->nullable();
+            $table->text('degree')->nullable();
             $table->text('note')->nullable();
             $table->timestamps();
         });

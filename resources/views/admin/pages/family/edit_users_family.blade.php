@@ -1,117 +1,180 @@
 @extends('admin.dashboard')
 
 @section('admin')
+    <div class="container-fluid">
 
-<div class="container-fluid">
+        <div class="card shadow-sm">
 
-    <div class="card mt-3 shadow-sm">
+            <div class="card-header bg-dark text-white">
 
-        <div class="card-header bg-dark text-white">
-            ویرایش اعضای فامیل
-        </div>
+                ویرایش اعضای فامیل
 
-        <div class="card-body">
+            </div>
 
-            <form action="{{ route('update.users.family') }}"
-                  method="POST">
+            <div class="card-body">
 
-                @csrf
+                <form action="{{ route('update.users.family') }}" method="POST">
 
-                <input type="hidden"
-                       name="id"
-                       value="{{ $familyMember->id }}">
+                    @csrf
 
-                <input type="hidden"
-                       name="user_id"
-                       value="{{ $familyMember->user_id }}">
+                    <input type="hidden" name="user_id" value="{{ $familyMember->user_id }}">
 
-                <div id="family-wrapper">
+                    @php
 
-                    @foreach(explode(',', $familyMember->name) as $member)
+                        $names = explode(',', $familyMember->name);
 
-                    <div class="d-flex mb-3 family-item">
+                        $genders = explode(',', $familyMember->gender);
 
-                        <input type="text"
-                               name="family_members[]"
-                               class="form-control"
-                               value="{{ trim($member) }}"
-                               required>
+                        $birthDates = explode(',', $familyMember->birth_date);
 
-                        <button type="button"
-                                class="btn btn-danger ms-2 remove-btn">
+                        $ages = explode(',', $familyMember->age);
 
-                            X
+                        $qualifications = explode(',', $familyMember->qualification);
+
+                        $degrees = explode(',', $familyMember->degree);
+
+                        $notes = explode(',', $familyMember->note);
+
+                    @endphp
+
+                    @foreach ($names as $key => $member)
+                        <div class="card mb-4">
+
+                            <div class="card-header">
+
+                                عضو {{ $key + 1 }}
+
+                            </div>
+
+                            <div class="card-body">
+
+                                <div class="row g-3">
+
+                                    <div class="col-md-4">
+
+                                        <label>
+
+                                            اسم
+
+                                        </label>
+
+                                        <input type="text" name="family_members[]" class="form-control"
+                                            value="{{ $member }}">
+
+                                    </div>
+
+                                    <div class="col-md-2">
+
+                                        <label>
+
+                                            جنسیت
+
+                                        </label>
+
+                                        <select name="gender[]" class="form-select">
+
+                                            <option value="male" {{ ($genders[$key] ?? '') == 'male' ? 'selected' : '' }}>
+
+                                                Male
+
+                                            </option>
+
+                                            <option value="female" {{ ($genders[$key] ?? '') == 'female' ? 'selected' : '' }}>
+
+                                                Female
+
+                                            </option>
+
+                                        </select>
+
+                                    </div>
+
+                                    <div class="col-md-3">
+
+                                        <label>
+
+                                            تاریخ تولد
+
+                                        </label>
+
+                                        <input type="date" name="birth_date[]" class="form-control"
+                                            value="{{ $birthDates[$key] ?? '' }}">
+
+                                    </div>
+
+                                    <div class="col-md-3">
+
+                                        <label>
+
+                                            سن
+
+                                        </label>
+
+                                        <input type="number" name="age[]" class="form-control"
+                                            value="{{ $ages[$key] ?? '' }}">
+
+                                    </div>
+
+                                    <div class="col-md-6">
+
+                                        <label>
+
+                                            تحصیلات
+
+                                        </label>
+
+                                        <input type="text" name="qualification[]" class="form-control"
+                                            value="{{ $qualifications[$key] ?? '' }}">
+
+                                    </div>
+
+                                    <div class="col-md-6">
+
+                                        <label>
+
+                                            درجه
+
+                                        </label>
+
+                                        <input type="text" name="degree[]" class="form-control"
+                                            value="{{ $degrees[$key] ?? '' }}">
+
+                                    </div>
+
+                                    <div class="col-12">
+
+                                        <label>
+
+                                            یادداشت
+
+                                        </label>
+
+                                        <textarea name="note[]" class="form-control" rows="2">{{ $notes[$key] ?? '' }}</textarea>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+                    @endforeach
+
+                    <div class="text-end">
+
+                        <button class="btn btn-primary">
+
+                            Update
 
                         </button>
 
                     </div>
 
-                    @endforeach
+                </form>
 
-                </div>
-
-                {{-- <button type="button"
-                        class="btn btn-success mb-3"
-                        id="add-family">
-                    + اضافه کردن عضو
-                </button> --}}
-
-                <br>
-
-                <button class="btn btn-primary">
-
-                    Update
-
-                </button>
-
-            </form>
+            </div>
 
         </div>
 
     </div>
-
-</div>
-
-<script>
-
-document.getElementById('add-family')
-.addEventListener('click', function(){
-
-    let html = `
-    
-    <div class="d-flex mb-3 family-item">
-
-        <input type="text"
-               name="family_members[]"
-               class="form-control"
-               placeholder="اسم عضو فامیل"
-               required>
-
-        <button type="button"
-                class="btn btn-danger ms-2 remove-btn">
-
-            X
-
-        </button>
-
-    </div>
-    `;
-
-    document.getElementById('family-wrapper')
-            .insertAdjacentHTML('beforeend', html);
-
-});
-
-document.addEventListener('click', function(e){
-
-    if(e.target.classList.contains('remove-btn')){
-
-        e.target.closest('.family-item').remove();
-
-    }
-
-});
-
-</script>
-
 @endsection
