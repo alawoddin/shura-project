@@ -50,13 +50,11 @@
 
                 </div>
 
-                <button type="button"
+                {{-- <button type="button"
                         class="btn btn-success mb-3"
                         id="add-family">
-
                     + اضافه کردن عضو
-
-                </button>
+                </button> --}}
 
                 <br>
 

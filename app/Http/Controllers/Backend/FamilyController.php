@@ -10,13 +10,16 @@ use Illuminate\Http\Request;
 class FamilyController extends Controller
 {
 
-    public function AllUsersFamily(){
+    public function AllUsersFamily($id){
 
-        $familyMembers = FamilyMembers::latest()->get();
-        return view('admin.pages.family.all_users_family', compact('familyMembers'));
+        $user = User::findOrFail($id);
+
+        $familyMembers = FamilyMembers::where('user_id', $id)->latest()->get();
+
+        return view('admin.pages.family.all_users_family', compact('familyMembers','user'));
     }
 
-    public function AddUsersFamily(int $id){
+    public function AddUsersFamily($id){
 
      $user = User::findOrFail($id);
     
@@ -34,11 +37,11 @@ class FamilyController extends Controller
             'alert-type' => 'success'
         );
 
-        return redirect()->route('all.users.family')->with($notification);
+        return redirect()->route('all.users.family',$request->user_id)->with($notification);
 
     }
 
-    public function EditUsersFamily(int $id){
+    public function EditUsersFamily($id){
 
         $familyMember = FamilyMembers::findOrFail($id);
         return view('admin.pages.family.edit_users_family', compact('familyMember'));
@@ -55,18 +58,23 @@ class FamilyController extends Controller
             'alert-type' => 'success'
         );
 
-        return redirect()->route('all.users.family')->with($notification);
+        return redirect()->route('all.users.family',$familyMember->user_id)->with($notification);
 
     }
 
-    public function DeleteUsersFamily(int $id){
-        FamilyMembers::findOrFail($id)->delete();
+    public function DeleteUsersFamily($id){
+
+        $familyMember = FamilyMembers::findOrFail($id);
+
+        $user_id = $familyMember->user_id;
+
+        $familyMember->delete();
 
          $notification = array(
             'message' => 'کاربر موفقانه حذف شد',
             'alert-type' => 'success'
         );
 
-        return redirect()->route('all.users.family')->with($notification);
+        return redirect()->route('all.users.family',$user_id)->with($notification);
     }
 }

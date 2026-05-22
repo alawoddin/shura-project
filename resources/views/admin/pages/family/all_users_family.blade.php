@@ -9,6 +9,16 @@
                 <div class="flex-grow-1">
                     <h4 class="fs-18 fw-semibold m-0">کاربران</h4>
                 </div>
+
+                <div class="text-end">
+                    <ol class="breadcrumb m-0 py-0">
+                        @if($familyMembers->where('user_id', $user->id)->count() == 0)
+                            <a href="{{ route('add.users.family', $user->id) }}" class="btn btn-secondary">
+                                اضافه کردن
+                            </a>
+                        @endif
+                    </ol>
+                </div>
             </div>
 
             <!-- Datatables  -->

@@ -45,12 +45,12 @@
                 
              
 
-                 <li>
+                 {{-- <li>
                     <a href="{{ route('all.users.family') }}" class="tp-link">
                         <i data-feather="home"></i>
                         <span> اعضای فامیل </span>
                     </a>
-                 </li>
+                 </li> --}}
 
                     <li>
                     <a href="{{ route('all.category') }}" class="tp-link">

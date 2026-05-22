@@ -53,11 +53,11 @@ Route::prefix('admin')->middleware(['auth' ,IsAdmin::class ])->group(function ()
     });
 
     Route::controller(FamilyController::class)->group(function () {
-        Route::get('/all/users/family', 'AllUsersFamily')->name('all.users.family');
+        Route::get('/all/users/family/{id}', 'AllUsersFamily')->name('all.users.family');
         Route::get('/add/users/family/{id}', 'AddUsersFamily')->name('add.users.family');
         Route::post('/store/users/family', 'StoreUsersFamily')->name('store.users.family');
         Route::get('/edit/users/family/{id}', 'EditUsersFamily')->name('edit.users.family');
-        Route::post('/update/users/family',  'UpdateUsersFamily')->name('update.users.family');
+        Route::post('/update/users/family', 'UpdateUsersFamily')->name('update.users.family');
         Route::get('/delete/users/family/{id}', 'DeleteUsersFamily')->name('delete.users.family');
     });
 

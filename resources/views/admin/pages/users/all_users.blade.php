@@ -60,7 +60,9 @@
                                                 <td class="text-center">{{ $item->lastname }}</td>
                                                 <td class="text-center">{{ $item->gender }}</td>
                                                 <td class="text-center">
-                                                    <a href="{{ route('add.users.family', $item->id) }}" class="btn btn-success btn-sm">{{ $item->family_members }}</a>
+                                                    <a href="{{ route('all.users.family', $item->id) }}" class="btn btn-success btn-sm">
+                                                        {{ $item->family_members ? $item->family_members : 0 }}
+                                                    </a>
                                                 </td>
                                                 <td class="text-center">{{ $item->marital_status }}</td>
                                                 <td class="text-center">

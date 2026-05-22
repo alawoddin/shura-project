@@ -248,6 +248,10 @@
                                             اعضای فامیل موجود نیست
                                         </span>
                                     @endif
+                                    <a href="{{ route('all.users.family', $users->id) }}"class="btn btn-light btn-sm rounded-pill px-3">
+                                        <i class="fas fa-users me-1"></i>
+                                        مدیریت فامیل
+                                    </a>
                                 </div>
                             </div>
                         </div>
