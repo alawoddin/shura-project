@@ -58,12 +58,7 @@ class FamilyController extends Controller
 
         ];
 
-        return redirect()
-            ->route(
-                'all.users.family',
-                $request->user_id
-            )
-            ->with($notification);
+        return redirect()->route('all.users.family',$request->user_id)->with($notification);
     }
 
     public function EditUsersFamily($id)
@@ -75,10 +70,7 @@ class FamilyController extends Controller
 
     public function UpdateUsersFamily(Request $request)
     {
-        $familyMember = FamilyMembers::where(
-            'user_id',
-            $request->user_id
-        )->firstOrFail();
+        $familyMember = FamilyMembers::where('user_id', $request->user_id)->firstOrFail();
 
         $familyMember->update([
 
@@ -106,12 +98,7 @@ class FamilyController extends Controller
 
         ];
 
-        return redirect()
-            ->route(
-                'all.users.family',
-                $request->user_id
-            )
-            ->with($notification);
+        return redirect()->route('all.users.family',$request->user_id)->with($notification);
     }
 
     public function DeleteUsersFamily($id)
