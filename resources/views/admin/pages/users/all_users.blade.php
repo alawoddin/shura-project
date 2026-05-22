@@ -85,7 +85,7 @@
                                                             font-size:13px;
                                                         "
                                                     >
-                                                        @if($item->member_type == 'gold')
+                                                        @if($item->member_type == 'golden')
                                                             طلایی
                                                         @elseif($item->member_type == 'silver')
                                                             نقره‌ای

@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fa" dir="rtl">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Details</title>
+    <title>جزئیات کاربر</title>
 
     <!-- Bootstrap 5 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -19,6 +19,8 @@
         body {
             background: #f4f7fe;
             font-family: 'Poppins', sans-serif;
+            direction: rtl;
+            text-align: right;
         }
 
         .main-container {
@@ -105,7 +107,7 @@
         .info-value {
             font-weight: 600;
             color: #111827;
-            text-align: right;
+            text-align: left;
         }
 
         .download-btn {
@@ -153,7 +155,7 @@
             }
 
             .info-value {
-                text-align: left;
+                text-align: right;
             }
 
             .profile-name {
@@ -176,171 +178,155 @@
     <div class="col-12">
 
         <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
-
             <div class="card-body bg-primary text-white p-5">
-
                 <div class="d-flex justify-content-between align-items-start flex-wrap gap-4">
-
                     <!-- Left Side -->
                     <div class="d-flex align-items-center gap-4 flex-wrap">
-
                         @if ($users->photo)
-
                             <img src="{{ asset('upload/user_images/' . $users->photo) }}"
                                  class="rounded-circle border border-4 border-white shadow"
                                  width="120"
                                  height="120"
                                  style="object-fit: cover;">
-
                         @else
-
                             <img src="https://ui-avatars.com/api/?name={{ $users->name }}"
                                  class="rounded-circle border border-4 border-white shadow"
                                  width="120"
                                  height="120">
-
                         @endif
 
                         <!-- User Info -->
                         <div>
-
                             <h2 class="fw-bold text-white mb-2">
-
                                 {{ $users->name }} {{ $users->lastname }}
-
                             </h2>
-
                             <div class="d-flex align-items-center gap-2 flex-wrap mb-3">
-
+                                <!-- Role -->
                                 <span class="badge bg-light text-dark px-3 py-2 rounded-pill">
-
                                     <i class="fas fa-user-shield me-1"></i>
-
-                                    {{ ucfirst($users->role) }}
-
+                                    @if($users->role == 'admin')
+                                        ادمین
+                                    @elseif($users->role == 'user')
+                                        کاربر
+                                    @else
+                                        {{ $users->role }}
+                                    @endif
                                 </span>
 
+                                <!-- Status -->
                                 <span class="badge bg-success px-3 py-2 rounded-pill">
-
                                     <i class="fas fa-check-circle me-1"></i>
-
-                                    {{ ucfirst($users->status) }}
-
+                                    @if($users->status == 'active')
+                                        فعال
+                                    @elseif($users->status == 'inactive')
+                                        غیرفعال
+                                    @elseif($users->status == 'pending')
+                                        در انتظار
+                                    @else
+                                        {{ $users->status }}
+                                    @endif
                                 </span>
-
                             </div>
 
                             <!-- Family Members -->
                             <div>
-
                                 <h6 class="fw-bold text-white mb-2">
-
                                     <i class="fas fa-users me-2"></i>
-
                                     اعضای فامیل
-
                                 </h6>
 
                                 <div class="d-flex flex-wrap gap-2">
-
                                     @if ($users->familyMember)
-
                                         @foreach (explode(',', $users->familyMember->name) as $member)
-
                                             <span class="badge bg-light text-dark px-3 py-2 rounded-pill shadow-sm">
-
                                                 <i class="fas fa-user me-1 text-primary"></i>
-
                                                 {{ trim($member) }}
-
                                             </span>
-
                                         @endforeach
-
                                     @else
-
                                         <span class="badge bg-danger px-3 py-2 rounded-pill">
-
                                             اعضای فامیل موجود نیست
-
                                         </span>
-
                                     @endif
-
                                 </div>
-
                             </div>
-
                         </div>
-
                     </div>
 
                     <!-- Right Side -->
                     <div>
-
                         <a href="{{ route('all.users') }}"
                            class="btn btn-light rounded-pill px-4 shadow-sm">
-
                             <i class="fas fa-arrow-left me-2"></i>
-
-                            Back
-
+                            بازگشت
                         </a>
-
                     </div>
-
                 </div>
-
             </div>
-
         </div>
-
     </div>
 </div>
 
-         
-
                     <div class="row g-4">
-
                         <!-- Personal Information -->
                         <div class="col-lg-6">
                             <div class="card border-0 shadow rounded-4 h-100">
                                 <div class="card-header bg-white border-0 pt-4 px-4">
                                     <h4 class="fw-bold text-primary mb-0">
                                         <i class="fas fa-user-circle me-2"></i>
-                                        Personal Information
+                                        معلومات شخصی
                                     </h4>
                                 </div>
 
                                 <div class="card-body px-4 pb-4">
                                     <div class="info-item">
-                                        <span>Full Name</span>
+                                        <span>نام کامل</span>
                                         <strong>{{ $users->name }} {{ $users->lastname }}</strong>
                                     </div>
 
                                     <div class="info-item">
-                                        <span>Father Name</span>
+                                        <span>نام پدر</span>
                                         <strong>{{ $users->father_name }}</strong>
                                     </div>
 
                                     <div class="info-item">
-                                        <span>Grandfather Name</span>
+                                        <span>نام پدربزرگ</span>
                                         <strong>{{ $users->grandfather_name }}</strong>
                                     </div>
 
                                     <div class="info-item">
-                                        <span>Gender</span>
-                                        <strong>{{ ucfirst($users->gender) }}</strong>
+                                        <span>جنسیت</span>
+                                        <strong>
+                                            @if($users->gender == 'male')
+                                                مرد
+                                            @elseif($users->gender == 'female')
+                                                زن
+                                            @else
+                                                {{ $users->gender }}
+                                            @endif
+                                        </strong>
                                     </div>
 
                                     <div class="info-item">
-                                        <span>Birth Date</span>
+                                        <span>تاریخ تولد</span>
                                         <strong>{{ $users->birth_date }}</strong>
                                     </div>
 
                                     <div class="info-item">
-                                        <span>Marital Status</span>
-                                        <strong>{{ ucfirst($users->marital_status) }}</strong>
+                                        <span>وضعیت تأهل</span>
+                                        <strong>
+                                            @if($users->marital_status == 'single')
+                                                مجرد
+                                            @elseif($users->marital_status == 'married')
+                                                متأهل
+                                            @elseif($users->marital_status == 'divorced')
+                                                طلاق گرفته
+                                            @elseif($users->marital_status == 'widowed')
+                                                بیوه
+                                            @else
+                                                {{ $users->marital_status }}
+                                            @endif
+                                        </strong>
                                     </div>
                                 </div>
                             </div>
@@ -352,28 +338,28 @@
                                 <div class="card-header bg-white border-0 pt-4 px-4">
                                     <h4 class="fw-bold text-success mb-0">
                                         <i class="fas fa-address-book me-2"></i>
-                                        Contact Information
+                                        معلومات تماس
                                     </h4>
                                 </div>
 
                                 <div class="card-body px-4 pb-4">
                                     <div class="info-item">
-                                        <span>Email</span>
+                                        <span>ایمیل</span>
                                         <strong>{{ $users->email }}</strong>
                                     </div>
 
                                     <div class="info-item">
-                                        <span>Phone</span>
+                                        <span>شماره تماس</span>
                                         <strong>{{ $users->phone }}</strong>
                                     </div>
 
                                     <div class="info-item">
-                                        <span>Permanent Address</span>
+                                        <span>آدرس دائمی</span>
                                         <strong>{{ $users->permanent_address }}</strong>
                                     </div>
 
                                     <div class="info-item">
-                                        <span>Current Address</span>
+                                        <span>آدرس فعلی</span>
                                         <strong>{{ $users->current_address }}</strong>
                                     </div>
                                 </div>
@@ -383,36 +369,53 @@
                         <!-- Education & Job -->
                         <div class="col-lg-6">
                             <div class="card border-0 shadow rounded-4 h-100">
+
                                 <div class="card-header bg-white border-0 pt-4 px-4">
                                     <h4 class="fw-bold text-warning mb-0">
                                         <i class="fas fa-graduation-cap me-2"></i>
-                                        Education & Work
+                                        تحصیلات و کار
                                     </h4>
                                 </div>
 
                                 <div class="card-body px-4 pb-4">
                                     <div class="info-item">
-                                        <span>Education Level</span>
-                                        <strong>{{ $users->education_level }}</strong>
+                                        <span>سطح تحصیلات</span>
+                                        <strong>
+                                            @if($users->education_level == 'illutrate')
+                                                بی سواد
+                                            @elseif($users->education_level == 'graduate')
+                                                فارغ التحصیل
+                                            @elseif($users->education_level == 'bachelor')
+                                                لیسانس
+                                            @elseif($users->education_level == 'master')
+                                                ماستر
+                                            @elseif($users->education_level == 'PhD')
+                                                دوکتورا
+                                            @else
+                                                {{ $users->education_level }}
+                                            @endif
+                                        </strong>
                                     </div>
 
                                     <div class="info-item">
-                                        <span>Job</span>
+                                        <span>شغل</span>
                                         <strong>{{ $users->job }}</strong>
                                     </div>
 
                                     <div class="info-item">
-                                        <span>Work Place</span>
+                                        <span>محل کار</span>
                                         <strong>{{ $users->work_place }}</strong>
                                     </div>
 
                                     <div class="info-item">
-                                        <span>Economic Status</span>
-                                        <strong>{{ $users->economic_status }}</strong>
+                                        <div class="info-item">
+                                            <span>وضعیت اقتصادی</span>
+                                            <strong>{{ $users->economic_status }}</strong>
+                                        </div>
                                     </div>
 
                                     <div class="info-item">
-                                        <span>Family Members</span>
+                                        <span>تعداد اعضای فامیل</span>
                                         <strong>{{ $users->family_members }}</strong>
                                     </div>
                                 </div>
@@ -425,33 +428,43 @@
                                 <div class="card-header bg-white border-0 pt-4 px-4">
                                     <h4 class="fw-bold text-danger mb-0">
                                         <i class="fas fa-id-card me-2"></i>
-                                        Membership Details
+                                        جزئیات عضویت
                                     </h4>
                                 </div>
 
                                 <div class="card-body px-4 pb-4">
                                     <div class="info-item">
-                                        <span>Member Type</span>
-                                        <strong>{{ ucfirst($users->member_type) }}</strong>
+                                        <span>نوع عضویت</span>
+                                        <strong>
+                                            @if($users->member_type == 'golden')
+                                                طلایی
+                                            @elseif($users->member_type == 'silver')
+                                                نقره یی
+                                            @elseif($users->member_type == 'normal')
+                                                معمولی
+                                            @else
+                                                {{ $users->member_type }}
+                                            @endif
+                                        </strong>
                                     </div>
 
                                     <div class="info-item">
-                                        <span>Monthly Fee</span>
+                                        <span>فیس ماهانه</span>
                                         <strong>${{ $users->monthly_fee }}</strong>
                                     </div>
 
                                     <div class="info-item">
-                                        <span>Ethnic Branch</span>
+                                        <span>شاخه قومی</span>
                                         <strong>{{ $users->ethnic_branch }}</strong>
                                     </div>
 
                                     <div class="info-item">
-                                        <span>Representative Name</span>
+                                        <span>نام نماینده</span>
                                         <strong>{{ $users->representative_name }}</strong>
                                     </div>
 
                                     <div class="info-item">
-                                        <span>Register Date</span>
+                                        <span>تاریخ ثبت</span>
                                         <strong>{{ $users->register_date }}</strong>
                                     </div>
                                 </div>
@@ -464,7 +477,7 @@
                                 <div class="card-header bg-white border-0 pt-4 px-4">
                                     <h4 class="fw-bold text-info mb-0">
                                         <i class="fas fa-file-alt me-2"></i>
-                                        User Documents
+                                        اسناد کاربر
                                     </h4>
                                 </div>
 
@@ -473,11 +486,11 @@
                                         <a href="{{ asset('upload/user_documents/' . $users->documents) }}"
                                             target="_blank" class="btn btn-info rounded-pill px-4 py-2">
                                             <i class="fas fa-download me-2"></i>
-                                            Download Document
+                                            دانلود سند
                                         </a>
                                     @else
                                         <div class="alert alert-warning rounded-4 mb-0">
-                                            No document uploaded.
+                                            هیچ سندی آپلود نشده است.
                                         </div>
                                     @endif
                                 </div>
@@ -510,7 +523,7 @@
 
                 .info-item strong {
                     color: #212529;
-                    text-align: right;
+                    text-align: left;
                 }
 
                 .card {
@@ -529,7 +542,7 @@
                     }
 
                     .info-item strong {
-                        text-align: left;
+                        text-align: right;
                     }
                 }
             </style>
