@@ -11,14 +11,7 @@
 
             <div class="py-3 d-flex align-items-sm-center flex-sm-row flex-column">
                 <div class="flex-grow-1">
-                    <h4 class="fs-18 fw-semibold m-0">Add Brand</h4>
-                </div>
-
-                <div class="text-end">
-                    <ol class="breadcrumb m-0 py-0">
-
-                        <li class="breadcrumb-item active">Add Brand</li>
-                    </ol>
+                    <h4 class="fs-18 fw-semibold m-0">اضافه کردن  </h4>
                 </div>
             </div>
 
@@ -27,25 +20,25 @@
                 <div class="col-xl-12">
                     <div class="card">
                         <div class="card-header">
-                            <h5 class="card-title mb-0">Add Brand</h5>
+                            <h5 class="card-title mb-0">اضافه کردن</h5>
                         </div><!-- end card header -->
 
                         <div class="card-body">
                             <form action="{{ route('store.category') }}" method="POST" class="row g-3">
                                 @csrf
                                 <div class="col-md-6">
-                                    <label for="validationDefault01" class="form-label">Name</label>
+                                    <label for="validationDefault01" class="form-label">نام</label>
                                     <input type="text" class="form-control" name="name">
                                 </div>
                               
                                  <div class="col-md-6">
-                                    <label for="validationDefault02" class="form-label">Description</label>
+                                    <label for="validationDefault02" class="form-label">توضیحات</label>
                                     <textarea class="form-control" name="description"></textarea>
 
-                              
+                                 </div>
 
-                                <div class="col-12 mt-3">
-                                    <button class="btn btn-primary" type="submit">Save Change</button>
+                                <div class="col-6 mt-3">
+                                    <button class="btn btn-primary" type="submit">ذخیره</button>
                                 </div>
                             </form>
                         </div> <!-- end card-body -->

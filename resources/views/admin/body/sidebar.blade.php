@@ -52,12 +52,21 @@
                     </a>
                  </li> --}}
 
-                    <li>
-                    <a href="{{ route('all.category') }}" class="tp-link">
-                        <i data-feather="home"></i>
-                        <span> Category </span>
+                 <li>
+                    <a href="#catalog" data-bs-toggle="collapse">
+                        <span> مدیریت بخش ها </span>
+                        <span class="menu-arrow"></span>
                     </a>
-                 </li>
+                    <div class="collapse" id="catalog">
+                        <ul class="nav-second-level">
+                            <li>
+                                <a href="{{ route('all.category') }}" class="tp-link">
+                                    <span>  نام درامد ها  </span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
 
                  
                     <li>

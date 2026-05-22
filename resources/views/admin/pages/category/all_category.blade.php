@@ -4,18 +4,17 @@
 
         <!-- Start Content-->
         <div class="container-fluid my-0">
-
             <div class="py-3 d-flex align-items-sm-center flex-sm-row flex-column">
                 <div class="flex-grow-1">
                     <h4 class="fs-18 fw-semibold m-0">کاربران</h4>
                 </div>
-            </div>
 
-              <div class="text-end">
+                <div class="text-end">
                     <ol class="breadcrumb m-0 py-0">
                         <a href="{{ route('add.category') }}" class="btn btn-secondary">اضافه کردن</a>
                     </ol>
                 </div>
+            </div>
 
             <!-- Datatables  -->
             <div class="row">
@@ -34,7 +33,7 @@
                                         <tr>
                                             <th class="text-center">آیدی</th>
                                             <th class="text-center">اسم</th>
-                                            <th class="text-center">اسلاگ</th>
+                                            {{-- <th class="text-center">اسلاگ</th> --}}
                                             <th class="text-center">توضیحات</th>
                                             <th class="text-center">عملیات</th>
                                         </tr>
@@ -44,7 +43,7 @@
                                             <tr>
                                                 <td class="text-center">{{ $key + 1 }}</td>
                                                 <td class="text-center">{{ $item->name }}</td>
-                                                <td class="text-center">{{ $item->slug }}</td>
+                                                {{-- <td class="text-center">{{ $item->slug }}</td> --}}
 
                                                 <td class="text-center">{{ $item->description }}</td>
                                                 
