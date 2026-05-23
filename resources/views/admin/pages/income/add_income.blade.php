@@ -34,13 +34,22 @@
                             </div>
 
                             <div class="col-md-6">
-                                <label for="validationDefault01" class="form-label">اسم</label>
-                                <input type="text" class="form-control" name="creditor_name">
+                                <label class="form-label">اسم</label>
+
+                                <select name="creditor_name" class="form-control">
+                                    <option value="">انتخاب کاربر</option>
+
+                                    @foreach ($users as $user)
+                                        <option value="{{ $user->name }}">
+                                            {{ $user->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
                             </div>
 
                             <div class="col-md-6">
                                 <label for="validationDefault01" class="form-label">مقدار</label>
-                                <input type="text" class="form-control" name="amount">
+                                <input type="number" class="form-control" name="amount">
                             </div>
 
                             <div class="col-md-6">
