@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
 use App\Models\MemberFinancialReport;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class MemberFinancialReportController extends Controller
@@ -15,5 +16,32 @@ class MemberFinancialReportController extends Controller
             'admin.pages.member_financial_report.all_report',
             compact('alldata')
         );
+    }
+
+    public function AddFinancialReport(){
+        $users = User::all();
+
+        return view(
+            'admin.pages.member_financial_report.add_report',
+            compact('users')
+        );
+    }
+
+    public function StoreFinancialReport(Request $request){
+        $request->validate([
+            'member_id' => 'required',
+            'date' => 'required',
+        ]);
+
+        MemberFinancialReport::create([
+            'member_id' => $request->member_id,
+            'date' => $request->date,
+            'description' => $request->description,
+            'debit' => $request->debit ?? 0,
+            'credit' => $request->credit ?? 0,
+            'balance' => $request->balance ?? 0,
+        ]);
+
+        return redirect()->route('all.member.financial.report');
     }
 }

@@ -94,8 +94,8 @@ Route::prefix('admin')->middleware(['auth' ,IsAdmin::class ])->group(function ()
 
     Route::controller(MemberFinancialReportController::class)->group(function () {
         Route::get('/all/member/financial/report', 'AllMemberFinancialReport')->name('all.member.financial.report');
-        Route::get('/add/expense', 'AddExpense')->name('add.expense');
-        Route::post('/store/expense', 'StoreExpense')->name('store.expense');
+        Route::get('/add/financial/report', 'AddFinancialReport')->name('add.financial.report');
+        Route::post('/store/financial/report', 'StoreFinancialReport')->name('store.financial.report');
         Route::get('/edit/expense/{id}', 'EditExpense')->name('edit.expense');
         Route::post('/update/expense',  'UpdateExpense')->name('update.expense');
         Route::get('/delete/expense/{id}', 'DeleteExpense')->name('delete.expense');
