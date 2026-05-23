@@ -98,7 +98,7 @@ Route::prefix('admin')->middleware(['auth' ,IsAdmin::class ])->group(function ()
         Route::post('/store/financial/report', 'StoreFinancialReport')->name('store.financial.report');
         Route::get('/edit/financial/report/{id}', 'EditFinancialReport')->name('edit.financial.report');
         Route::post('/update/financial/report',  'UpdateFinancialReport')->name('update.financial.report');
-        Route::get('/delete/expense/{id}', 'DeleteExpense')->name('delete.expense');
+        Route::get('/delete/financial/report/{id}', 'DeleteFinancialReport')->name('delete.financial.report');
     });
 
 

@@ -77,4 +77,10 @@ class MemberFinancialReportController extends Controller
 
         return redirect()->route('all.member.financial.report');
     }
+
+    public function DeleteFinancialReport($id){
+        MemberFinancialReport::findOrFail($id)->delete();
+
+        return redirect()->back();
+    }
 }
