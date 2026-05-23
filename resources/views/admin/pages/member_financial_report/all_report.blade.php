@@ -65,12 +65,9 @@
                                                     {{ $item->balance }}
                                                 </td>
                                                 <td class="text-center">
-                                                    <a href="" class="btn btn-success btn-sm">
-                                                        ویرایش
-                                                    </a>
-                                                    <a href="" class="btn btn-danger btn-sm">
-                                                        حذف
-                                                    </a>
+                                                    <a href="{{ route('edit.financial.report', $item->id) }}" class="btn btn-success btn-sm">ویرایش</a>
+
+                                                    <a href="" class="btn btn-danger btn-sm" id="delete">حذف</a>
                                                 </td>
                                             </tr>
                                         @endforeach

@@ -44,4 +44,37 @@ class MemberFinancialReportController extends Controller
 
         return redirect()->route('all.member.financial.report');
     }
+
+    public function EditFinancialReport($id){
+        $editdata = MemberFinancialReport::findOrFail($id);
+
+        $users = User::all();
+
+        return view(
+            'admin.pages.member_financial_report.edit_report',
+            compact('editdata', 'users')
+        );
+    }
+
+    public function UpdateFinancialReport(Request $request){
+        $report_id = $request->id;
+
+        $request->validate([
+            'member_id' => 'required',
+            'date' => 'required',
+        ]);
+
+        MemberFinancialReport::findOrFail($report_id)->update([
+
+            'member_id' => $request->member_id,
+            'date' => $request->date,
+            'description' => $request->description,
+            'debit' => $request->debit ?? 0,
+            'credit' => $request->credit ?? 0,
+            'balance' => $request->balance ?? 0,
+
+        ]);
+
+        return redirect()->route('all.member.financial.report');
+    }
 }
