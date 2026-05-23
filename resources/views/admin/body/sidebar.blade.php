@@ -72,7 +72,14 @@
                     <li>
                     <a href="{{ route('all.income') }}" class="tp-link">
                         <i data-feather="home"></i>
-                        <span> Income </span>
+                        <span> درامد ها  </span>
+                    </a>
+                 </li>
+
+                 <li>
+                    <a href="{{ route('all.member.financial.report') }}" class="tp-link">
+                        <i data-feather="home"></i>
+                        <span> گزارش مالی اعضا </span>
                     </a>
                  </li>
 

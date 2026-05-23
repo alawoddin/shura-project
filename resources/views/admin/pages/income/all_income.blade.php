@@ -9,13 +9,13 @@
                 <div class="flex-grow-1">
                     <h4 class="fs-18 fw-semibold m-0">کاربران</h4>
                 </div>
-            </div>
 
-              <div class="text-end">
+                <div class="text-end">
                     <ol class="breadcrumb m-0 py-0">
                         <a href="{{ route('add.income') }}" class="btn btn-secondary">اضافه کردن</a>
                     </ol>
                 </div>
+            </div>
 
             <!-- Datatables  -->
             <div class="row">
