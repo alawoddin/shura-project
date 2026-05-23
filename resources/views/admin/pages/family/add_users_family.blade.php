@@ -21,12 +21,12 @@
                     <input type="hidden" name="user_id" value="{{ $user->id }}">
 
                     @if ($user->family_members > 0)
-                        @for ($i = 0; $i < $user->family_members; $i++)
+
                             <div class="card mb-4 border">
 
                                 <div class="card-header bg-light">
 
-                                    عضو فامیل {{ $i + 1 }}
+                                    عضو فامیل
 
                                 </div>
 
@@ -42,7 +42,7 @@
 
                                             </label>
 
-                                            <input type="text" name="family_members[]" class="form-control" required>
+                                            <input type="text" name="name" class="form-control" required>
 
                                         </div>
 
@@ -54,7 +54,7 @@
 
                                             </label>
 
-                                            <select name="gender[]" class="form-select">
+                                            <select name="gender" class="form-select">
 
                                                 <option value="male">
 
@@ -80,7 +80,7 @@
 
                                             </label>
 
-                                            <input type="date" name="birth_date[]" class="form-control">
+                                            <input type="date" name="birth_date" class="form-control">
 
                                         </div>
 
@@ -92,7 +92,7 @@
 
                                             </label>
 
-                                            <input type="number" name="age[]" class="form-control">
+                                            <input type="number" name="age" class="form-control">
 
                                         </div>
 
@@ -104,7 +104,7 @@
 
                                             </label>
 
-                                            <input type="text" name="qualification[]" class="form-control">
+                                            <input type="text" name="qualification" class="form-control">
 
                                         </div>
 
@@ -116,7 +116,7 @@
 
                                             </label>
 
-                                            <input type="text" name="degree[]" class="form-control">
+                                            <input type="text" name="degree" class="form-control">
 
                                         </div>
 
@@ -128,7 +128,7 @@
 
                                             </label>
 
-                                            <textarea name="note[]" rows="2" class="form-control"></textarea>
+                                            <textarea name="note" rows="2" class="form-control"></textarea>
 
                                         </div>
 
@@ -137,7 +137,7 @@
                                 </div>
 
                             </div>
-                        @endfor
+
                     @else
                         <div class="alert alert-warning">
 

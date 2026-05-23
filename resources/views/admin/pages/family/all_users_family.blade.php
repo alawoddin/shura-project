@@ -12,7 +12,7 @@
 
                 <div class="text-end">
                     <ol class="breadcrumb m-0 py-0">
-                        @if($familyMembers->where('user_id', $user->id)->count() == 0)
+                        @if($familyMembers->count() < $user->family_members)
                             <a href="{{ route('add.users.family', $user->id) }}" class="btn btn-secondary">
                                 اضافه کردن
                             </a>
@@ -39,12 +39,12 @@
                                             <th class="text-center">آیدی</th>
                                             <th class="text-center">اسم</th>
                                             <th class="text-center">اسم</th>
-                                            <th class="text-center">gender</th>
+                                            <th class="text-center">جنسیت</th>
                                             <th class="text-center">تاریخ تولد</th>
                                             <th class="text-center">سن</th>
-                                            <th class="text-center">qualification</th>
-                                            <th class="text-center">degree</th>
-                                            <th class="text-center">note</th>
+                                            <th class="text-center">تحصیلات</th>
+                                            <th class="text-center">درجه</th>
+                                            <th class="text-center">یادداشت</th>
                                             <th class="text-center">عملیات</th>
                                         </tr>
                                     </thead>

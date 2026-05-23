@@ -30,23 +30,36 @@ class FamilyController extends Controller
 
     public function StoreUsersFamily(Request $request)
     {
+
+        $count = FamilyMembers::where('user_id', $request->user_id)->count();
+
+        $user = User::findOrFail($request->user_id);
+
+        if ($count >= $user->family_members) {
+
+            return redirect()->back()->with([
+                'message' => 'تعداد اعضای فامیل تکمیل شده',
+                'alert-type' => 'error'
+            ]);
+        }
+
         FamilyMembers::create([
 
             'user_id' => $request->user_id,
 
-            'name' => implode(',', $request->family_members ?? []),
+            'name' => $request->name,
 
-            'gender' => implode(',', $request->gender ?? []),
+            'gender' => $request->gender,
 
-            'birth_date' => implode(',', $request->birth_date ?? []),
+            'birth_date' => $request->birth_date,
 
-            'age' => implode(',', $request->age ?? []),
+            'age' => $request->age,
 
-            'qualification' => implode(',', $request->qualification ?? []),
+            'qualification' => $request->qualification,
 
-            'degree' => implode(',', $request->degree ?? []),
+            'degree' => $request->degree,
 
-            'note' => implode(',', $request->note ?? []),
+            'note' => $request->note,
 
         ]);
 

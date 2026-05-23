@@ -412,10 +412,8 @@
                                     </div>
 
                                     <div class="info-item">
-                                        <div class="info-item">
-                                            <span>وضعیت اقتصادی</span>
-                                            <strong>{{ $users->economic_status }}</strong>
-                                        </div>
+                                        <span>وضعیت اقتصادی</span>
+                                        <strong>{{ $users->economic_status }}</strong>
                                     </div>
 
                                     <div class="info-item">

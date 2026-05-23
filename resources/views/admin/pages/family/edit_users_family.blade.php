@@ -164,7 +164,7 @@
 
                         <button class="btn btn-primary">
 
-                            Update
+                            ذخیره
 
                         </button>
 
