@@ -33,13 +33,21 @@ class MemberFinancialReportController extends Controller
             'date' => 'required',
         ]);
 
+        $lastBalance = MemberFinancialReport::where('member_id', $request->member_id)
+            ->latest()
+            ->first();
+
+        $previousBalance = $lastBalance ? $lastBalance->balance : 0;
+
+        $newBalance = $previousBalance + ($request->debit ?? 0) - ($request->credit ?? 0);
+
         MemberFinancialReport::create([
             'member_id' => $request->member_id,
             'date' => $request->date,
             'description' => $request->description,
             'debit' => $request->debit ?? 0,
             'credit' => $request->credit ?? 0,
-            'balance' => $request->balance ?? 0,
+            'balance' => $newBalance,
         ]);
 
         return redirect()->route('all.member.financial.report');
@@ -64,6 +72,15 @@ class MemberFinancialReportController extends Controller
             'date' => 'required',
         ]);
 
+        $lastBalance = MemberFinancialReport::where('member_id', $request->member_id)
+            ->where('id', '<', $report_id)
+            ->latest()
+            ->first();
+
+        $previousBalance = $lastBalance ? $lastBalance->balance : 0;
+
+        $newBalance = $previousBalance + ($request->debit ?? 0) - ($request->credit ?? 0);
+
         MemberFinancialReport::findOrFail($report_id)->update([
 
             'member_id' => $request->member_id,
@@ -71,7 +88,7 @@ class MemberFinancialReportController extends Controller
             'description' => $request->description,
             'debit' => $request->debit ?? 0,
             'credit' => $request->credit ?? 0,
-            'balance' => $request->balance ?? 0,
+            'balance' => $newBalance,
 
         ]);
 

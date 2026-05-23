@@ -67,13 +67,13 @@
                                 value="{{ $editdata->credit }}">
                         </div>
 
-                        <div class="col-md-6">
+                        {{-- <div class="col-md-6">
                             <label class="form-label">بیلانس</label>
 
                             <input type="number" class="form-control"
                                 name="balance"
                                 value="{{ $editdata->balance }}">
-                        </div>
+                        </div> --}}
 
                         <div class="col-md-6">
                             <label class="form-label">توضیحات</label>
