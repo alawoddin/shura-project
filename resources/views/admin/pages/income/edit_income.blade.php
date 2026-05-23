@@ -8,14 +8,7 @@
 
         <div class="py-3 d-flex align-items-sm-center flex-sm-row flex-column">
             <div class="flex-grow-1">
-                <h4 class="fs-18 fw-semibold m-0">Edit Income</h4>
-            </div>
-
-            <div class="text-end">
-                <ol class="breadcrumb m-0 py-0">
-
-                    <li class="breadcrumb-item active">Edit Income</li>
-                </ol>
+                <h4 class="fs-18 fw-semibold m-0">ویرایش درآمد</h4>
             </div>
         </div>
 
@@ -24,7 +17,7 @@
             <div class="col-xl-12">
                 <div class="card">
                     <div class="card-header">
-                        <h5 class="card-title mb-0">Edit Income</h5>
+                        <h5 class="card-title mb-0">ویرایش درآمد</h5>
                     </div><!-- end card header -->
 
                     <div class="card-body">
@@ -34,7 +27,7 @@
                             <input type="hidden" name="id" value="{{ $editdata->id }}">
 
                             <div class="col-md-6">
-                                <label>Category</label>
+                                <label>بخش</label>
                                 <select name="category_id" class="form-control">
                                     @foreach ($categories as $category)
                                         <option value="{{ $category->id }}" {{ $editdata->category_id == $category->id ? 'selected' : '' }}>
@@ -45,29 +38,29 @@
                             </div>
 
                             <div class="col-md-6">
-                                <label for="validationDefault01" class="form-label">creditor_name</label>
+                                <label for="validationDefault01" class="form-label">اسم</label>
                                 <input type="text" class="form-control" name="creditor_name" value="{{ $editdata->creditor_name }}">
                             </div>
 
                             <div class="col-md-6">
-                                <label for="validationDefault01" class="form-label">amount</label>
+                                <label for="validationDefault01" class="form-label">مقدار</label>
                                 <input type="text" class="form-control" name="amount" value="{{ $editdata->amount }}">
                             </div>
 
                             <div class="col-md-6">
-                                <label for="validationDefault01" class="form-label">date</label>
+                                <label for="validationDefault01" class="form-label">تاریخ</label>
                                 <input type="date" class="form-control" name="date" value="{{ $editdata->date }}">
                             </div>
 
 
                             <div class="col-md-6">
-                                <label for="validationDefault02" class="form-label">note</label>
+                                <label for="validationDefault02" class="form-label">نوت</label>
                                 <textarea class="form-control" name="note">{{ $editdata->note }}</textarea>
 
 
 
                                 <div class="col-12 mt-3">
-                                    <button class="btn btn-primary" type="submit">Save Change</button>
+                                    <button class="btn btn-primary" type="submit">ذخیره</button>
                                 </div>
                         </form>
                     </div> <!-- end card-body -->

@@ -33,11 +33,11 @@
                                     <thead>
                                         <tr>
                                             <th class="text-center">آیدی</th>
-                                            <th class="text-center">category name</th>
-                                            <th class="text-center">creditor_name</th>
-                                            <th class="text-center">amount</th>
-                                            <th class="text-center">date</th>
-                                            <th class="text-center">note</th>
+                                            <th class="text-center">بخش</th>
+                                            <th class="text-center">اسم</th>
+                                            <th class="text-center">مقدار</th>
+                                            <th class="text-center">تاریخ</th>
+                                            <th class="text-center">نوت</th>
                                             <th class="text-center">عملیات</th>
                                         </tr>
                                     </thead>
