@@ -17,4 +17,9 @@ class Category extends Model
     {
         return $this->hasMany(Expense::class);
     }
+
+     public function receivePayments()
+    {
+        return $this->hasMany(ReceivePayment::class);
+    }
 }

@@ -5,6 +5,7 @@ use App\Http\Controllers\Backend\CategoryController;
 use App\Http\Controllers\Backend\ExpenseController;
 use App\Http\Controllers\Backend\FamilyController;
 use App\Http\Controllers\Backend\IncomeController;
+use App\Http\Controllers\Backend\ReceivePaymentController;
 use App\Http\Controllers\Backend\MemberFinancialReportController;
 use App\Http\Controllers\Backend\UsersController;
 use App\Http\Controllers\ProfileController;
@@ -102,6 +103,17 @@ Route::prefix('admin')->middleware(['auth' ,IsAdmin::class ])->group(function ()
         Route::post('/update/financial/report',  'UpdateFinancialReport')->name('update.financial.report');
         Route::get('/delete/financial/report/{id}', 'DeleteFinancialReport')->name('delete.financial.report');
     });
+
+        Route::controller(ReceivePaymentController::class)->group(function () {
+        Route::get('/all/receive/payment', 'AllReceivePayment')->name('all.receive.payment');
+        Route::get('/add/receive/payment', 'AddReceivePayment')->name('add.receive.payment');
+        Route::post('/store/receive/payment', 'StoreReceivePayment')->name('store.receive.payment');
+        Route::get('/edit/receive/payment/{id}', 'EditReceivePayment')->name('edit.receive.payment');
+        Route::post('/update/receive/payment',  'UpdateReceivePayment')->name('update.receive.payment');
+        Route::get('/delete/receive/payment/{id}', 'DeleteReceivePayment')->name('delete.receive.payment');
+    });
+
+
 
 
 

@@ -83,6 +83,13 @@
                     </a>
                  </li>
 
+                      <li>
+                    <a href="{{ route('all.receive.payment') }}" class="tp-link">
+                        <i data-feather="home"></i>
+                        <span>  دریافت پرداخت  </span>
+                    </a>
+                 </li>
+
 
                  <li>
                     <a href="{{ route('all.member.financial.report') }}" class="tp-link">

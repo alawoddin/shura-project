@@ -24,6 +24,11 @@ class User extends Authenticatable
     return $this->hasOne(FamilyMembers::class);
 }
 
+    public function receivePayments()
+{
+    return $this->hasMany(ReceivePayment::class);
+}
+
 
     /**
      * The attributes that should be hidden for serialization.
