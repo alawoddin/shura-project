@@ -7,7 +7,7 @@
 
         <div class="py-3">
             <h4 class="fw-semibold">
-                اضافه کردن درآمد
+                ویرایش پرداخت
             </h4>
         </div>
 
@@ -17,7 +17,7 @@
             <div class="card-header">
 
                 <h5>
-                    اضافه کردن درآمد
+                    ویرایش پرداخت
                 </h5>
 
             </div>
@@ -25,13 +25,16 @@
 
             <div class="card-body">
 
-                <form id="myForm" action="{{ route('store.receive.payment') }}" method="POST" class="row g-3">
+                <form id="myForm" action="{{ route('update.receive.payment') }}" method="POST" class="row g-3">
 
                     @csrf
-                    
 
 
-                    {{-- Member --}}
+                    <input type="hidden" name="id" value="{{ $editData->id }}">
+
+
+
+                    {{-- User --}}
                     <div class="col-md-6">
 
                         <label class="form-label">
@@ -47,7 +50,7 @@
                             </option>
 
                             @foreach ($users as $user)
-                                <option value="{{ $user->id }}">
+                                <option value="{{ $user->id }}" {{ $user->id == $editData->user_id ? 'selected' : '' }}>
 
                                     {{ $user->name }}
 
@@ -57,6 +60,7 @@
                         </select>
 
                     </div>
+
 
 
 
@@ -72,13 +76,12 @@
                         <select name="category_id" class="form-control" id="category">
 
                             <option value="">
-
                                 انتخاب بخش
-
                             </option>
 
                             @foreach ($categories as $category)
-                                <option value="{{ $category->id }}">
+                                <option value="{{ $category->id }}"
+                                    {{ $category->id == $editData->category_id ? 'selected' : '' }}>
 
                                     {{ $category->name }}
 
@@ -91,8 +94,9 @@
 
 
 
-                    {{-- Month Fee --}}
-                    <div class="col-md-6" id="monthField" style="display:none;">
+
+                    {{-- Month --}}
+                    <div class="col-md-6" id="monthField">
 
                         <label class="form-label">
 
@@ -100,9 +104,10 @@
 
                         </label>
 
-                        <input type="month" name="month_of" class="form-control">
+                        <input type="month" name="month_of" class="form-control" value="{{ $editData->month_of }}">
 
                     </div>
+
 
 
 
@@ -115,9 +120,10 @@
 
                         </label>
 
-                        <input type="number" name="amount" class="form-control">
+                        <input type="number" name="amount" class="form-control" value="{{ $editData->amount }}">
 
                     </div>
+
 
 
 
@@ -130,13 +136,14 @@
 
                         </label>
 
-                        <input type="date" name="date" class="form-control">
+                        <input type="date" name="date" class="form-control" value="{{ $editData->date }}">
 
                     </div>
 
 
 
-                    {{-- Note --}}
+
+                    {{-- Description --}}
                     <div class="col-md-12">
 
                         <label class="form-label">
@@ -145,10 +152,10 @@
 
                         </label>
 
-                        <textarea name="description" rows="4" class="form-control">
-</textarea>
+                        <textarea name="description" rows="4" class="form-control">{{ $editData->description }}</textarea>
 
                     </div>
+
 
 
 
@@ -156,12 +163,11 @@
 
                         <button class="btn btn-primary">
 
-                            ذخیره
+                            اپدیت
 
                         </button>
 
                     </div>
-
 
                 </form>
 
@@ -177,17 +183,13 @@
         $(document).ready(function() {
 
 
-
-            $('#category').change(function() {
+            function toggleMonthField() {
 
                 let selected =
 
-                    $(this)
-
+                    $('#category')
                     .find(':selected')
-
                     .text()
-
                     .toLowerCase();
 
 
@@ -206,20 +208,26 @@
                 ) {
 
                     $('#monthField')
-
                         .show();
 
                 } else {
 
                     $('#monthField')
-
                         .hide();
 
-                    $('input[name="month_of"]')
-
-                        .val('');
-
                 }
+
+            }
+
+
+
+            toggleMonthField();
+
+
+
+            $('#category').change(function() {
+
+                toggleMonthField();
 
             });
 
@@ -230,101 +238,46 @@
 
                 rules: {
 
-                    creditor_name: {
-
+                    user_id: {
                         required: true
-
                     },
 
                     category_id: {
-
                         required: true
-
                     },
 
                     amount: {
-
                         required: true
-
                     },
 
                     date: {
-
                         required: true
-
                     }
 
                 },
 
                 messages: {
 
-                    creditor_name: {
-
-                        required: 'اسم را انتخاب کنید'
-
+                    user_id: {
+                        required: 'کاربر را انتخاب کنید'
                     },
 
                     category_id: {
-
-                        required: 'بخش را انتخاب کنید'
-
+                        required: 'نوع پرداخت را انتخاب کنید'
                     },
 
                     amount: {
-
                         required: 'مقدار را وارد کنید'
-
                     },
 
                     date: {
-
                         required: 'تاریخ را انتخاب کنید'
-
                     }
-
-                },
-
-                errorElement: 'span',
-
-                errorPlacement: function(
-                    error,
-                    element
-                ) {
-
-                    error.addClass(
-                        'invalid-feedback'
-                    );
-
-                    element.parent()
-                        .append(
-                            error
-                        );
-
-                },
-
-                highlight: function(
-                    element
-                ) {
-
-                    $(element)
-                        .addClass(
-                            'is-invalid'
-                        );
-
-                },
-
-                unhighlight: function(
-                    element
-                ) {
-
-                    $(element)
-                        .removeClass(
-                            'is-invalid'
-                        );
 
                 }
 
             });
+
 
         });
     </script>
