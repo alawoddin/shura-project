@@ -12,24 +12,13 @@ use Illuminate\Http\Request;
 class IncomeController extends Controller
 {
     public function AllIncome()
-{
-    $alldata = Income::with('category')
-        ->whereHas('undeposited', function ($query) {
-            $query->where(
-                'status',
-                'transferred'
-            );
-        })
+    {
+        $alldata = Income::with('category')->whereHas('undeposited', function ($query) {
+            $query->where('status', 'transferred');
+        })->latest()->get();
 
-        ->latest()
-
-        ->get();
-
-    return view(
-        'admin.pages.income.all_income',
-        compact('alldata')
-    );
-}
+        return view('admin.pages.income.all_income', compact('alldata'));
+    }
 
     public function AddIncome()
     {
@@ -133,13 +122,13 @@ class IncomeController extends Controller
     }
 
     public function TransferIncome($id)
-{
-    $income = Undeposited::findOrFail($id);
+    {
+        $income = Undeposited::findOrFail($id);
 
-    $income->update([
-        'status' => 'transferred'
-    ]);
+        $income->update([
+            'status' => 'transferred'
+        ]);
 
-    return back();
-}
+        return back();
+    }
 }
