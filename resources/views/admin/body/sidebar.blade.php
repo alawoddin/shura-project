@@ -76,6 +76,14 @@
                     </a>
                  </li>
 
+                      <li>
+                    <a href="{{ route('undeposited.income') }}" class="tp-link">
+                        <i data-feather="home"></i>
+                        <span>  undeposited  </span>
+                    </a>
+                 </li>
+
+
                  <li>
                     <a href="{{ route('all.member.financial.report') }}" class="tp-link">
                         <i data-feather="home"></i>

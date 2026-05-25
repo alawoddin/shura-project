@@ -80,6 +80,8 @@ Route::prefix('admin')->middleware(['auth' ,IsAdmin::class ])->group(function ()
         Route::get('/edit/income/{id}', 'EditIncome')->name('edit.income');
         Route::post('/update/income',  'UpdateIncome')->name('update.income');
         Route::get('/delete/income/{id}', 'DeleteIncome')->name('delete.income');
+        Route::get('/undeposited', 'UndepositedIncome')->name('undeposited.income');
+        Route::post('/income/transfer/{id}', 'TransferIncome')->name('income.transfer');
     });
 
     
