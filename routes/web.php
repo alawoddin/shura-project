@@ -8,6 +8,7 @@ use App\Http\Controllers\Backend\IncomeController;
 use App\Http\Controllers\Backend\ReceivePaymentController;
 use App\Http\Controllers\Backend\MemberFinancialReportController;
 use App\Http\Controllers\Backend\UsersController;
+use App\Http\Controllers\Client\ClientController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Middleware\IsAdmin;
 use App\Http\Middleware\IsUser;
@@ -21,8 +22,14 @@ Route::get('/', function () {
 Route::middleware(['auth' ,IsUser::class ])->group(function () {
 
 Route::get('/dashboard', function () {
-    return view('dashboard');
+    return view('client.client_index');
 })->name('dashboard');
+
+Route::get('/client/logout', [ClientController::class, 'ClientLogout'])->name('client.logout');
+Route::get('/user/profile', [ClientController::class, 'UserProfile'])->name('user.profile');
+Route::post('/user/profile/store', [ClientController::class, 'UserProfileStore'])->name('user.profile.store');
+Route::get('/user/change/password', [ClientController::class, 'UserChangePassword'])->name('user.change.password');
+Route::post('/user/password/update', [ClientController::class, 'UserPasswordUpdate'])->name('user.password.update');
 
 
 });
