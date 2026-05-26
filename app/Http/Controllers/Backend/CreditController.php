@@ -84,4 +84,86 @@ class CreditController extends Controller
 
             return redirect()->route('all.credits')->with($notification);
     }
+
+public function PaidCredit(Request $request)
+{
+
+    $credit =
+    Credit::findOrFail(
+        $request->id
+    );
+
+    $paidAmount =
+    $request->paid_amount;
+
+
+    if (
+        $paidAmount >
+        $credit->remaining_amount
+    ) {
+
+        $notification = [
+
+            'message' =>
+            'Paid amount cannot be greater than remaining amount',
+
+            'alert-type' =>
+            'error'
+
+        ];
+
+        return redirect()
+            ->route(
+                'all.credits'
+            )
+            ->with(
+                $notification
+            );
+    }
+
+
+    // subtract paid amount
+    $credit->amount -= $paidAmount;
+
+    $credit->remaining_amount -= $paidAmount;
+
+
+    // if fully paid
+    if (
+        $credit->amount <= 0
+    ) {
+
+        $credit->amount = 0;
+
+        $credit->remaining_amount = 0;
+
+        $credit->status = 'paid';
+
+    }
+
+
+    $credit->save();
+
+
+    $notification = [
+
+        'message' =>
+        'Credit Paid Successfully',
+
+        'alert-type' =>
+        'success'
+
+    ];
+
+
+    return redirect()
+        ->route(
+            'all.credits'
+        )
+        ->with(
+            $notification
+        );
+
+}
+
 }

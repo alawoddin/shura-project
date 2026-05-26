@@ -1,75 +1,253 @@
 @extends('admin.dashboard')
+
 @section('admin')
     <div class="content">
 
-        <!-- Start Content-->
         <div class="container-fluid my-0">
 
-            <div class="py-3 d-flex align-items-sm-center flex-sm-row flex-column">
+            <div class="py-3 d-flex align-items-center">
+
                 <div class="flex-grow-1">
-                    <h4 class="fs-18 fw-semibold m-0">درآمدها</h4>
+
+                    <h4 class="fs-18 fw-semibold">
+
+                        قرض ها
+
+                    </h4>
+
                 </div>
 
-                <div class="text-end">
-                    <ol class="breadcrumb m-0 py-0">
-                        <a href="{{ route('add.credit') }}" class="btn btn-secondary">اضافه کردن</a>
-                    </ol>
+
+                <div>
+
+                    <a href="{{ route('add.credit') }}" class="btn btn-secondary">
+
+                        اضافه کردن
+
+                    </a>
+
                 </div>
+
             </div>
 
-            <!-- Datatables  -->
-            <div class="row">
-                <div class="col-12">
-                    <div class="card">
 
-                        <div class="card-header">
 
-                        </div><!-- end card header -->
 
-                        <div class="card-body">
+            <div class="card">
 
-                            <div class="table-responsive">
-                                <table id="datatable" class="table table-bordered dt-responsive nowrap">
-                                    <thead>
-                                        <tr>
-                                            <th class="text-center">آیدی</th>
-                                            <th class="text-center">user_id</th>
-                                            <th class="text-center">category_id</th>
-                                            <th class="text-center">date</th>
-                                            <th class="text-center">amount</th>
-                                            <th class="text-center">description</th>
-                                            <th class="text-center">عملیات</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach ($alldata as $key => $item)
-                                            <tr>
-                                                <td class="text-center">{{ $key + 1 }}</td>
-                                                <td class="text-center">{{ $item->user->name }}</td>
-                                                <td class="text-center">{{ $item->category->name }}</td>
-                                                <td class="text-center">{{ $item->date }}</td>
-                                                <td class="text-center">{{ $item->amount }}</td>
-                                                <td class="text-center">{{ $item->description }}</td>
-                                                
+                <div class="card-body">
 
-                                                <td class="text-center">
-                                                    <a href="{{ route('edit.credit', $item->id) }}" class="btn btn-success btn-sm">ویرایش</a>
+                    <div class="table-responsive">
 
-                                                    <a href="{{ route('delete.credit', $item->id) }}" class="btn btn-danger btn-sm" id="delete">حذف</a>
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
+                        <table id="datatable" class="table table-bordered">
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>آیدی</th>
+
+                                    <th>کاربر</th>
+
+                                    <th>بخش</th>
+
+                                    <th>تاریخ</th>
+
+                                    <th>قرض</th>
+
+                                    <th>باقیمانده</th>
+
+                                    <th>وضعیت</th>
+
+                                    <th>نوت</th>
+
+                                    <th>عملیات</th>
+
+                                </tr>
+
+                            </thead>
+
+
+
+                            <tbody>
+
+                                @foreach ($alldata as $key => $item)
+                                    <tr>
+
+                                        <td>
+
+                                            {{ $key + 1 }}
+
+                                        </td>
+
+                                        <td>
+
+                                            {{ $item->user->name }}
+
+                                        </td>
+
+                                        <td>
+
+                                            {{ $item->category->name }}
+
+                                        </td>
+
+                                        <td>
+
+                                            {{ $item->date }}
+
+                                        </td>
+
+                                        <td>
+
+                                            {{ $item->amount }}
+
+                                        </td>
+
+                                        <td>
+
+                                            {{ $item->remaining_amount }}
+
+                                        </td>
+
+
+                                        <td>
+
+                                            @if ($item->status == 'active')
+                                                <span class="badge bg-warning">
+
+                                                    فعال
+
+                                                </span>
+                                            @else
+                                                <span class="badge bg-success">
+
+                                                    پرداخت شد
+
+                                                </span>
+                                            @endif
+
+                                        </td>
+
+
+                                        <td>
+
+                                            {{ $item->description }}
+
+                                        </td>
+
+
+
+                                        <td>
+
+                                            <a href="{{ route('edit.credit', $item->id) }}" class="btn btn-success btn-sm">
+
+                                                ویرایش
+
+                                            </a>
+
+
+
+                                            @if ($item->status == 'active')
+                                                <button class="btn btn-primary btn-sm" data-bs-toggle="modal"
+                                                    data-bs-target="#payModal{{ $item->id }}">
+
+                                                    پرداخت
+
+                                                </button>
+                                            @endif
+
+
+
+                                            <a href="{{ route('delete.credit', $item->id) }}" class="btn btn-danger btn-sm">
+
+                                                حذف
+
+                                            </a>
+
+                                        </td>
+
+                                    </tr>
+
+
+
+                                    {{-- Payment Modal --}}
+
+                                    <div class="modal fade" id="payModal{{ $item->id }}">
+
+                                        <div class="modal-dialog">
+
+                                            <div class="modal-content">
+
+                                                <form action="{{ route('paid.credit') }}" method="POST">
+
+                                                    @csrf
+
+
+                                                    <input type="hidden" name="id" value="{{ $item->id }}">
+
+
+                                                    <div class="modal-header">
+
+                                                        <h5>
+
+                                                            ثبت پرداخت
+
+                                                        </h5>
+
+                                                    </div>
+
+
+
+                                                    <div class="modal-body">
+
+                                                        <label>
+
+                                                            باقیمانده:
+
+                                                            {{ $item->remaining_amount }}
+
+                                                        </label>
+
+
+                                                        <input type="number" name="paid_amount" class="form-control"
+                                                            required>
+
+                                                    </div>
+
+
+
+                                                    <div class="modal-footer">
+
+                                                        <button class="btn btn-primary">
+
+                                                            ثبت
+
+                                                        </button>
+
+                                                    </div>
+
+
+                                                </form>
+
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+                                @endforeach
+
+                            </tbody>
+
+                        </table>
 
                     </div>
+
                 </div>
+
             </div>
 
+        </div>
 
-        </div> <!-- container-fluid -->
-
-    </div> <!-- content -->
+    </div>
 @endsection

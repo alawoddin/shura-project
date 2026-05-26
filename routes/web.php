@@ -128,6 +128,15 @@ Route::prefix('admin')->middleware(['auth' ,IsAdmin::class ])->group(function ()
         Route::get('/edit/credit/{id}', 'EditCredit')->name('edit.credit');
         Route::post('/update/credit',  'UpdateCredit')->name('update.credit');
         Route::get('/delete/credit/{id}', 'DeleteCredit')->name('delete.credit');
+        Route::post(
+'/paid/credit',
+[
+CreditController::class,
+'PaidCredit'
+])
+->name(
+'paid.credit'
+);
     });
 
 

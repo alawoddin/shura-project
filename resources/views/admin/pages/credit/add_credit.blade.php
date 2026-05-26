@@ -5,9 +5,9 @@
 
     <div class="container-fluid my-0">
 
-        <div class="py-3">
+        <div class="py-3 d-flex align-items-center">
 
-            <h4 class="fw-semibold">
+            <h4 class="fs-18 fw-semibold">
 
                 اضافه کردن قرض
 
@@ -21,7 +21,7 @@
 
             <div class="card-header">
 
-                <h5>
+                <h5 class="card-title">
 
                     اضافه کردن قرض
 
@@ -42,7 +42,7 @@
                     {{-- Category --}}
                     <div class="col-md-6">
 
-                        <label>
+                        <label class="form-label">
 
                             بخش
 
@@ -74,7 +74,7 @@
                     {{-- User --}}
                     <div class="col-md-6">
 
-                        <label>
+                        <label class="form-label">
 
                             اسم
 
@@ -106,7 +106,7 @@
                     {{-- Amount --}}
                     <div class="col-md-6">
 
-                        <label>
+                        <label class="form-label">
 
                             مقدار قرض
 
@@ -122,7 +122,7 @@
                     {{-- Date --}}
                     <div class="col-md-6">
 
-                        <label>
+                        <label class="form-label">
 
                             تاریخ
 
@@ -138,14 +138,14 @@
                     {{-- Description --}}
                     <div class="col-md-12">
 
-                        <label>
+                        <label class="form-label">
 
                             نوت
 
                         </label>
 
-                        <textarea name="description" class="form-control">
-</textarea>
+                        <textarea name="description" class="form-control" rows="4">
+                    </textarea>
 
                     </div>
 
@@ -162,7 +162,6 @@
 
                     </div>
 
-
                 </form>
 
             </div>
@@ -175,7 +174,7 @@
 
 
     <script>
-        $(function() {
+        $(document).ready(function() {
 
             $('#myForm').validate({
 
@@ -233,6 +232,28 @@
                     element.parent()
                         .append(
                             error
+                        );
+
+                },
+
+                highlight: function(
+                    element
+                ) {
+
+                    $(element)
+                        .addClass(
+                            'is-invalid'
+                        );
+
+                },
+
+                unhighlight: function(
+                    element
+                ) {
+
+                    $(element)
+                        .removeClass(
+                            'is-invalid'
                         );
 
                 }
