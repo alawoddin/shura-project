@@ -1,396 +1,445 @@
 @extends('admin.dashboard')
-@section('admin') 
+@section('admin')
+    <div class="content">
 
-  <div class="content">
+        @php
 
-                    <!-- Start Content-->
-                    <div class="container-fluid">
+            $incomes = \App\Models\Income::with('category')
+                ->selectRaw('category_id, SUM(amount) as total')
+                ->groupBy('category_id')
+                ->orderByDesc('total')
+                ->limit(6)
+                ->get();
 
-                        <div class="py-3 d-flex align-items-sm-center flex-sm-row flex-column">
-                            <div class="flex-grow-1">
-                                <h4 class="fs-18 fw-semibold m-0">Dashboard</h4>
-                            </div>
-                        </div>
+            $totalIncome = $incomes->sum('total');
+            $monthIncome = \App\Models\Income::whereMonth('date', now()->month)
 
-                        <!-- start row -->
-                        <div class="row">
-                            <div class="col-md-12 col-xl-12">
-                                <div class="row g-3">
+                ->whereYear('date', now()->year)
 
-                                    <div class="col-md-6 col-xl-3">
-                                        <div class="card">
-                                            <div class="card-body">
-                                                <div class="d-flex align-items-center">
-                                                    <div class="fs-14 mb-1">Website Traffic</div>
-                                                </div>
+                ->sum('amount');
 
-                                                <div class="d-flex align-items-baseline mb-2">
-                                                    <div class="fs-22 mb-0 me-2 fw-semibold text-black">91.6K</div>
-                                                    <div class="me-auto">
-                                                        <span class="text-primary d-inline-flex align-items-center">
-                                                            15%
-                                                            <i data-feather="trending-up" class="ms-1" style="height: 22px; width: 22px;"></i>
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                                <div id="website-visitors" class="apex-charts"></div>
-                                            </div>
-                                        </div>
-                                    </div>
+            $totalExpense = \App\Models\Expense::sum('amount');
+            $monthExpense = \App\Models\Expense::whereMonth('date', now()->month)
 
-                                    <div class="col-md-6 col-xl-3">
-                                        <div class="card">
-                                            <div class="card-body">
-                                                <div class="d-flex align-items-center">
-                                                    <div class="fs-14 mb-1">Conversion rate</div>
-                                                </div>
+                ->whereYear('date', now()->year)
 
-                                                <div class="d-flex align-items-baseline mb-2">
-                                                    <div class="fs-22 mb-0 me-2 fw-semibold text-black">15%</div>
-                                                    <div class="me-auto">
-                                                        <span class="text-danger d-inline-flex align-items-center">
-                                                            10%
-                                                            <i data-feather="trending-down" class="ms-1" style="height: 22px; width: 22px;"></i>
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                                <div id="conversion-visitors" class="apex-charts"></div>
-                                            </div>
-                                        </div>
-                                    </div>
+                ->sum('amount');
 
-                                    <div class="col-md-6 col-xl-3">
-                                        <div class="card">
-                                            <div class="card-body">
-                                                <div class="d-flex align-items-center">
-                                                    <div class="fs-14 mb-1">Session duration</div>
-                                                </div>
+            // receive payment data for charts
 
-                                                <div class="d-flex align-items-baseline mb-2">
-                                                    <div class="fs-22 mb-0 me-2 fw-semibold text-black">90 Sec</div>
-                                                    <div class="me-auto">
-                                                        <span class="text-success d-inline-flex align-items-center">
-                                                            25%
-                                                            <i data-feather="trending-up" class="ms-1" style="height: 22px; width: 22px;"></i>
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                                <div id="session-visitors" class="apex-charts"></div>
-                                            </div>
-                                        </div>
-                                    </div>
+            // Total Receive
 
-                                    <div class="col-md-6 col-xl-3">
-                                        <div class="card">
-                                            <div class="card-body">
-                                                <div class="d-flex align-items-center">
-                                                    <div class="fs-14 mb-1">Active Users</div>
-                                                </div>
+            $totalReceive = \App\Models\ReceivePayment::sum('amount');
 
-                                                <div class="d-flex align-items-baseline mb-2">
-                                                    <div class="fs-22 mb-0 me-2 fw-semibold text-black">2,986</div>
-                                                    <div class="me-auto">
-                                                        <span class="text-success d-inline-flex align-items-center">
-                                                            4%
-                                                            <i data-feather="trending-up" class="ms-1" style="height: 22px; width: 22px;"></i>
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                                <div id="active-users" class="apex-charts"></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div> <!-- end sales -->
-                        </div> <!-- end row -->
+            $totalcredit = \App\Models\Credit::sum('amount');
+            $remaining_amount = \App\Models\Credit::sum('remaining_amount');
 
-                        <!-- Start Monthly Sales -->
-                        <div class="row">
-                            <div class="col-md-6 col-xl-8">
-                                <div class="card">
-                                    
-                                    <div class="card-header">
-                                        <div class="d-flex align-items-center">
-                                            <div class="border border-dark rounded-2 me-2 widget-icons-sections">
-                                                <i data-feather="bar-chart" class="widgets-icons"></i>
-                                            </div>
-                                            <h5 class="card-title mb-0">Monthly Sales</h5>
-                                        </div>
-                                    </div>
+            // Current Month Receive
 
-                                    <div class="card-body">
-                                        <div id="monthly-sales" class="apex-charts"></div>
-                                    </div>
-                                    
-                                </div>
-                            </div>
+            $monthReceive = \App\Models\ReceivePayment::whereMonth('date', now()->month)
 
-                            <div class="col-md-6 col-xl-4">
-                                <div class="card overflow-hidden">
+                ->whereYear('date', now()->year)
 
-                                    <div class="card-header">
-                                        <div class="d-flex align-items-center">
-                                            <div class="border border-dark rounded-2 me-2 widget-icons-sections">
-                                                <i data-feather="tablet" class="widgets-icons"></i>
-                                            </div>
-                                            <h5 class="card-title mb-0">Best Traffic Source</h5>
-                                        </div>
-                                    </div>
+                ->sum('amount');
 
-                                    <div class="card-body p-0">
-                                        <div class="table-responsive">
-                                            <table class="table table-traffic mb-0">
-                                                <tbody>
-                                                    <thead>
-                                                        <tr>
-                                                            <th>Network</th>
-                                                            <th colspan="2">Visitors</th>
-                                                        </tr>
-                                                    </thead>
+        @endphp
 
-                                                    <tr>
-                                                        <td>Instagram</td>
-                                                        <td>3,550</td>
-                                                        <td class="w-50">
-                                                            <div class="progress progress-md mt-0">
-                                                                <div class="progress-bar bg-danger" style="width: 80.0%"></div>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
+        {{-- user chart  --}}
 
-                                                    <tr>
-                                                        <td>Facebook</td>
-                                                        <td>1,245</td>
-                                                        <td class="w-50">
-                                                            <div class="progress progress-md mt-0">
-                                                                <div class="progress-bar bg-primary" style="width: 55.9%"></div>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
+        @php
+            $totalUser = \App\Models\User::count();
+            $monthUser = \App\Models\User::whereMonth('created_at', now()->month)
 
-                                                    <tr>
-                                                        <td>Twitter</td>
-                                                        <td>1,798</td>
-                                                        <td class="w-50">
-                                                            <div class="progress progress-md mt-0">
-                                                                <div class="progress-bar bg-secondary" style="width: 67.0%"></div>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
+                ->whereYear('created_at', now()->year)
 
-                                                    <tr>
-                                                        <td>YouTube</td>
-                                                        <td>986</td>
-                                                        <td class="w-50">
-                                                            <div class="progress progress-md mt-0">
-                                                                <div class="progress-bar bg-success" style="width: 38.72%"></div>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
+                ->count();
+        @endphp
 
-                                                    <tr>
-                                                        <td>Pinterest</td>
-                                                        <td>854</td>
-                                                        <td class="w-50">
-                                                            <div class="progress progress-md mt-0">
-                                                                <div class="progress-bar bg-danger" style="width: 45.08%"></div>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
 
-                                                    <tr>
-                                                        <td>Linkedin</td>
-                                                        <td>650</td>
-                                                        <td class="w-50">
-                                                            <div class="progress progress-md mt-0">
-                                                                <div class="progress-bar bg-warning" style="width: 68.0%"></div>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
 
-                                                    <tr>
-                                                        <td>Nextdoor</td>
-                                                        <td>420</td>
-                                                        <td class="w-50">
-                                                            <div class="progress progress-md mt-0">
-                                                                <div class="progress-bar bg-info" style="width: 56.4%"></div>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
+        <!-- Start Content-->
+        <div class="container-fluid">
 
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-
-                                </div>
-                            </div>
-                        </div>
-                        <!-- End Monthly Sales -->
-
-                        <div class="row">
-                            <div class="col-md-6 col-xl-6">
-                                <div class="card">
-                                    
-                                    <div class="card-header">
-                                        <div class="d-flex align-items-center">
-                                            <div class="border border-dark rounded-2 me-2 widget-icons-sections">
-                                                <i data-feather="minus-square" class="widgets-icons"></i>
-                                            </div>
-                                            <h5 class="card-title mb-0">Audiences By Time Of Day</h5>
-                                        </div>
-                                    </div>
-
-                                    <div class="card-body">
-                                        <div id="audiences-daily" class="apex-charts mt-n3"></div>
-                                    </div>
-                                    
-                                </div>
-                            </div>
-
-                            <div class="col-md-6 col-xl-6">
-                                <div class="card overflow-hidden">
-                                    
-                                    <div class="card-header">
-                                        <div class="d-flex align-items-center">
-                                            <div class="border border-dark rounded-2 me-2 widget-icons-sections">
-                                                <i data-feather="table" class="widgets-icons"></i>
-                                            </div>
-                                            <h5 class="card-title mb-0">Most Visited Pages</h5>
-                                        </div>
-                                    </div>
-
-                                    <div class="card-body p-0">
-                                        <div class="table-responsive">
-                                            <table class="table table-traffic mb-0">
-                                                <tbody>
-
-                                                    <thead>
-                                                        <tr>
-                                                            <th>Page name</th>
-                                                            <th>Visitors</th>
-                                                            <th>Unique</th>
-                                                            <th colspan="2">Bounce rate</th>
-                                                        </tr>
-                                                    </thead>
-
-                                                    <tr>
-                                                        <td>
-                                                            /home
-                                                            <a href="#" class="ms-1" aria-label="Open website">
-                                                                <i data-feather="link" class="ms-1 text-primary" style="height: 15px; width: 15px;"></i>
-                                                            </a>
-                                                        </td>
-                                                        <td>5,896</td>
-                                                        <td>3,654</td>
-                                                        <td>82.54%</td>
-                                                        <td class="w-25">
-                                                            <div id="sparkline-bounce-1" class="apex-charts"></div>
-                                                        </td>
-                                                    </tr>
-
-                                                    <tr>
-                                                        <td>
-                                                            /about.html
-                                                            <a href="#" class="ms-1" aria-label="Open website">
-                                                                <i data-feather="link" class="ms-1 text-primary" style="height: 15px; width: 15px;"></i>
-                                                            </a>
-                                                        </td>
-                                                        <td>3,898</td>
-                                                        <td>3,450</td>
-                                                        <td>76.29%</td>
-                                                        <td class="w-25">
-                                                            <div id="sparkline-bounce-2" class="apex-charts"></div>
-                                                        </td>
-                                                    </tr>
-
-                                                    <tr>
-                                                        <td>
-                                                            /index.html 
-                                                            <a href="#" class="ms-1" aria-label="Open website">
-                                                                <i data-feather="link" class="ms-1 text-primary" style="height: 15px; width: 15px;"></i>
-                                                            </a>
-                                                        </td>
-                                                        <td>3,057</td>
-                                                        <td>2,589</td>
-                                                        <td>72.68%</td>
-                                                        <td class="w-25">
-                                                            <div id="sparkline-bounce-3" class="apex-charts"></div>
-                                                        </td>
-                                                    </tr>
-
-                                                    <tr>
-                                                        <td>
-                                                            /invoice.html
-                                                            <a href="#" class="ms-1" aria-label="Open website">
-                                                                <i data-feather="link" class="ms-1 text-primary" style="height: 15px; width: 15px;"></i>
-                                                            </a>
-                                                        </td>
-                                                        <td>867</td>
-                                                        <td>795</td>
-                                                        <td>44.78%</td>
-                                                        <td class="w-25">
-                                                            <div id="sparkline-bounce-4" class="apex-charts"></div>
-                                                        </td>
-                                                    </tr>
-
-                                                    <tr>
-                                                        <td>
-                                                            /docs/
-                                                            <a href="#" class="ms-1" aria-label="Open website">
-                                                                <i data-feather="link" class="ms-1 text-primary" style="height: 15px; width: 15px;"></i>
-                                                            </a>
-                                                        </td>
-                                                        <td>958</td>
-                                                        <td>801</td>
-                                                        <td>41.15%</td>
-                                                        <td class="w-25">
-                                                            <div id="sparkline-bounce-5" class="apex-charts"></div>
-                                                        </td>
-                                                    </tr>
-
-                                                    <tr>
-                                                        <td>
-                                                            /service.html
-                                                            <a href="#" class="ms-1" aria-label="Open website">
-                                                                <i data-feather="link" class="ms-1 text-primary" style="height: 15px; width: 15px;"></i>
-                                                            </a>
-                                                        </td>
-                                                        <td>658</td>
-                                                        <td>589</td>
-                                                        <td>32.65%</td>
-                                                        <td class="w-25">
-                                                            <div id="sparkline-bounce-6" class="apex-charts"></div>
-                                                        </td>
-                                                    </tr>
-
-                                                    <tr>
-                                                        <td>
-                                                            /analytical.html
-                                                            <a href="#" class="ms-1" aria-label="Open website">
-                                                                <i data-feather="link" class="ms-1 text-primary" style="height: 15px; width: 15px;"></i>
-                                                            </a>
-                                                        </td>
-                                                        <td>457</td>
-                                                        <td>859</td>
-                                                        <td>32.65%</td>
-                                                        <td class="w-25">
-                                                            <div id="sparkline-bounce-7" class="apex-charts"></div>
-                                                        </td>
-                                                    </tr>
-
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                    
-                                </div>
-                            </div>
-                        </div>
-
-                    </div> <!-- container-fluid -->
+            <div class="py-3 d-flex align-items-sm-center flex-sm-row flex-column">
+                <div class="flex-grow-1">
+                    <h4 class="fs-18 fw-semibold m-0">Dashboard</h4>
                 </div>
-                
+            </div>
+
+            <!-- start row -->
+            <div class="row">
+                <div class="col-md-12 col-xl-12">
+                    <div class="row g-3">
+
+                        <div class="col-md-6 col-xl-3">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-center">
+                                        <div class="fs-14 mb-1">Total Users</div>
+                                    </div>
+
+                                    <div class="d-flex align-items-baseline mb-2">
+                                        <div class="fs-22 mb-0 me-2 fw-semibold text-black">{{ $totalUser }}</div>
+                                        <div class="me-auto">
+                                            <span class="text-primary d-inline-flex align-items-center">
+                                                <i data-feather="trending-up" class="ms-1"
+                                                    style="height: 22px; width: 22px;"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div id="website-visitors" class="apex-charts"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 col-xl-3">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-center">
+                                        <div class="fs-14 mb-1">Expense Total</div>
+                                    </div>
+
+                                    <div class="d-flex align-items-baseline mb-2">
+                                        <div class="fs-22 mb-0 me-2 fw-semibold text-black">
+                                            {{ number_format($totalExpense, 2) }}</div>
+                                        <div class="me-auto">
+                                            <span class="text-danger d-inline-flex align-items-center">
+                                                <i data-feather="trending-down" class="ms-1"
+                                                    style="height: 22px; width: 22px;"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div id="conversion-visitors" class="apex-charts"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 col-xl-3">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-center">
+                                        <div class="fs-14 mb-1">Receive Payment</div>
+                                    </div>
+
+                                    <div class="d-flex align-items-baseline mb-2">
+                                        <div class="fs-22 mb-0 me-2 fw-semibold text-black">
+                                            {{ number_format($totalReceive, 2) }}</div>
+                                        <div class="me-auto">
+                                            <span class="text-success d-inline-flex align-items-center">
+                                                <i data-feather="trending-up" class="ms-1"
+                                                    style="height: 22px; width: 22px;"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div id="session-visitors" class="apex-charts"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 col-xl-3">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-center">
+                                        <div class="fs-14 mb-1">Monthly Recive Payment</div>
+                                    </div>
+
+                                    <div class="d-flex align-items-baseline mb-2">
+                                        <div class="fs-22 mb-0 me-2 fw-semibold text-black">
+                                            {{ number_format($monthReceive, 2) }}</div>
+                                        <div class="me-auto">
+                                            <span class="text-success d-inline-flex align-items-center">
+                                                <i data-feather="trending-up" class="ms-1"
+                                                    style="height: 22px; width: 22px;"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div id="active-users" class="apex-charts"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div> <!-- end sales -->
+            </div> <!-- end row -->
 
 
+
+
+            <!-- Start Monthly Sales -->
+            <div class="row">
+                <div class="col-md-6 col-xl-6">
+                    <div class="card overflow-hidden">
+
+                        <div class="card-header">
+                            <div class="d-flex align-items-center">
+                                <div class="border border-dark rounded-2 me-2 widget-icons-sections">
+                                    <i data-feather="table" class="widgets-icons"></i>
+                                </div>
+                                <h5 class="card-title mb-0">Info In Chart</h5>
+                            </div>
+                        </div>
+
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="table table-traffic mb-0">
+                                    <tbody>
+
+                                        <thead>
+                                            <tr>
+
+                                                <th>
+                                                    Section
+                                                </th>
+
+                                                <th>
+                                                    Total
+                                                </th>
+
+                                                <th>
+                                                    Current Month
+                                                </th>
+
+
+
+                                            </tr>
+                                        </thead>
+
+
+
+                                        <tr>
+
+                                            <td>
+
+                                                Total Users
+
+                                            </td>
+
+                                            <td>
+
+                                                {{ number_format($totalUser) }}
+
+                                            </td>
+
+                                            <td>
+
+                                                {{ number_format($monthUser) }}
+
+
+                                            </td>
+
+
+
+                                        </tr>
+
+
+
+
+                                        <tr>
+
+                                            <td>
+
+                                                Total Receive
+
+                                            </td>
+
+                                            <td>
+
+                                                {{ number_format($totalReceive) }}
+
+                                            </td>
+
+                                            <td>
+
+                                                {{ number_format($monthReceive) }}
+
+                                            </td>
+
+
+
+                                        </tr>
+
+
+
+
+                                        <tr>
+
+                                            <td>
+
+                                                Total Credit
+
+                                            </td>
+
+                                            <td>
+
+                                                {{ number_format($totalcredit) }}
+
+                                            </td>
+
+                                            <td>
+
+                                                {{ number_format($remaining_amount) }}
+
+                                            </td>
+
+
+
+                                        </tr>
+
+
+
+
+                                        <tr>
+
+                                            <td>
+
+                                                Total Expense
+
+                                            </td>
+
+                                            <td>
+
+                                                {{ number_format($totalExpense) }}
+
+                                            </td>
+
+                                            <td>
+
+                                                {{ number_format($monthExpense) }}
+
+                                            </td>
+
+
+
+                                        </tr>
+
+
+
+
+                                        <tr>
+
+                                            <td>
+
+                                                Balance
+
+                                            </td>
+
+                                            <td>
+
+                                                {{ number_format($totalIncome) }}
+
+                                            </td>
+
+                                            <td>
+
+                                                {{ number_format($monthIncome) }}
+
+
+                                            </td>
+
+
+
+                                        </tr>
+
+
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+
+
+                <div class="col-md-6 col-xl-6">
+                    <div class="card overflow-hidden">
+
+                        <div class="card-header">
+                            <div class="d-flex align-items-center">
+                                <div class="border border-dark rounded-2 me-2 widget-icons-sections">
+                                    <i data-feather="tablet" class="widgets-icons"></i>
+                                </div>
+                                <h5 class="card-title mb-0">Best Source</h5>
+                            </div>
+                        </div>
+
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="table table-traffic mb-0">
+                                    <tbody>
+
+                                        <thead>
+
+                                            <tr>
+
+                                                <th>
+
+                                                    Income Type
+
+                                                </th>
+
+                                                <th colspan="2">
+
+                                                    Amount
+
+                                                </th>
+
+                                            </tr>
+
+                                        </thead>
+
+
+
+                                        @foreach ($incomes as $item)
+                                            @php
+
+                                                $percent = $totalIncome > 0 ? ($item->total / $totalIncome) * 100 : 0;
+                                            @endphp
+
+
+                                            <tr>
+
+                                                <td>
+
+                                                    {{ $item->category->name }}
+
+                                                </td>
+
+
+                                                <td>
+
+                                                    {{ number_format($item->total) }}
+
+                                                </td>
+
+
+                                                <td class="w-50">
+
+                                                    <div class="progress progress-md">
+
+                                                        <div class="progress-bar bg-primary"
+                                                            style="width:{{ $percent }}%">
+
+                                                        </div>
+
+                                                    </div>
+
+                                                </td>
+
+                                            </tr>
+                                        @endforeach
+
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <!-- End Monthly Sales -->
+
+        </div> <!-- container-fluid -->
+    </div>
 @endsection
