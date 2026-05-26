@@ -118,7 +118,7 @@
                    <li>
                     <a href="{{ route('all.expense') }}" class="tp-link">
                         <i data-feather="home"></i>
-                        <span> Expense </span>
+                        <span> مصارف </span>
                     </a>
                  </li>
 

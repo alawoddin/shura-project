@@ -5,16 +5,16 @@
         <!-- Start Content-->
         <div class="container-fluid my-0">
 
-            <div class="py-3 d-flex align-items-sm-center flex-sm-row flex-column">
-                <div class="flex-grow-1">
-                    <h4 class="fs-18 fw-semibold m-0">کاربران</h4>
-                </div>
-            </div>
+                <div class="py-3 d-flex align-items-sm-center flex-sm-row flex-column">
+                    <div class="flex-grow-1">
+                        <h4 class="fs-18 fw-semibold m-0">مصارف</h4>
+                    </div>
 
-              <div class="text-end">
-                    <ol class="breadcrumb m-0 py-0">
-                        <a href="{{ route('add.expense') }}" class="btn btn-secondary">اضافه کردن</a>
-                    </ol>
+                    <div class="text-end">
+                        <ol class="breadcrumb m-0 py-0">
+                            <a href="{{ route('add.expense') }}" class="btn btn-secondary">اضافه کردن</a>
+                        </ol>
+                    </div>
                 </div>
 
             <!-- Datatables  -->
@@ -33,11 +33,11 @@
                                     <thead>
                                         <tr>
                                             <th class="text-center">آیدی</th>
-                                            <th class="text-center">category name</th>
-                                            <th class="text-center">expense_name</th>
-                                            <th class="text-center">amount</th>
-                                            <th class="text-center">date</th>
-                                            <th class="text-center">description</th>
+                                            <th class="text-center">بخش</th>
+                                            <th class="text-center">نام مصرف</th>
+                                            <th class="text-center">مقدار</th>
+                                            <th class="text-center">تاریخ</th>
+                                            <th class="text-center">نوت</th>
                                             <th class="text-center">عملیات</th>
                                         </tr>
                                     </thead>
