@@ -7,7 +7,7 @@
 
         <div class="py-3">
             <h4 class="fw-semibold">
-                اضافه کردن درآمد
+                اضافه کردن پرداخت ها
             </h4>
         </div>
 

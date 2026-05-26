@@ -7,7 +7,7 @@
 
             <div class="py-3 d-flex align-items-sm-center flex-sm-row flex-column">
                 <div class="flex-grow-1">
-                    <h4 class="fs-18 fw-semibold m-0">درآمدها</h4>
+                    <h4 class="fs-18 fw-semibold m-0">دریافت پرداخت ها</h4>
                 </div>
 
                 <div class="text-end">
@@ -33,12 +33,12 @@
                                     <thead>
                                         <tr>
                                             <th class="text-center">آیدی</th>
-                                            <th class="text-center">user_id</th>
-                                            <th class="text-center">category_id</th>
-                                            <th class="text-center">date</th>
-                                            <th class="text-center">month_of</th>
-                                            <th class="text-center">amount</th>
-                                            <th class="text-center">description</th>
+                                            <th class="text-center">اسم کاربر</th>
+                                            <th class="text-center">بخش</th>
+                                            <th class="text-center">تاریخ</th>
+                                            <th class="text-center">ماه</th>
+                                            <th class="text-center">مفدار پول</th>
+                                            <th class="text-center">نوت</th>
                                             <th class="text-center">عملیات</th>
                                         </tr>
                                     </thead>

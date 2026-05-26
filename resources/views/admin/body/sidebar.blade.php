@@ -79,7 +79,7 @@
                       <li>
                     <a href="{{ route('undeposited.income') }}" class="tp-link">
                         <i data-feather="home"></i>
-                        <span>  undeposited  </span>
+                        <span>  واریز نشده  </span>
                     </a>
                  </li>
 
@@ -101,18 +101,16 @@
                        <li>
                     <a href="{{ route('all.credits') }}" class="tp-link">
                         <i data-feather="home"></i>
-                        <span>   Credits  </span>
+                        <span>   کریدت ها  </span>
                     </a>
                  </li>
 
-                          <li>
+                <li>
                     <a href="{{ route('all.aid') }}" class="tp-link">
                         <i data-feather="home"></i>
-                        <span>   Aids  </span>
+                        <span>   کمک ها  </span>
                     </a>
-                 </li>
-
-
+                </li>
                  
 
                    <li>
