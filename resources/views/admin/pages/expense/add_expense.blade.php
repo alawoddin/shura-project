@@ -8,14 +8,7 @@
 
         <div class="py-3 d-flex align-items-sm-center flex-sm-row flex-column">
             <div class="flex-grow-1">
-                <h4 class="fs-18 fw-semibold m-0">Add Income</h4>
-            </div>
-
-            <div class="text-end">
-                <ol class="breadcrumb m-0 py-0">
-
-                    <li class="breadcrumb-item active">Add Income</li>
-                </ol>
+                <h4 class="fs-18 fw-semibold m-0">اضافه مصارف</h4>
             </div>
         </div>
 
@@ -24,16 +17,17 @@
             <div class="col-xl-12">
                 <div class="card">
                     <div class="card-header">
-                        <h5 class="card-title mb-0">Add Income</h5>
+                        <h5 class="card-title mb-0">اضافه مصارف</h5>
                     </div><!-- end card header -->
 
                     <div class="card-body">
-                        <form action="{{ route('store.expense') }}" method="POST" class="row g-3">
+                        <form id="myForm" action="{{ route('store.expense') }}" method="POST" class="row g-3">
                             @csrf
 
                             <div class="col-md-6">
-                                <label>Category</label>
+                                <label>بخش</label>
                                 <select name="category_id" class="form-control">
+
                                     @foreach ($categories as $category)
                                         <option value="{{ $category->id }}">{{ $category->name }}</option>
                                     @endforeach
@@ -41,29 +35,29 @@
                             </div>
 
                             <div class="col-md-6">
-                                <label for="validationDefault01" class="form-label">Expense Name</label>
+                                <label for="validationDefault01" class="form-label">نام مصرف</label>
                                 <input type="text" class="form-control" name="expense_name">
                             </div>
 
                             <div class="col-md-6">
-                                <label for="validationDefault01" class="form-label">Amount</label>
+                                <label for="validationDefault01" class="form-label">مقدار</label>
                                 <input type="text" class="form-control" name="amount">
                             </div>
 
                             <div class="col-md-6">
-                                <label for="validationDefault01" class="form-label">Date</label>
+                                <label for="validationDefault01" class="form-label">تاریخ</label>
                                 <input type="date" class="form-control" name="date">
                             </div>
 
 
                             <div class="col-md-6">
-                                <label for="validationDefault02" class="form-label">Description</label>
+                                <label for="validationDefault02" class="form-label">نوت</label>
                                 <textarea class="form-control" name="description"></textarea>
 
 
 
                                 <div class="col-12 mt-3">
-                                    <button class="btn btn-primary" type="submit">Save Change</button>
+                                    <button class="btn btn-primary" type="submit">ذخیره</button>
                                 </div>
                         </form>
                     </div> <!-- end card-body -->
@@ -86,21 +80,35 @@
         $(document).ready(function() {
             $('#myForm').validate({
                 rules: {
-                    name: {
+                    category_id: {
                         required: true,
                     },
-                    father_name: {
+                    expense_name: {
+                        required: true,
+                    },
+                    amount: {
+                        required: true,
+                        number: true,
+                    },
+                    date: {
                         required: true,
                     },
 
 
                 },
                 messages: {
-                    name: {
-                        required: 'Please Enter customer name',
+                    category_id: {
+                        required: 'Please Select Category',
                     },
-                    father_name: {
-                        required: 'Please Enter User father_name',
+                    expense_name: {
+                        required: 'Please Enter Expense Name',
+                    },
+                    amount: {
+                        required: 'Please Enter Amount',
+                        number: 'Please Enter Valid Number',
+                    },
+                    date: {
+                        required: 'Please Select Date',
                     },
 
 
@@ -108,7 +116,7 @@
                 errorElement: 'span',
                 errorPlacement: function(error, element) {
                     error.addClass('invalid-feedback');
-                    element.closest('.form-group').append(error);
+                    element.parent().append(error);
                 },
                 highlight: function(element, errorClass, validClass) {
                     $(element).addClass('is-invalid');
