@@ -237,10 +237,10 @@
 
                                 <div class="d-flex flex-wrap gap-2">
                                     @if ($users->familyMember)
-                                        @foreach (explode(',', $users->familyMember->name) as $member)
+                                        @foreach ($users->familyMember as $member)
                                             <span class="badge bg-light text-dark px-3 py-2 rounded-pill shadow-sm">
                                                 <i class="fas fa-user me-1 text-primary"></i>
-                                                {{ trim($member) }}
+                                                {{ $member->name }}
                                             </span>
                                         @endforeach
                                     @else

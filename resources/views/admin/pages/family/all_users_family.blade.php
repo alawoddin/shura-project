@@ -37,8 +37,8 @@
                                     <thead>
                                         <tr>
                                             <th class="text-center">آیدی</th>
-                                            <th class="text-center">اسم</th>
-                                            <th class="text-center">اسم</th>
+                                            <th class="text-center">اسم کاربر</th>
+                                            <th class="text-center">اسم عضو فامیل</th>
                                             <th class="text-center">جنسیت</th>
                                             <th class="text-center">تاریخ تولد</th>
                                             <th class="text-center">سن</th>

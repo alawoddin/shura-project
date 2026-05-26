@@ -19,10 +19,9 @@ class User extends Authenticatable
      */
     protected $guarded = [];
 
-    public function familyMember()
-{
-    return $this->hasOne(FamilyMembers::class);
-}
+    public function familyMember(){
+        return $this->hasMany(FamilyMembers::class);
+    }
 
     public function receivePayments()
 {

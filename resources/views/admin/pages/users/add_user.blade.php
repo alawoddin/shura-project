@@ -114,7 +114,7 @@
                                 <option value="active">فعال</option>
                                 <option value="inactive">غیرفعال</option>
                                 <option value="pending">تعلیق</option>
-                                <option value="dead">قوت شده</option>
+                                <option value="dead">فوت شده</option>
                             </select>
                         </div>
 
