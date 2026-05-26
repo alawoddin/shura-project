@@ -31,6 +31,7 @@ class CreditController extends Controller
             'category_id' => $request->category_id,
             'date' => $request->date,
             'amount' => $request->amount,
+            'remaining_amount' => $request->amount,
             'description' => $request->description,
         ]);
 
@@ -46,16 +47,41 @@ class CreditController extends Controller
 
     public function EditCredit($id)
     {
-        // Fetch the credit by ID and return the edit view
+        $credit = Credit::findOrFail($id);
+        $users = User::all();
+        $categories = Category::all();
+
+        return view('admin.pages.credit.edit_credit', compact('credit', 'users', 'categories'));
     }
 
     public function UpdateCredit(Request $request)
     {
-        // Validation and updating logic here
+        $id = $request->id;
+
+        Credit::findOrFail($id)->update([
+            'user_id' => $request->user_id,
+            'category_id' => $request->category_id,
+            'date' => $request->date,
+            'amount' => $request->amount,
+            'description' => $request->description,
+        ]);
+
+         $notification = array(
+            'message' => 'Credit Updated Successfully',
+            'alert-type' => 'success'
+        );
+        return redirect()->route('all.credits')->with($notification);
     }
 
     public function DeleteCredit($id)
     {
-        // Deletion logic here
+            Credit::findOrFail($id)->delete();
+    
+            $notification = array(
+                'message' => 'Credit Deleted Successfully',
+                'alert-type' => 'success'
+            );
+
+            return redirect()->route('all.credits')->with($notification);
     }
 }

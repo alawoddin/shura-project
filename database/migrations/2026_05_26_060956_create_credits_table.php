@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreignId('category_id')->constrained()->cascadeOnDelete();
             $table->date('date');
             $table->decimal('amount',12,2);
+            $table->decimal('remaining_amount',12,2);
             $table->text('description')->nullable();
             $table->enum('status',['active','paid'])->default('active');
             $table->timestamps();
