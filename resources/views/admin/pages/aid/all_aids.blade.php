@@ -45,7 +45,7 @@
                                         @foreach ($alldata as $key => $item)
                                             <tr>
                                                 <td class="text-center">{{ $key + 1 }}</td>
-                                                <td class="text-center">{{ $item->user_id }}</td>
+                                                <td class="text-center">{{ $item->user->name }}</td>
                                                 <td class="text-center">{{ $item->category->name }}</td>
                                                 <td class="text-center">{{ $item->amount }}</td>
                                                 <td class="text-center">{{ $item->date }}</td>

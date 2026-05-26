@@ -21,10 +21,10 @@
                     </div><!-- end card header -->
 
                     <div class="card-body">
-                        <form id="myForm" action="{{ route('store.aid') }}" method="POST"  class="row g-3">
+                        <form id="myForm" action="{{ route('store.aid') }}" method="POST" class="row g-3">
                             @csrf
 
-                                    <div class="col-md-6">
+                            <div class="col-md-6">
                                 <label class="form-label">اسم</label>
 
                                 <select name="user_id" class="form-control">
@@ -42,13 +42,15 @@
                             <div class="col-md-6">
                                 <label>بخش</label>
                                 <select name="category_id" class="form-control">
+                                    <option value="">انتخاب بخش</option>
+
                                     @foreach ($categories as $category)
                                         <option value="{{ $category->id }}">{{ $category->name }}</option>
                                     @endforeach
                                 </select>
                             </div>
 
-                    
+
 
                             <div class="col-md-6">
                                 <label for="validationDefault01" class="form-label">مقدار</label>
@@ -91,21 +93,35 @@
         $(document).ready(function() {
             $('#myForm').validate({
                 rules: {
-                    name: {
+                    user_id: {
                         required: true,
                     },
-                    father_name: {
+                    category_id: {
+                        required: true,
+                    },
+                    amount: {
+                        required: true,
+                        number: true,
+                    },
+                    date: {
                         required: true,
                     },
 
 
                 },
                 messages: {
-                    name: {
-                        required: 'Please Enter customer name',
+                    user_id: {
+                        required: 'لطفاً کاربر را انتخاب کنید',
                     },
-                    father_name: {
-                        required: 'Please Enter User father_name',
+                    category_id: {
+                        required: 'لطفاً بخش را انتخاب کنید',
+                    },
+                    amount: {
+                        required: 'لطفاً مقدار را وارد کنید',
+                        number: 'فقط عدد وارد کنید',
+                    },
+                    date: {
+                        required: 'لطفاً تاریخ را انتخاب کنید',
                     },
 
 
@@ -113,7 +129,7 @@
                 errorElement: 'span',
                 errorPlacement: function(error, element) {
                     error.addClass('invalid-feedback');
-                    element.closest('.form-group').append(error);
+                    element.parent().append(error);
                 },
                 highlight: function(element, errorClass, validClass) {
                     $(element).addClass('is-invalid');
