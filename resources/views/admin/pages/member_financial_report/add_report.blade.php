@@ -2,6 +2,8 @@
 
 @section('admin')
 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
 <div class="container-fluid my-0">
 
     <div class="py-3 d-flex align-items-sm-center flex-sm-row flex-column">
@@ -25,7 +27,7 @@
 
                 <div class="card-body">
 
-                    <form action="{{ route('store.financial.report') }}" method="POST" class="row g-3">
+                    <form id="myForm" action="{{ route('store.financial.report') }}" method="POST" class="row g-3">
                         @csrf
 
                         <div class="col-md-6">
@@ -51,13 +53,13 @@
                         <div class="col-md-6">
                             <label class="form-label">بدهکار (Dr)</label>
 
-                            <input type="number" class="form-control" name="debit" value="0">
+                            <input type="number" class="form-control" name="debit">
                         </div>
 
                         <div class="col-md-6">
                             <label class="form-label">بستانکار (Cr)</label>
 
-                            <input type="number" class="form-control" name="credit" value="0">
+                            <input type="number" class="form-control" name="credit">
                         </div>
 
                         {{-- <div class="col-md-6">
@@ -88,5 +90,55 @@
     </div>
 
 </div>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#myForm').validate({
+            rules: {
+                member_id: {
+                    required: true,
+                },
+                date: {
+                    required: true,
+                },
+                debit: {
+                    required: true,
+                    number: true,
+                },
+                credit: {
+                    required: true,
+                    number: true,
+                },
+            },
+            messages: {
+                member_id: {
+                    required: 'لطفا عضو را انتخاب کنید',
+                },
+                date: {
+                    required: 'لطفا تاریخ را انتخاب کنید',
+                },
+                debit: {
+                    required: 'لطفا مقدار بدهکار را وارد کنید',
+                    number: 'فقط عدد وارد کنید',
+                },
+                credit: {
+                    required: 'لطفا مقدار بستانکار را وارد کنید',
+                    number: 'فقط عدد وارد کنید',
+                },
+            },
+            errorElement: 'span',
+            errorPlacement: function(error, element) {
+                error.addClass('invalid-feedback');
+                element.parent().append(error);
+            },
+            highlight: function(element, errorClass, validClass) {
+                $(element).addClass('is-invalid');
+            },
+            unhighlight: function(element, errorClass, validClass) {
+                $(element).removeClass('is-invalid');
+            },
+        });
+    });
+</script>
 
 @endsection
