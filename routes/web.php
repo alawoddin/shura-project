@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Backend\AdminController;
+use App\Http\Controllers\Backend\AidController;
 use App\Http\Controllers\Backend\CategoryController;
 use App\Http\Controllers\Backend\CreditController;
 use App\Http\Controllers\Backend\ExpenseController;
@@ -121,22 +122,16 @@ Route::prefix('admin')->middleware(['auth' ,IsAdmin::class ])->group(function ()
         Route::get('/delete/receive/payment/{id}', 'DeleteReceivePayment')->name('delete.receive.payment');
     });
 
-        Route::controller(CreditController::class)->group(function () {
-        Route::get('/all/credits', 'AllCredits')->name('all.credits');
-        Route::get('/add/credit', 'AddCredit')->name('add.credit');
-        Route::post('/store/credit', 'StoreCredit')->name('store.credit');
-        Route::get('/edit/credit/{id}', 'EditCredit')->name('edit.credit');
-        Route::post('/update/credit',  'UpdateCredit')->name('update.credit');
-        Route::get('/delete/credit/{id}', 'DeleteCredit')->name('delete.credit');
-        Route::post(
-'/paid/credit',
-[
-CreditController::class,
-'PaidCredit'
-])
-->name(
-'paid.credit'
-);
+        Route::controller(AidController::class)->group(function () {
+        Route::get('/all/aids', 'AllAids')->name('all.aids');
+        Route::get('/add/aid', 'AddAid')->name('add.aid');
+        Route::post('/store/aid', 'StoreAid')->name('store.aid');
+        Route::get('/edit/aid/{id}', 'EditAid')->name('edit.aid');
+        Route::post('/update/aid',  'UpdateAid')->name('update.aid');
+        Route::get('/delete/aid/{id}', 'DeleteAid')->name('delete.aid');
+        Route::post('/paid/aid','PaidAid')->name('paid.aid');
+
+
     });
 
 
