@@ -106,7 +106,7 @@
                  </li>
 
                           <li>
-                    <a href="{{ route('all.aids') }}" class="tp-link">
+                    <a href="{{ route('all.aid') }}" class="tp-link">
                         <i data-feather="home"></i>
                         <span>   Aids  </span>
                     </a>
