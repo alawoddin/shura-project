@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Backend\AdminController;
 use App\Http\Controllers\Backend\CategoryController;
+use App\Http\Controllers\Backend\CreditController;
 use App\Http\Controllers\Backend\ExpenseController;
 use App\Http\Controllers\Backend\FamilyController;
 use App\Http\Controllers\Backend\IncomeController;
@@ -118,6 +119,15 @@ Route::prefix('admin')->middleware(['auth' ,IsAdmin::class ])->group(function ()
         Route::get('/edit/receive/payment/{id}', 'EditReceivePayment')->name('edit.receive.payment');
         Route::post('/update/receive/payment',  'UpdateReceivePayment')->name('update.receive.payment');
         Route::get('/delete/receive/payment/{id}', 'DeleteReceivePayment')->name('delete.receive.payment');
+    });
+
+        Route::controller(CreditController::class)->group(function () {
+        Route::get('/all/credits', 'AllCredits')->name('all.credits');
+        Route::get('/add/credit', 'AddCredit')->name('add.credit');
+        Route::post('/store/credit', 'StoreCredit')->name('store.credit');
+        Route::get('/edit/credit/{id}', 'EditCredit')->name('edit.credit');
+        Route::post('/update/credit',  'UpdateCredit')->name('update.credit');
+        Route::get('/delete/credit/{id}', 'DeleteCredit')->name('delete.credit');
     });
 
 

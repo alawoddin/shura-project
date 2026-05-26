@@ -98,6 +98,16 @@
                     </a>
                  </li>
 
+                       <li>
+                    <a href="{{ route('all.credits') }}" class="tp-link">
+                        <i data-feather="home"></i>
+                        <span>   Credits  </span>
+                    </a>
+                 </li>
+
+
+                 
+
                    <li>
                     <a href="{{ route('all.expense') }}" class="tp-link">
                         <i data-feather="home"></i>
