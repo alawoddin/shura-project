@@ -139,7 +139,6 @@ Route::prefix('admin')->middleware(['auth' ,IsAdmin::class ])->group(function ()
         Route::get('/edit/aid/{id}', 'EditAid')->name('edit.aid');
         Route::post('/update/aid',  'UpdateAid')->name('update.aid');
         Route::get('/delete/aid/{id}', 'DeleteAid')->name('delete.aid');
-        Route::post('/paid/aid','PaidAid')->name('paid.aid');
     });
 
 
