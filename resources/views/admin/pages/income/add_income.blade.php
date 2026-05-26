@@ -36,11 +36,9 @@
                             <div class="col-md-6">
                                 <label class="form-label">اسم</label>
 
-                                <select name="user_id" class="form-control">
-                                    <option value="">انتخاب کاربر</option>
-
+                                <select name="creditor_name" class="form-control">
                                     @foreach ($users as $user)
-                                        <option value="{{ $user->id }}">
+                                        <option value="{{ $user->name }}">
                                             {{ $user->name }}
                                         </option>
                                     @endforeach
