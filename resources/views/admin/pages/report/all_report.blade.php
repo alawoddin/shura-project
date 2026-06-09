@@ -35,7 +35,7 @@
                                     <div class="card">
                                         <div class="card-body">
 
-                                            {{-- <form action="{{ route('search.expenses.by.date') }}" method="post"> --}}
+                                            <form action="{{ route('search.reports.by.date') }}" method="post">
                                                 @csrf
 
                                                 <h5>جستجو بر اساس تاریخ</h5>
@@ -60,7 +60,7 @@
                                     <div class="card">
                                         <div class="card-body">
 
-                                            {{-- <form action="{{ route('search.expenses.by.month') }}" method="post"> --}}
+                                            <form action="{{ route('search.reports.by.month') }}" method="post">
                                                 @csrf
 
                                                 <h5>جستجو بر اساس ماه</h5>
@@ -98,7 +98,7 @@
                                     <div class="card">
                                         <div class="card-body">
 
-                                            {{-- <form action="{{ route('search.expenses.by.year') }}" method="post"> --}}
+                                            <form action="{{ route('search.reports.by.year') }}" method="post">
                                                 @csrf
 
                                                 <h5>جستجو بر اساس سال</h5>

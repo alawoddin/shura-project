@@ -145,10 +145,10 @@ Route::prefix('admin')->middleware(['auth' ,IsAdmin::class ])->group(function ()
      // Main Reports
     Route::controller(ReportController::class)->group(function() {
         Route::get('all/reports' , 'AllReport')->name('all.report');
-        // Route::post('search/reports/bydate', 'SearchReportsByDate')->name('search.reports.by.date');
+        Route::post('search/reports/bydate', 'SearchReportsByDate')->name('search.reports.by.date');
         // Route::get('/all/reports/invoice/{employee_id?}', 'AllReportsInvoice')->name('all.reports.invoice');
-        // Route::post('/search/reports/bymonth', 'AllReportsByMonth')->name('search.reports.by.month');
-        // Route::post('/search/reports/year', 'AllReportsByYear')->name('search.reports.by.year');
+        Route::post('/search/reports/bymonth', 'AllReportsByMonth')->name('search.reports.by.month');
+        Route::post('/search/reports/year', 'AllReportsByYear')->name('search.reports.by.year');
     });
 
 
