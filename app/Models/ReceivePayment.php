@@ -22,4 +22,6 @@ class ReceivePayment extends Model
             Category::class
         );
     }
+
+    
 }
