@@ -87,10 +87,40 @@ public function SearchReportsByDate(Request $request)
     );
 }
 
-    public function AllReportsByYear(Request $request) {
-        return view('admin.pages.report.search_by_year');
+    public function AllReportsByYear(Request $request)
+{
+    $year = $request->year;
 
-    }
+    $expenses = Expense::whereYear('date', $year)->get();
+
+    $receives = ReceivePayment::with(['users','category'])
+        ->whereYear('date', $year)
+        ->get();
+
+    $incomes = Income::whereYear('date', $year)->get();
+
+    $totalExpense = $expenses->sum('amount');
+
+    $totalReceive = $receives->sum('amount');
+
+    $totalIncome = $incomes->sum('amount');
+
+    $balance = ($totalReceive + $totalIncome) - $totalExpense;
+
+    return view(
+        'admin.pages.report.search_by_year',
+        compact(
+            'year',
+            'expenses',
+            'receives',
+            'incomes',
+            'totalExpense',
+            'totalReceive',
+            'totalIncome',
+            'balance'
+        )
+    );
+}
 
 
 }
