@@ -120,6 +120,22 @@
                     </a>
                  </li>
 
+                     <li>
+                    <a href="#Reports" data-bs-toggle="collapse">
+                        <span> Reports </span>
+                        <span class="menu-arrow"></span>
+                    </a>
+                    <div class="collapse" id="Reports">
+                        <ul class="nav-second-level">
+                            <li>
+                                <a href="{{ route('all.report') }}" class="tp-link">
+                                    <span>  All Reports  </span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+
 
             </ul>
 

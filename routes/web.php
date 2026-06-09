@@ -10,6 +10,7 @@ use App\Http\Controllers\Backend\ReceivePaymentController;
 use App\Http\Controllers\Backend\MemberFinancialReportController;
 use App\Http\Controllers\Backend\UsersController;
 use App\Http\Controllers\Backend\AidController;
+use App\Http\Controllers\Backend\ReportController;
 use App\Http\Controllers\Client\ClientController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Middleware\IsAdmin;
@@ -140,6 +141,16 @@ Route::prefix('admin')->middleware(['auth' ,IsAdmin::class ])->group(function ()
         Route::post('/update/aid',  'UpdateAid')->name('update.aid');
         Route::get('/delete/aid/{id}', 'DeleteAid')->name('delete.aid');
     });
+
+     // Main Reports
+    Route::controller(ReportController::class)->group(function() {
+        Route::get('all/reports' , 'AllReport')->name('all.report');
+        // Route::post('search/reports/bydate', 'SearchReportsByDate')->name('search.reports.by.date');
+        // Route::get('/all/reports/invoice/{employee_id?}', 'AllReportsInvoice')->name('all.reports.invoice');
+        // Route::post('/search/reports/bymonth', 'AllReportsByMonth')->name('search.reports.by.month');
+        // Route::post('/search/reports/year', 'AllReportsByYear')->name('search.reports.by.year');
+    });
+
 
 
 
