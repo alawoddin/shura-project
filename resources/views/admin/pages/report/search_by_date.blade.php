@@ -74,7 +74,7 @@
                                     <thead>
                                         <tr>
                                             <th>#</th>
-                                            <th>Name</th>
+                                            <th>expense_name</th>
                                             <th>Amount</th>
                                             <th>Date</th>
                                             <th>Note</th>
@@ -86,7 +86,7 @@
                                         @forelse($expenses as $key => $item)
                                             <tr>
                                                 <td>{{ $key + 1 }}</td>
-                                                <td>{{ $item->name }}</td>
+                                                <td>{{ $item->expense_name }}</td>
                                                 <td>{{ $item->amount }}</td>
                                                 <td>{{ $item->date }}</td>
                                                 <td>{{ $item->note }}</td>
@@ -206,7 +206,7 @@
                                     <thead>
                                         <tr>
                                             <th>#</th>
-                                            <th>Name</th>
+                                            <th>creditor_name</th>
                                             <th>Amount</th>
                                             <th>Date</th>
                                         </tr>
@@ -217,7 +217,7 @@
                                         @forelse($incomes as $key => $item)
                                             <tr>
                                                 <td>{{ $key + 1 }}</td>
-                                                <td>{{ $item->name ?? '' }}</td>
+                                                <td>{{ $item->creditor_name ?? '' }}</td>
                                                 <td>{{ $item->amount }}</td>
                                                 <td>{{ $item->date }}</td>
                                             </tr>

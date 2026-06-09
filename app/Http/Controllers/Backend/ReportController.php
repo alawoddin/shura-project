@@ -50,10 +50,42 @@ public function SearchReportsByDate(Request $request)
     );
 }
 
-    public function AllReportsByMonth(Request $request) {
-        return view('admin.pages.report.search_by_month');
+   public function AllReportsByMonth(Request $request)
+{
+    $request->validate([
+        'month' => 'required|numeric|between:1,12'
+    ]);
 
-    }
+    $month = $request->month;
+
+    $expenses = Expense::whereMonth('date', $month)->get();
+
+    $receives = ReceivePayment::with(['users', 'category'])
+        ->whereMonth('date', $month)
+        ->get();
+
+    $incomes = Income::whereMonth('date', $month)->get();
+
+    $totalExpense = $expenses->sum('amount');
+    $totalReceive = $receives->sum('amount');
+    $totalIncome = $incomes->sum('amount');
+
+    $balance = ($totalReceive + $totalIncome) - $totalExpense;
+
+    return view(
+        'admin.pages.report.search_by_month',
+        compact(
+            'month',
+            'expenses',
+            'receives',
+            'incomes',
+            'totalExpense',
+            'totalReceive',
+            'totalIncome',
+            'balance'
+        )
+    );
+}
 
     public function AllReportsByYear(Request $request) {
         return view('admin.pages.report.search_by_year');
