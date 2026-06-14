@@ -178,7 +178,7 @@ Route::prefix('admin')->middleware(['auth' ,IsAdmin::class ])->group(function ()
     Route::get('/admin/edit/roles/{id}', 'AdminEditRoles')->name('admin.edit.roles'); 
     Route::get('/admin/edit/roles/{id}', 'AdminEditRoles')->name('admin.edit.roles');
     Route::post('/admin/roles/update/{id}', 'AdminRolesUpdate')->name('admin.roles.update'); 
-    
+    Route::get('/admin/delete/roles/{id}', 'AdminDeleteRoles')->name('admin.delete.roles');
 });
 
 
