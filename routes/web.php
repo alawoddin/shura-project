@@ -11,6 +11,7 @@ use App\Http\Controllers\Backend\MemberFinancialReportController;
 use App\Http\Controllers\Backend\UsersController;
 use App\Http\Controllers\Backend\AidController;
 use App\Http\Controllers\Backend\ReportController;
+use App\Http\Controllers\Backend\RoleController;
 use App\Http\Controllers\Client\ClientController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Middleware\IsAdmin;
@@ -151,6 +152,14 @@ Route::prefix('admin')->middleware(['auth' ,IsAdmin::class ])->group(function ()
         Route::post('/search/reports/year', 'AllReportsByYear')->name('search.reports.by.year');
     });
 
+        Route::controller(RoleController::class)->group(function() {
+        Route::get('all/permission' , 'AllPermission')->name('all.permission');
+        Route::get('add/permission' , 'AddPermission')->name('add.permission');
+        Route::post('store/permission' , 'StorePermission')->name('store.permission');
+        Route::get('/edit/permission/{id}', 'EditPermission')->name('edit.permission');
+        Route::post('/update/permission',  'UpdatePermission')->name('update.permission');
+        Route::get('/delete/permission/{id}', 'DeletePermission')->name('delete.permission');
+    });
 
 
 

@@ -136,6 +136,23 @@
                     </div>
                 </li>
 
+                      <li>
+                    <a href="#Role" data-bs-toggle="collapse">
+                        <span> Role & Permission </span>
+                        <span class="menu-arrow"></span>
+                    </a>
+                    <div class="collapse" id="Role">
+                        <ul class="nav-second-level">
+                            <li>
+                                <a href="{{ route('all.permission') }}" class="tp-link">
+                                    <span>  All Permission  </span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+
+
 
             </ul>
 

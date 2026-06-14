@@ -1,0 +1,79 @@
+<?php
+
+namespace App\Http\Controllers\Backend;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
+
+class RoleController extends Controller
+{
+    public function AllPermission () {
+
+    $permissions = Permission::all();
+
+    return view('admin.pages.permission.all_permission' , compact('permissions'));
+
+    }
+
+     public function AddPermission () {
+
+
+    return view('admin.pages.permission.add_permission');
+
+    }
+
+    public function StorePermission(Request $request) {
+        Permission::create([
+            'name' => $request->name,
+            'group_name' => $request->group_name,
+        ]);
+         $notification = [
+
+            'message' => 'اعضای فامیل موفقانه اضافه شد',
+
+            'alert-type' => 'success'
+
+        ];
+
+        return redirect()->route('all.permission')->with($notification);
+    }
+
+     public function EditPermission(int $id){
+        $permissions = Permission::find($id);
+        return view('admin.pages.permission.edit_permission',compact('permissions'));
+
+     }
+     // End Method 
+
+     public function UpdatePermission(Request $request){
+        $per_id = $request->id;
+
+        Permission::find($per_id)->update([
+            'name' => $request->name,
+            'group_name' => $request->group_name,
+        ]);
+
+        $notification = array(
+            'message' => 'Permission Updated Successfully',
+            'alert-type' => 'success'
+         ); 
+         return redirect()->route('all.permission')->with($notification); 
+    }
+     // End Method 
+
+     public function DeletePermission(int $id){
+        Permission::find($id)->delete();
+
+        $notification = array(
+            'message' => 'Permission Deleted Successfully',
+            'alert-type' => 'success'
+         ); 
+         return redirect()->back()->with($notification); 
+
+     }
+      // End Method 
+
+
+}
