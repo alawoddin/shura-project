@@ -163,6 +163,23 @@
                     </div>
                 </li>
 
+                  <li>
+        <a href="#sidebarBaseui" data-bs-toggle="collapse">
+            <i data-feather="package"></i>
+            <span> Manage Admin </span>
+            <span class="menu-arrow"></span>
+        </a>
+        <div class="collapse" id="sidebarBaseui">
+<ul class="nav-second-level">
+    <li>
+        <a href="{{ route('all.admin') }}" class="tp-link">All Admin</a>
+    </li> 
+    
+</ul>
+        </div>
+    </li>
+    
+
 
 
             </ul>

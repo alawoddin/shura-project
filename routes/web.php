@@ -182,6 +182,15 @@ Route::prefix('admin')->middleware(['auth' ,IsAdmin::class ])->group(function ()
 });
 
 
+    Route::controller(RoleController::class)->group(function(){
+    Route::get('/all/admin', 'AllAdmin')->name('all.admin'); 
+    Route::get('/add/admin', 'AddAdmin')->name('add.admin'); 
+    Route::get('/add/admin', 'AddAdmin')->name('add.admin');
+    Route::post('/store/admin', 'StoreAdmin')->name('store.admin');   
+    
+});
+
+
 });
 
 
