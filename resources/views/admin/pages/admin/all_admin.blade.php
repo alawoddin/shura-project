@@ -50,10 +50,10 @@
                     <span class="badge badge-pill bg-danger">{{ $role->name ?? 'N/A' }}</span>
                 @endforeach
                 </td>
-                {{-- <td>
-            <a href="{{ route('edit.warehouse',$item->id) }}" class="btn btn-success btn-sm">Edit</a>  
-            <a href="{{ route('delete.warehouse',$item->id) }}" class="btn btn-danger btn-sm" id="delete">Delete</a>    
-                </td>  --}}
+                <td>
+          <a href="{{ route('edit.admin',$item->id) }}" class="btn btn-success btn-sm">Edit</a>  
+            <a href="{{ route('delete.admin',$item->id) }}" class="btn btn-danger btn-sm" id="delete">Delete</a>    
+                </td> 
             </tr>
             @endforeach 
                 
