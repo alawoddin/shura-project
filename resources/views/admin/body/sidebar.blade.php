@@ -148,6 +148,12 @@
                                     <span>  All Permission  </span>
                                 </a>
                             </li>
+
+                              <li>
+                                <a href="{{ route('all.roles') }}" class="tp-link">All Roles</a>
+                            </li>
+
+
                         </ul>
                     </div>
                 </li>
