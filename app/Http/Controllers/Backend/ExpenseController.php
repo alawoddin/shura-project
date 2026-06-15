@@ -10,6 +10,10 @@ use Illuminate\Http\Request;
 class ExpenseController extends Controller
 {
     public function AllExpense(){
+        if (!auth()->user()->hasPermissionTo('all.expense')) {
+            abort(403, 'Unauthorized Action');
+        }
+
         $alldata = Expense::with(['category'])->get();
         return view('admin.pages.expense.all_expense', compact('alldata'));
     }

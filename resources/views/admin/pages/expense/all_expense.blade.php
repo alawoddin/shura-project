@@ -5,17 +5,17 @@
         <!-- Start Content-->
         <div class="container-fluid my-0">
 
-                <div class="py-3 d-flex align-items-sm-center flex-sm-row flex-column">
-                    <div class="flex-grow-1">
-                        <h4 class="fs-18 fw-semibold m-0">مصارف</h4>
-                    </div>
-
-                    <div class="text-end">
-                        <ol class="breadcrumb m-0 py-0">
-                            <a href="{{ route('add.expense') }}" class="btn btn-secondary">اضافه کردن</a>
-                        </ol>
-                    </div>
+            <div class="py-3 d-flex align-items-sm-center flex-sm-row flex-column">
+                <div class="flex-grow-1">
+                    <h4 class="fs-18 fw-semibold m-0">مصارف</h4>
                 </div>
+
+                <div class="text-end">
+                    <ol class="breadcrumb m-0 py-0">
+                        <a href="{{ route('add.expense') }}" class="btn btn-secondary">اضافه کردن</a>
+                    </ol>
+                </div>
+            </div>
 
             <!-- Datatables  -->
             <div class="row">
@@ -50,12 +50,23 @@
                                                 <td class="text-center">{{ $item->amount }}</td>
                                                 <td class="text-center">{{ $item->date }}</td>
                                                 <td class="text-center">{{ $item->description }}</td>
-                                                
+
 
                                                 <td class="text-center">
-                                                    <a href="{{ route('edit.expense', $item->id) }}" class="btn btn-success btn-sm">ویرایش</a>
+                                                    @if (Auth::guard('web')->user()->can('edit.expense'))
+                                                         <a href="{{ route('edit.expense', $item->id) }}"
+                                                        class="btn btn-success btn-sm">ویرایش</a>
+                                                    @endif
 
-                                                    <a href="{{ route('delete.expense', $item->id) }}" class="btn btn-danger btn-sm" id="delete">حذف</a>
+                                                    @if (Auth::guard('web')->user()->can('delete.expense'))
+                                                         <a href="{{ route('delete.expense', $item->id) }}"
+                                                        class="btn btn-danger btn-sm" id="delete">حذف</a>
+                                                    @endif
+                                                    {{-- <a href="{{ route('edit.expense', $item->id) }}"
+                                                        class="btn btn-success btn-sm">ویرایش</a> --}}
+
+                                                    {{-- <a href="{{ route('delete.expense', $item->id) }}"
+                                                        class="btn btn-danger btn-sm" id="delete">حذف</a> --}}
                                                 </td>
                                             </tr>
                                         @endforeach

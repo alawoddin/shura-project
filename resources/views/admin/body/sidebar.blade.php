@@ -41,18 +41,18 @@
                         <i data-feather="home"></i>
                         <span> کاربران </span>
                     </a>
-                </li>  
-                
-             
+                </li>
 
-                 {{-- <li>
+
+
+                {{-- <li>
                     <a href="{{ route('all.users.family') }}" class="tp-link">
                         <i data-feather="home"></i>
                         <span> اعضای فامیل </span>
                     </a>
                  </li> --}}
 
-                 <li>
+                <li>
                     <a href="#catalog" data-bs-toggle="collapse">
                         <span> مدیریت بخش ها </span>
                         <span class="menu-arrow"></span>
@@ -61,66 +61,87 @@
                         <ul class="nav-second-level">
                             <li>
                                 <a href="{{ route('all.category') }}" class="tp-link">
-                                    <span>  نام درامد ها  </span>
+                                    <span> نام درامد ها </span>
                                 </a>
                             </li>
                         </ul>
                     </div>
                 </li>
 
-                 
-                    <li>
+
+                <li>
                     <a href="{{ route('all.income') }}" class="tp-link">
                         <i data-feather="home"></i>
-                        <span> درامد ها  </span>
+                        <span> درامد ها </span>
                     </a>
-                 </li>
+                </li>
 
-                      <li>
+                <li>
                     <a href="{{ route('undeposited.income') }}" class="tp-link">
                         <i data-feather="home"></i>
-                        <span>  واریز نشده  </span>
+                        <span> واریز نشده </span>
                     </a>
-                 </li>
+                </li>
 
-                      <li>
+                <li>
                     <a href="{{ route('all.receive.payment') }}" class="tp-link">
                         <i data-feather="home"></i>
-                        <span>  دریافت پرداخت  </span>
+                        <span> دریافت پرداخت </span>
                     </a>
-                 </li>
+                </li>
 
 
-                 <li>
+                <li>
                     <a href="{{ route('all.member.financial.report') }}" class="tp-link">
                         <i data-feather="home"></i>
                         <span> گزارش مالی اعضا </span>
                     </a>
-                 </li>
+                </li>
 
-                       <li>
+                <li>
                     <a href="{{ route('all.credits') }}" class="tp-link">
                         <i data-feather="home"></i>
-                        <span>   کریدت ها  </span>
+                        <span> کریدت ها </span>
                     </a>
-                 </li>
+                </li>
 
                 <li>
                     <a href="{{ route('all.aid') }}" class="tp-link">
                         <i data-feather="home"></i>
-                        <span>   کمک ها  </span>
+                        <span> کمک ها </span>
                     </a>
                 </li>
-                 
 
-                   <li>
+
+                @if (Auth::guard('web')->user()->can('expense.menu'))
+                    <li>
+                        <a href="#sidebarAuth" data-bs-toggle="collapse">
+                            <i data-feather="users"></i>
+                            <span> expense Manage </span>
+                            <span class="menu-arrow"></span>
+                        </a>
+                        <div class="collapse" id="sidebarAuth">
+                            <ul class="nav-second-level">
+                                @if (Auth::guard('web')->user()->can('all.expense'))
+                                    <a href="{{ route('all.expense') }}" class="tp-link">
+                                        <i data-feather="home"></i>
+                                        <span> مصارف </span>
+                                    </a>
+                                @endif
+
+                            </ul>
+                        </div>
+                    </li>
+                @endif
+
+                {{-- <li>
                     <a href="{{ route('all.expense') }}" class="tp-link">
                         <i data-feather="home"></i>
                         <span> مصارف </span>
                     </a>
-                 </li>
+                </li> --}}
 
-                     <li>
+                <li>
                     <a href="#Reports" data-bs-toggle="collapse">
                         <span> Reports </span>
                         <span class="menu-arrow"></span>
@@ -129,56 +150,56 @@
                         <ul class="nav-second-level">
                             <li>
                                 <a href="{{ route('all.report') }}" class="tp-link">
-                                    <span>  All Reports  </span>
+                                    <span> All Reports </span>
                                 </a>
                             </li>
                         </ul>
                     </div>
                 </li>
 
-                      <li>
+                <li>
                     <a href="#Role" data-bs-toggle="collapse">
                         <span> Role & Permission </span>
                         <span class="menu-arrow"></span>
                     </a>
                     <div class="collapse" id="Role">
                         <ul class="nav-second-level">
-    <li>
-        <a href="{{ route('all.permission') }}" class="tp-link">All Permission</a>
-    </li>
-    <li>
-        <a href="{{ route('all.roles') }}" class="tp-link">All Roles</a>
-    </li>
+                            <li>
+                                <a href="{{ route('all.permission') }}" class="tp-link">All Permission</a>
+                            </li>
+                            <li>
+                                <a href="{{ route('all.roles') }}" class="tp-link">All Roles</a>
+                            </li>
 
-    <li>
-        <a href="{{ route('add.roles.permission') }}" class="tp-link">Role In Permission</a>
-    </li>
-     <li>
-        <a href="{{ route('all.roles.permission') }}" class="tp-link">All Role Permission</a>
-    </li>
-    
-</ul>
+                            <li>
+                                <a href="{{ route('add.roles.permission') }}" class="tp-link">Role In Permission</a>
+                            </li>
+                            <li>
+                                <a href="{{ route('all.roles.permission') }}" class="tp-link">All Role Permission</a>
+                            </li>
 
-                        
+                        </ul>
+
+
                     </div>
                 </li>
 
-                  <li>
-        <a href="#sidebarBaseui" data-bs-toggle="collapse">
-            <i data-feather="package"></i>
-            <span> Manage Admin </span>
-            <span class="menu-arrow"></span>
-        </a>
-        <div class="collapse" id="sidebarBaseui">
-<ul class="nav-second-level">
-    <li>
-        <a href="{{ route('all.admin') }}" class="tp-link">All Admin</a>
-    </li> 
-    
-</ul>
-        </div>
-    </li>
-    
+                <li>
+                    <a href="#sidebarBaseui" data-bs-toggle="collapse">
+                        <i data-feather="package"></i>
+                        <span> Manage Admin </span>
+                        <span class="menu-arrow"></span>
+                    </a>
+                    <div class="collapse" id="sidebarBaseui">
+                        <ul class="nav-second-level">
+                            <li>
+                                <a href="{{ route('all.admin') }}" class="tp-link">All Admin</a>
+                            </li>
+
+                        </ul>
+                    </div>
+                </li>
+
 
 
 
