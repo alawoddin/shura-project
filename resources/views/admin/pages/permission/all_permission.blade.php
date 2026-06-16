@@ -32,20 +32,48 @@
                                     <thead>
                                         <tr>
                                             <th class="text-center">آیدی</th>
-                                            <th class="text-center">Permission name</th>
-                                            <th class="text-center">Permission group_name</th>
+                                            <th class="text-center">نام دسترسی</th>
+                                            <th class="text-center">گروپ دسترسی</th>
                                             {{-- <th class="text-center">اسلاگ</th> --}}
                                             {{-- <th class="text-center">توضیحات</th> --}}
                                             <th class="text-center">عملیات</th>
                                         </tr>
                                     </thead>
+
+                                    @php
+                                        $permissionNames = [
+                                            'all.users' => 'صفحه کاربران',
+                                            'all.category' => 'صفحه بخش ها',
+                                            'all.income' => 'صفحه درآمد ها',
+                                            'all.undeposited' => 'صفحه واریز نشده ها',
+                                            'all.recieve.payment' => 'صفحه دریافت پرداخت ها',
+                                            'all.financial.report' => 'صفحه گدارش مالی اعضا',
+                                            'all.credits' => ' صفحه کریدت ها',
+                                            'all.aid' => 'صفحه کمک ها',
+                                            'all.expense' => 'صفحه مصارف',
+                                            'all.report' => 'صفحه راپور ها',
+                                        ];
+
+                                        $groupNames = [
+                                            'Users' => 'کاربران',
+                                            'Category' => 'بخش ها',
+                                            'Income' => 'درآمد ها',
+                                            'Undeposited' => 'واریز نشده',
+                                            'Recieve' => 'دریافت پرداخت',
+                                            'Financial' => 'گزارش مالی اعضا',
+                                            'Credits' => 'کریدت ها',
+                                            'Aid' => 'کمک ها',
+                                            'Expense' => 'مصارف',
+                                            'Reports' => 'راپور ها',
+                                        ];
+                                    @endphp
+
                                     <tbody>
                                         @foreach ($permissions as $key => $item)
                                             <tr>
                                                 <td class="text-center">{{ $key + 1 }}</td>
-                                                <td class="text-center">{{ $item->name }}</td>
-                                                <td class="text-center">{{ $item->group_name }}</td>
-
+                                                <td class="text-center">{{ $permissionNames[$item->name] ?? $item->name }}</td>
+                                                <td class="text-center">{{ $groupNames[$item->group_name] ?? $item->group_name }}</td>
 
                                                 <td class="text-center">
                                                     <a href="{{ route('edit.permission', $item->id) }}"

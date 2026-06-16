@@ -34,30 +34,39 @@
         <input type="hidden" name="id" value="{{ $permissions->id }}">
 
         <div class="col-md-6">
-            <label for="validationDefault01" class="form-label">Permission Name</label>
-            <input type="text" class="form-control" name="name" value="{{ $permissions->name }}"  > 
+            <label>نام بخش</label>
+            <select name="name" class="form-control">
+                <option value="all.users" {{ $permissions->name == 'all.users' ? 'selected' : '' }}>صفحه کاربران</option>
+                <option value="all.category" {{ $permissions->name == 'all.category' ? 'selected' : '' }}>صفحه بخش ها</option>
+                <option value="all.income" {{ $permissions->name == 'all.income' ? 'selected' : '' }}>صفحه درآمد ها</option>
+                <option value="all.undeposited" {{ $permissions->name == 'all.undeposited' ? 'selected' : '' }}>صفحه واریز نشده ها</option>
+                <option value="all.recieve.payment" {{ $permissions->name == 'all.recieve.payment' ? 'selected' : '' }}>صفحه دریافت پرداخت</option>
+                <option value="all.financial.report" {{ $permissions->name == 'all.financial.report' ? 'selected' : '' }}>صفحه گزارش مالی اعضا</option>
+                <option value="all.credits" {{ $permissions->name == 'all.credits' ? 'selected' : '' }}>صفحه کریدت ها</option>
+                <option value="all.aid" {{ $permissions->name == 'all.aid' ? 'selected' : '' }}>صفحه کمک ها</option>
+                <option value="all.expense" {{ $permissions->name == 'all.expense' ? 'selected' : '' }}>صفحه مصارف</option>
+                <option value="all.report" {{ $permissions->name == 'all.report' ? 'selected' : '' }}>صفحه راپور ها</option>
+            </select>
         </div>
 
         <div class="col-md-6">
-            <label for="validationDefault01" class="form-label">Permission Group</label>
-            <select name="group_name" class="form-select" id="example-select">
-                <option value="" selected>Select Group</option>
-                <option value="Brand" {{ $permissions->group_name == 'Brand' ? 'selected' : '' }}>Brand</option>
-                <option value="WareHouse" {{ $permissions->group_name == 'WareHouse' ? 'selected' : '' }}>WareHouse</option>
-                <option value="Supplier" {{ $permissions->group_name == 'Supplier' ? 'selected' : '' }}>Supplier</option>
-                <option value="Customer" {{ $permissions->group_name == 'Customer' ? 'selected' : '' }}>Customer</option>
-                <option value="Product" {{ $permissions->group_name == 'Product' ? 'selected' : '' }}>Product</option>
-                <option value="Purchase" {{ $permissions->group_name == 'Purchase' ? 'selected' : '' }}>Purchase</option>
-                <option value="Sale" {{ $permissions->group_name == 'Sale' ? 'selected' : '' }}>Sale</option>
-                <option value="Due" {{ $permissions->group_name == 'Due' ? 'selected' : '' }}>Due</option>
-                <option value="Transfers" {{ $permissions->group_name == 'Transfers' ? 'selected' : '' }}>Transfers</option>
-                <option value="Report" {{ $permissions->group_name == 'Report' ? 'selected' : '' }}>Report</option>
-                 
+            <label>انتخاب گروپ</label>
+            <select name="group_name" class="form-control">
+                <option value="Users" {{ $permissions->group_name == 'Users' ? 'selected' : '' }}>کاربران</option>
+                <option value="Category" {{ $permissions->group_name == 'Category' ? 'selected' : '' }}>بخش ها</option>
+                <option value="Income" {{ $permissions->group_name == 'Income' ? 'selected' : '' }}>درآمد ها</option>
+                <option value="Undeposited" {{ $permissions->group_name == 'Undeposited' ? 'selected' : '' }}>واریز نشده</option>
+                <option value="Recieve" {{ $permissions->group_name == 'Recieve' ? 'selected' : '' }}>دریافت پرداخت</option>
+                <option value="Financial" {{ $permissions->group_name == 'Financial' ? 'selected' : '' }}>گزارش مالی اعضا</option>
+                <option value="Credits" {{ $permissions->group_name == 'Credits' ? 'selected' : '' }}>کریدت ها</option>
+                <option value="Aid" {{ $permissions->group_name == 'Aid' ? 'selected' : '' }}>کمک ها</option>
+                <option value="Expense" {{ $permissions->group_name == 'Expense' ? 'selected' : '' }}>مصارف</option>
+                <option value="Reports" {{ $permissions->group_name == 'Reports' ? 'selected' : '' }}>راپور ها</option>
             </select>
-        </div> 
-            
+        </div>
+
         <div class="col-12">
-            <button class="btn btn-primary" type="submit">Save Change</button>
+            <button class="btn btn-primary" type="submit">ذخیره تغییرات</button>
         </div>
     </form>
 </div> <!-- end card-body -->
