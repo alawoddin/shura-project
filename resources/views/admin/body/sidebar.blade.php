@@ -168,10 +168,10 @@
                     <div class="collapse" id="Role">
                         <ul class="nav-second-level">
                             <li>
-                                <a href="{{ route('all.permission') }}" class="tp-link">All Permission</a>
+                                <a href="{{ route('all.permission') }}" class="tp-link">دسترسی ها</a>
                             </li>
                             <li>
-                                <a href="{{ route('all.roles') }}" class="tp-link">All Roles</a>
+                                <a href="{{ route('all.roles') }}" class="tp-link">نقش ها</a>
                             </li>
 
                             <li>

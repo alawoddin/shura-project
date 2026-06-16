@@ -10,14 +10,7 @@
 
         <div class="py-3 d-flex align-items-sm-center flex-sm-row flex-column">
             <div class="flex-grow-1">
-                <h4 class="fs-18 fw-semibold m-0">Add Roles</h4>
-            </div>
-
-            <div class="text-end">
-                <ol class="breadcrumb m-0 py-0">
-                    
-                    <li class="breadcrumb-item active">Add Roles</li>
-                </ol>
+                <h4 class="fs-18 fw-semibold m-0">اضافه کردن نفش</h4>
             </div>
         </div>
 
@@ -26,7 +19,7 @@
             <div class="col-xl-12">
                 <div class="card">
                     <div class="card-header">
-                        <h5 class="card-title mb-0">Add Roles</h5>
+                        <h5 class="card-title mb-0">اضافه کردن نفش</h5>
                     </div><!-- end card header -->
 
 <div class="card-body">
@@ -34,13 +27,13 @@
         @csrf
 
         <div class="col-md-6">
-            <label for="validationDefault01" class="form-label">Roles Name</label>
+            <label for="validationDefault01" class="form-label">اسم نقش</label>
             <input type="text" class="form-control" name="name"  > 
         </div>
  
             
         <div class="col-12">
-            <button class="btn btn-primary" type="submit">Save Change</button>
+            <button class="btn btn-primary" type="submit">ذخیره</button>
         </div>
     </form>
 </div> <!-- end card-body -->

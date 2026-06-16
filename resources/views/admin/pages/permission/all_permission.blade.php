@@ -33,7 +33,7 @@
                                         <tr>
                                             <th class="text-center">آیدی</th>
                                             <th class="text-center">نام دسترسی</th>
-                                            <th class="text-center">گروپ دسترسی</th>
+                                            <th class="text-center">گروپ دسترسی ها </th>
                                             {{-- <th class="text-center">اسلاگ</th> --}}
                                             {{-- <th class="text-center">توضیحات</th> --}}
                                             <th class="text-center">عملیات</th>
@@ -77,9 +77,9 @@
 
                                                 <td class="text-center">
                                                     <a href="{{ route('edit.permission', $item->id) }}"
-                                                        class="btn btn-success btn-sm">Edit</a>
+                                                        class="btn btn-success btn-sm">ویرایش</a>
                                                     <a href="{{ route('delete.permission', $item->id) }}"
-                                                        class="btn btn-danger btn-sm" id="delete">Delete</a>
+                                                        class="btn btn-danger btn-sm" id="delete">حذف</a>
                                                 </td>
                                             </tr>
                                         @endforeach
