@@ -191,7 +191,10 @@ class RoleController extends Controller
         $permissions = $request->permission;
     
         if (!empty($permissions)) {
-            $permissionNames = Permission::whereIn('id',$permissions)->pluck('name')->toArray();
+            // $permissionNames = Permission::whereIn('id',$permissions)->pluck('name')->toArray();
+            // $role->syncPermissions($permissionNames);
+
+            $permissionNames = Permission::whereIn('id',$request->permission)->get();
             $role->syncPermissions($permissionNames);
         } else {
             $role->syncPermissions([]);

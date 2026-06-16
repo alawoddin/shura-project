@@ -2,6 +2,21 @@
 
 @section('admin')
 
+@php
+$fa = [
+    'all.users' => 'صفحه کاربران',
+    'all.category' => 'صفحه بخش ها',
+    'all.income' => 'صفحه درآمد ها',
+    'all.undeposited' => 'واریز نشده ها',
+    'all.recieve.payment' => 'دریافت پرداخت',
+    'all.financial.report' => 'گزارش مالی',
+    'all.credits' => 'کریدت ها',
+    'all.aid' => 'کمک ها',
+    'all.expense' => 'مصارف',
+    'all.report' => 'راپور ها',
+];
+@endphp
+
 <div class="content">
 
     <!-- Start Content-->
@@ -14,7 +29,7 @@
 
             <div class="text-end">
                 <ol class="breadcrumb m-0 py-0">
-                     <a href="{{ route('add.roles.permission') }}" class="btn btn-secondary">Add Role in Permission</a>
+                     <a href="{{ route('add.roles.permission') }}" class="btn btn-secondary">اضافه کردن</a>
                 </ol>
             </div>
         </div>
@@ -32,10 +47,10 @@
     <table class="table table-bordered dt-responsive table-responsive nowrap">
         <thead>
         <tr>
-            <th>Sl</th>
-            <th>Role Name</th>
-            <th>Permission Name </th>  
-            <th>Action</th>
+            <th>آیدی</th>
+            <th>نام نقش</th>
+            <th>نام مجوز</th>  
+            <th>عملیات</th>
         </tr>
         </thead>
         <tbody>
@@ -45,12 +60,12 @@
                 <td style="width: 120px">{{ $item->name }}</td>
                 <td> 
                     @foreach ($item->permissions as $prem)
-                        <span class="badge bg-danger">{{ $prem->name }}</span>
+                        <span class="badge bg-danger">{{ $fa[$prem->name] ?? $prem->name }}</span>
                     @endforeach
                     </td> 
                 <td>
-              <a href="{{ route('admin.edit.roles',$item->id) }}" class="btn btn-success btn-sm">Edit</a>  
-            <a href="{{ route('admin.delete.roles',$item->id) }}" class="btn btn-danger btn-sm" id="delete">Delete</a>    
+              <a href="{{ route('admin.edit.roles',$item->id) }}" class="btn btn-success btn-sm">ویرایش</a>  
+            <a href="{{ route('admin.delete.roles',$item->id) }}" class="btn btn-danger btn-sm" id="delete">حذف</a>    
                 </td> 
             </tr>
             @endforeach 

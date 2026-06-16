@@ -16,14 +16,7 @@
 
         <div class="py-3 d-flex align-items-sm-center flex-sm-row flex-column">
             <div class="flex-grow-1">
-                <h4 class="fs-18 fw-semibold m-0">Edit Role In Permission</h4>
-            </div>
-
-            <div class="text-end">
-                <ol class="breadcrumb m-0 py-0">
-                    
-                    <li class="breadcrumb-item active">Edit Role In Permission</li>
-                </ol>
+                <h4 class="fs-18 fw-semibold m-0">ویرایش نقش در مجوز</h4>
             </div>
         </div>
 
@@ -32,22 +25,51 @@
             <div class="col-xl-12">
                 <div class="card">
                     <div class="card-header">
-                        <h5 class="card-title mb-0">Edit Role In Permission</h5>
+                        <h5 class="card-title mb-0">ویرایش نقش در مجوز</h5>
                     </div><!-- end card header -->
 
 <div class="card-body">
+
+@php
+$fa = [
+    'all.users' => 'صفحه کاربران',
+    'all.category' => 'صفحه بخش ها',
+    'all.income' => 'صفحه درآمد ها',
+    'all.undeposited' => 'واریز نشده ها',
+    'all.recieve.payment' => 'دریافت پرداخت',
+    'all.financial.report' => 'گزارش مالی',
+    'all.credits' => 'کریدت ها',
+    'all.aid' => 'کمک ها',
+    'all.expense' => 'مصارف',
+    'all.report' => 'راپور ها',
+];
+
+$groupFa = [
+    'Users' => 'کاربران',
+    'Category' => 'بخش ها',
+    'Income' => 'درآمد ها',
+    'Undeposited' => 'واریز نشده',
+    'Recieve' => 'دریافت پرداخت',
+    'Financial' => 'گزارش مالی',
+    'Credits' => 'کریدت ها',
+    'Aid' => 'کمک ها',
+    'Expense' => 'مصارف',
+    'Reports' => 'راپور ها',
+];
+@endphp
+
      <form action="{{ route('admin.roles.update',$role->id) }}" method="post" class="row g-3" enctype="multipart/form-data">
         @csrf
 
         <div class="col-md-6">
-            <label for="validationDefault01" class="form-label">Role Name </label>
+            <label for="validationDefault01" class="form-label">نام نقش</label>
             <h4>{{ $role->name }}</h4>
         </div> 
 
     <div class="form-check mb-2">
     <input class="form-check-input" type="checkbox" id="formCheck1">
     <label class="form-check-label" for="formCheck1">
-     Permission All 
+     تمام مجوز ها
     </label>
     </div>
 
@@ -63,7 +85,7 @@
      <div class="form-check mb-2">
     <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" {{ App\Models\User::roleHasPermissions($role,$permissions) ? 'checked' : '' }} >
     <label class="form-check-label" for="flexCheckDefault">
-     {{ $group->group_name }}
+     {{ $groupFa[$group->group_name] ?? $group->group_name }}
     </label>
     </div> 
         </div>
@@ -76,7 +98,7 @@
      <div class="form-check mb-2">
     <input class="form-check-input" name="permission[]" value="{{ $permission->id }}" type="checkbox" id="flexCheckDefault{{ $permission->id }}" {{ $role->hasPermissionTo($permission->name) ? 'checked' : '' }}>
     <label class="form-check-label" for="flexCheckDefault{{ $permission->id }}">
-     {{ $permission->name }}
+     {{ $fa[$permission->name] ?? $permission->name }}
     </label>
     </div> 
      @endforeach
@@ -91,7 +113,7 @@
         
             
         <div class="col-12">
-            <button class="btn btn-primary" type="submit">Save Change</button>
+            <button class="btn btn-primary" type="submit">دخیره</button>
         </div>
     </form>
 </div> <!-- end card-body -->

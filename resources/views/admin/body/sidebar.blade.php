@@ -175,10 +175,10 @@
                             </li>
 
                             <li>
-                                <a href="{{ route('add.roles.permission') }}" class="tp-link">Role In Permission</a>
+                                <a href="{{ route('add.roles.permission') }}" class="tp-link">نقش در مجوز ها</a>
                             </li>
                             <li>
-                                <a href="{{ route('all.roles.permission') }}" class="tp-link">All Role Permission</a>
+                                <a href="{{ route('all.roles.permission') }}" class="tp-link">تمام نقش ها در مجوز ها</a>
                             </li>
 
                         </ul>
@@ -202,10 +202,6 @@
                         </ul>
                     </div>
                 </li>
-
-
-
-
             </ul>
 
         </div>
