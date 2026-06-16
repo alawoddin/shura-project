@@ -32,10 +32,15 @@
                                 <label>Select Group</label>
                                 <select name="group_name" class="form-control">
                                     <option value="Brand">-- select --</option>
-                                    <option value="Brand">Brand</option>
-                                    <option value="Category">Category</option>
-                                    <option value="Income">Income</option>
+                                    <option value="Users">کاربران</option>
+                                    <option value="Category">بخش ها</option>
+                                    <option value="Undeposited">واریز نشده</option>
+                                    <option value="Recieve">دریافت پرداخت</option>
+                                    <option value="Financial">گزارش مالی اعضا</option>
+                                    <option value="Credits">کریدت ها</option>
+                                    <option value="Aid">کمک ها</option>
                                     <option value="Expense">Expense</option>
+                                    <option value="Reports">راپور ها</option>
                                 </select>
                             </div>
 

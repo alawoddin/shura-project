@@ -36,13 +36,14 @@
 
                 <li class="menu-title">مینیو</li>
 
-                <li>
-                    <a href="{{ route('all.users') }}" class="tp-link">
-                        <i data-feather="home"></i>
-                        <span> کاربران </span>
-                    </a>
-                </li>
-
+                @if (Auth::guard('web')->user()->can('all.users'))
+                    <li>
+                        <a href="{{ route('all.users') }}" class="tp-link">
+                            <i data-feather="home"></i>
+                            <span> کاربران </span>
+                        </a>
+                    </li>
+                @endif
 
 
                 {{-- <li>
@@ -52,85 +53,85 @@
                     </a>
                  </li> --}}
 
-                <li>
-                    <a href="#catalog" data-bs-toggle="collapse">
-                        <span> مدیریت بخش ها </span>
-                        <span class="menu-arrow"></span>
-                    </a>
-                    <div class="collapse" id="catalog">
-                        <ul class="nav-second-level">
-                            <li>
-                                <a href="{{ route('all.category') }}" class="tp-link">
-                                    <span> نام درامد ها </span>
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                </li>
-
-
-                <li>
-                    <a href="{{ route('all.income') }}" class="tp-link">
-                        <i data-feather="home"></i>
-                        <span> درامد ها </span>
-                    </a>
-                </li>
-
-                <li>
-                    <a href="{{ route('undeposited.income') }}" class="tp-link">
-                        <i data-feather="home"></i>
-                        <span> واریز نشده </span>
-                    </a>
-                </li>
-
-                <li>
-                    <a href="{{ route('all.receive.payment') }}" class="tp-link">
-                        <i data-feather="home"></i>
-                        <span> دریافت پرداخت </span>
-                    </a>
-                </li>
-
-
-                <li>
-                    <a href="{{ route('all.member.financial.report') }}" class="tp-link">
-                        <i data-feather="home"></i>
-                        <span> گزارش مالی اعضا </span>
-                    </a>
-                </li>
-
-                <li>
-                    <a href="{{ route('all.credits') }}" class="tp-link">
-                        <i data-feather="home"></i>
-                        <span> کریدت ها </span>
-                    </a>
-                </li>
-
-                <li>
-                    <a href="{{ route('all.aid') }}" class="tp-link">
-                        <i data-feather="home"></i>
-                        <span> کمک ها </span>
-                    </a>
-                </li>
-
-
-                @if (Auth::guard('web')->user()->can('expense.menu'))
+                @if (Auth::guard('web')->user()->can('all.category'))
                     <li>
-                        <a href="#sidebarAuth" data-bs-toggle="collapse">
-                            <i data-feather="users"></i>
-                            <span> expense Manage </span>
+                        <a href="#catalog" data-bs-toggle="collapse">
+                            <span> مدیریت بخش ها </span>
                             <span class="menu-arrow"></span>
                         </a>
-                        <div class="collapse" id="sidebarAuth">
+                        <div class="collapse" id="catalog">
                             <ul class="nav-second-level">
-                                @if (Auth::guard('web')->user()->can('all.expense'))
-                                    <a href="{{ route('all.expense') }}" class="tp-link">
-                                        <i data-feather="home"></i>
-                                        <span> مصارف </span>
+                                <li>
+                                    <a href="{{ route('all.category') }}" class="tp-link">
+                                        <span> نام درامد ها </span>
                                     </a>
-                                @endif
-
+                                </li>
                             </ul>
                         </div>
+                    </li>
+                @endif
+
+                @if (Auth::guard('web')->user()->can('all.income'))
+                    <li>
+                        <a href="{{ route('all.income') }}" class="tp-link">
+                            <i data-feather="home"></i>
+                            <span> درامد ها </span>
+                        </a>
+                    </li>
+                @endif
+
+                @if (Auth::guard('web')->user()->can('all.undeposited'))
+                    <li>
+                        <a href="{{ route('undeposited.income') }}" class="tp-link">
+                            <i data-feather="home"></i>
+                            <span> واریز نشده </span>
+                        </a>
+                    </li>
+                @endif
+
+                @if (Auth::guard('web')->user()->can('all.recieve.payment'))
+                    <li>
+                        <a href="{{ route('all.receive.payment') }}" class="tp-link">
+                            <i data-feather="home"></i>
+                            <span> دریافت پرداخت </span>
+                        </a>
+                    </li>
+                @endif
+
+                @if (Auth::guard('web')->user()->can('all.financial.report'))
+                    <li>
+                        <a href="{{ route('all.member.financial.report') }}" class="tp-link">
+                            <i data-feather="home"></i>
+                            <span> گزارش مالی اعضا </span>
+                        </a>
+                    </li>
+                @endif
+
+                @if (Auth::guard('web')->user()->can('all.credits'))
+                    <li>
+                        <a href="{{ route('all.credits') }}" class="tp-link">
+                            <i data-feather="home"></i>
+                            <span> کریدت ها </span>
+                        </a>
+                    </li>
+                @endif
+
+                @if (Auth::guard('web')->user()->can('all.aid'))
+                    <li>
+                        <a href="{{ route('all.aid') }}" class="tp-link">
+                            <i data-feather="home"></i>
+                            <span> کمک ها </span>
+                        </a>
+                    </li>
+                @endif
+
+
+                @if (Auth::guard('web')->user()->can('all.expense'))
+                    <li>
+                        <a href="{{ route('all.expense') }}" class="tp-link">
+                            <i data-feather="home"></i>
+                            <span> مصارف</span>
+                        </a>
                     </li>
                 @endif
 
@@ -141,21 +142,23 @@
                     </a>
                 </li> --}}
 
-                <li>
-                    <a href="#Reports" data-bs-toggle="collapse">
-                        <span> Reports </span>
-                        <span class="menu-arrow"></span>
-                    </a>
-                    <div class="collapse" id="Reports">
-                        <ul class="nav-second-level">
-                            <li>
-                                <a href="{{ route('all.report') }}" class="tp-link">
-                                    <span> All Reports </span>
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                </li>
+                @if (Auth::guard('web')->user()->can('all.reports'))
+                    <li>
+                        <a href="#Reports" data-bs-toggle="collapse">
+                            <span> Reports </span>
+                            <span class="menu-arrow"></span>
+                        </a>
+                        <div class="collapse" id="Reports">
+                            <ul class="nav-second-level">
+                                <li>
+                                    <a href="{{ route('all.report') }}" class="tp-link">
+                                        <span> All Reports </span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                @endif                
 
                 <li>
                     <a href="#Role" data-bs-toggle="collapse">
