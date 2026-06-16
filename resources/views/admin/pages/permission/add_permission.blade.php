@@ -27,7 +27,7 @@
                                 {{-- <label for="validationDefault01" class="form-label">name</label>
                                 <input type="text" class="form-control" name="name"> --}}
 
-                                <label>نام بخش</label>
+                                <label>نام مجوز</label>
                                 <select name="name" class="form-control">
                                     <option value="Brand">-- انتخاب --</option>
                                     <option value="all.users">صفحه کاربران</option>

@@ -9,14 +9,7 @@
 
         <div class="py-3 d-flex align-items-sm-center flex-sm-row flex-column">
             <div class="flex-grow-1">
-                <h4 class="fs-18 fw-semibold m-0">Edit Permission</h4>
-            </div>
-
-            <div class="text-end">
-                <ol class="breadcrumb m-0 py-0">
-                    
-                    <li class="breadcrumb-item active">Edit Permission</li>
-                </ol>
+                <h4 class="fs-18 fw-semibold m-0">ویرایش مجوز</h4>
             </div>
         </div>
 
@@ -25,7 +18,7 @@
             <div class="col-xl-12">
                 <div class="card">
                     <div class="card-header">
-                        <h5 class="card-title mb-0">Edit Permission</h5>
+                        <h5 class="card-title mb-0">ویرایش مجوز</h5>
                     </div><!-- end card header -->
 
 <div class="card-body">
@@ -34,7 +27,7 @@
         <input type="hidden" name="id" value="{{ $permissions->id }}">
 
         <div class="col-md-6">
-            <label>نام بخش</label>
+            <label>نام مجوز</label>
             <select name="name" class="form-control">
                 <option value="all.users" {{ $permissions->name == 'all.users' ? 'selected' : '' }}>صفحه کاربران</option>
                 <option value="all.category" {{ $permissions->name == 'all.category' ? 'selected' : '' }}>صفحه بخش ها</option>

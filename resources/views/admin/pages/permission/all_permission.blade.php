@@ -32,8 +32,8 @@
                                     <thead>
                                         <tr>
                                             <th class="text-center">آیدی</th>
-                                            <th class="text-center">نام دسترسی</th>
-                                            <th class="text-center">گروپ دسترسی ها </th>
+                                            <th class="text-center">نام مجوز</th>
+                                            <th class="text-center">گروپ مجوز ها </th>
                                             {{-- <th class="text-center">اسلاگ</th> --}}
                                             {{-- <th class="text-center">توضیحات</th> --}}
                                             <th class="text-center">عملیات</th>

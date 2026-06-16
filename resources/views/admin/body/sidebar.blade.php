@@ -168,7 +168,7 @@
                     <div class="collapse" id="Role">
                         <ul class="nav-second-level">
                             <li>
-                                <a href="{{ route('all.permission') }}" class="tp-link">دسترسی ها</a>
+                                <a href="{{ route('all.permission') }}" class="tp-link">مجوز ها</a>
                             </li>
                             <li>
                                 <a href="{{ route('all.roles') }}" class="tp-link">نقش ها</a>
