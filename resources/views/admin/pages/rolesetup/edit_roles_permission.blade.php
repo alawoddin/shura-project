@@ -42,6 +42,7 @@ $fa = [
     'all.aid' => 'کمک ها',
     'all.expense' => 'مصارف',
     'all.report' => 'راپور ها',
+    'manage.roles' => 'مدیریت نقش ها',
 ];
 
 $groupFa = [
@@ -55,6 +56,7 @@ $groupFa = [
     'Aid' => 'کمک ها',
     'Expense' => 'مصارف',
     'Reports' => 'راپور ها',
+    'Access' => 'مدیریت دسترسی',
 ];
 @endphp
 

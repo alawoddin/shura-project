@@ -39,6 +39,7 @@
                 <option value="all.aid" {{ $permissions->name == 'all.aid' ? 'selected' : '' }}>صفحه کمک ها</option>
                 <option value="all.expense" {{ $permissions->name == 'all.expense' ? 'selected' : '' }}>صفحه مصارف</option>
                 <option value="all.report" {{ $permissions->name == 'all.report' ? 'selected' : '' }}>صفحه راپور ها</option>
+                <option value="manage.roles" {{ $permissions->name == 'manage.roles' ? 'selected' : '' }}>مدیریت نقش ها و مجوز ها</option>
             </select>
         </div>
 
@@ -55,6 +56,7 @@
                 <option value="Aid" {{ $permissions->group_name == 'Aid' ? 'selected' : '' }}>کمک ها</option>
                 <option value="Expense" {{ $permissions->group_name == 'Expense' ? 'selected' : '' }}>مصارف</option>
                 <option value="Reports" {{ $permissions->group_name == 'Reports' ? 'selected' : '' }}>راپور ها</option>
+                <option value="Access" {{ $permissions->group_name == 'Access' ? 'selected' : '' }}>مدیریت دسترسی</option>
             </select>
         </div>
 

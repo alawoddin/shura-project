@@ -150,17 +150,20 @@ class RoleController extends Controller
 
       public function RolePermissionStore(Request $request){
 
-        $data = array();
-        $permissions = $request->permission;
+        $request->validate([
+            'role_id' => 'required|exists:roles,id',
+            'permission' => 'nullable|array',
+            'permission.*' => 'exists:permissions,id',
+        ]);
 
-        foreach ($permissions as $key => $item){
-            $data['role_id'] = $request->role_id;
-            $data['permission_id'] = $item;
+        $role = Role::findOrFail($request->role_id);
+        $permissionNames = Permission::whereIn('id', $request->permission ?? [])
+            ->pluck('name')
+            ->toArray();
 
-            DB::table('role_has_permissions')->insert($data);
-        } // End Foreach
+        $role->syncPermissions($permissionNames);
 
-        
+        app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
 
         $notification = array(
             'message' => 'Role Permission Added Successfully',
@@ -187,18 +190,14 @@ class RoleController extends Controller
       // End Method
 
        public function AdminRolesUpdate(Request $request, $id){
-        $role = Role::find($id);
-        $permissions = $request->permission;
-    
-        if (!empty($permissions)) {
-            // $permissionNames = Permission::whereIn('id',$permissions)->pluck('name')->toArray();
-            // $role->syncPermissions($permissionNames);
+        $role = Role::findOrFail($id);
+        $permissionNames = Permission::whereIn('id', $request->permission ?? [])
+            ->pluck('name')
+            ->toArray();
 
-            $permissionNames = Permission::whereIn('id',$request->permission)->get();
-            $role->syncPermissions($permissionNames);
-        } else {
-            $role->syncPermissions([]);
-        }
+        $role->syncPermissions($permissionNames);
+
+        app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
 
         $notification = array(
             'message' => 'Role Permission Updated Successfully',

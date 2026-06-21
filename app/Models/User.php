@@ -46,14 +46,28 @@ class User extends Authenticatable
     }
       // End Method 
 
-         public static function roleHasPermissions($role,$permissions){
-        $hasPermission = true;
-        foreach($permissions as $key=> $permission){
+         public static function roleHasPermissions($role, $permissions)
+    {
+        foreach ($permissions as $permission) {
             if (!$role->hasPermissionTo($permission->name)) {
-                $hasPermission = false;
+                return false;
             }
-            return $hasPermission;
-        } 
+        }
+
+        return $permissions->isNotEmpty();
+    }
+
+    public function canManageAccess(): bool
+    {
+        if ($this->hasAnyRole(['Super Admin', 'Admin'])) {
+            return true;
+        }
+
+        if ($this->can('manage.roles')) {
+            return true;
+        }
+
+        return $this->role === 'admin' && $this->roles()->count() === 0;
     }
       // End Method
       

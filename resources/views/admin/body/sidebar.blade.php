@@ -142,7 +142,7 @@
                     </a>
                 </li> --}}
 
-                @if (Auth::guard('web')->user()->can('all.reports'))
+                @if (Auth::guard('web')->user()->can('all.report'))
                     <li>
                         <a href="#Reports" data-bs-toggle="collapse">
                             <span> Reports </span>
@@ -160,6 +160,7 @@
                     </li>
                 @endif                
 
+                @if (Auth::guard('web')->user()->canManageAccess())
                 <li>
                     <a href="#Role" data-bs-toggle="collapse">
                         <span> مجوز ها و نقش ها </span>
@@ -202,6 +203,7 @@
                         </ul>
                     </div>
                 </li>
+                @endif
             </ul>
 
         </div>

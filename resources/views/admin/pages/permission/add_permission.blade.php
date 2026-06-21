@@ -40,6 +40,7 @@
                                     <option value="all.aid">صفحه کمک ها</option>
                                     <option value="all.expense">صفحه مصارف</option>
                                     <option value="all.report">صفحه راپور ها  </option>
+                                    <option value="manage.roles">مدیریت نقش ها و مجوز ها</option>
                                 </select>
                             </div>
 
@@ -57,6 +58,7 @@
                                     <option value="Aid">کمک ها</option>
                                     <option value="Expense">مصارف</option>
                                     <option value="Reports">راپور ها</option>
+                                    <option value="Access">مدیریت دسترسی</option>
                                 </select>
                             </div>
 

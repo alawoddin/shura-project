@@ -15,6 +15,9 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $this->call(ChartOfAccountsSeeder::class);
+        $this->call([
+            PermissionsSeeder::class,
+            ChartOfAccountsSeeder::class,
+        ]);
     }
 }
