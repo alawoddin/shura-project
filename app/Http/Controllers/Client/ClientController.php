@@ -23,6 +23,28 @@ class ClientController extends Controller
     }
     // End Method
 
+    public function UserDashboard()
+    {
+        $user = User::with([
+            'familyMembers',
+            'receivePayments.category',
+            'credits.category',
+            'aids.category',
+            'financialReports',
+        ])->findOrFail(Auth::id());
+
+        $stats = [
+            'total_payments' => $user->receivePayments->sum('amount'),
+            'total_credits' => $user->credits->sum('amount'),
+            'remaining_credits' => $user->credits->sum('remaining_amount'),
+            'total_aid' => $user->aids->sum('amount'),
+            'current_balance' => $user->financialReports->sortByDesc('id')->first()?->balance ?? 0,
+            'family_count' => $user->familyMembers->count(),
+        ];
+
+        return view('client.client_index', compact('user', 'stats'));
+    }
+
     public function UserProfile(){
       $id = Auth::user()->id;
       $profileData = User::find($id);

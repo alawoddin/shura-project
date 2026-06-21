@@ -21,14 +21,35 @@ class User extends Authenticatable
      */
     protected $guarded = [];
 
-    public function familyMember(){
-        return $this->hasMany(FamilyMembers::class);
+    public function familyMembers()
+    {
+        return $this->hasMany(FamilyMembers::class, 'user_id');
+    }
+
+    public function familyMember()
+    {
+        return $this->familyMembers();
     }
 
     public function receivePayments()
-{
-    return $this->hasMany(ReceivePayment::class);
-}
+    {
+        return $this->hasMany(ReceivePayment::class);
+    }
+
+    public function credits()
+    {
+        return $this->hasMany(Credit::class);
+    }
+
+    public function aids()
+    {
+        return $this->hasMany(Aids::class);
+    }
+
+    public function financialReports()
+    {
+        return $this->hasMany(MemberFinancialReport::class, 'member_id');
+    }
 
      public static function getpermissionGroups(){
         $permission_groups = DB::table('permissions')->select('group_name')->groupBy('group_name')->get();

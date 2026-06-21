@@ -34,12 +34,12 @@
                     </a>
                 </li>
 
-                {{-- <li>
-                    <a href="{{ route('all.user.info') }}" class="tp-link">
+                <li>
+                    <a href="{{ route('user.profile') }}" class="tp-link">
                         <i data-feather="user"></i>
-                        <span> مشخصات من </span>
+                        <span> پروفایل من </span>
                     </a>
-                </li> --}}
+                </li>
 
             </ul>
 
