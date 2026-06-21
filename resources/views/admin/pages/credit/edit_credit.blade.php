@@ -28,6 +28,19 @@
 
 
                             <div class="col-md-6">
+                                <label>Credit Account</label>
+                                <select name="source_account_id" class="form-control">
+                                    <option value="">انتخاب حساب</option>
+                                    @foreach ($sourceAccounts as $account)
+                                        <option value="{{ $account->id }}"
+                                            {{ $credit->source_account_id == $account->id ? 'selected' : '' }}>
+                                            {{ $account->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            <div class="col-md-6">
                                 <label>بخش</label>
                                 <select name="category_id" class="form-control">
                                     @foreach ($categories as $category)

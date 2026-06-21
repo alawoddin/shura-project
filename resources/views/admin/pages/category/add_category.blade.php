@@ -30,11 +30,32 @@
                                     <label for="validationDefault01" class="form-label">نام</label>
                                     <input type="text" class="form-control" name="name">
                                 </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label">نوع حساب</label>
+                                    <select name="account_type" class="form-control">
+                                        <option value="">عمومی</option>
+                                        <option value="receivable">Accounts Receivable</option>
+                                        <option value="payable">Accounts Payable</option>
+                                        <option value="cash">Cash / Fund Account</option>
+                                        <option value="income">Income Source</option>
+                                        <option value="expense">Expense Account</option>
+                                        <option value="payment_type">Payment Type</option>
+                                    </select>
+                                </div>
                               
                                  <div class="col-md-6">
                                     <label for="validationDefault02" class="form-label">توضیحات</label>
                                     <textarea class="form-control" name="description"></textarea>
+                                 </div>
 
+                                 <div class="col-md-6">
+                                    <div class="form-check mt-4">
+                                        <input class="form-check-input" type="checkbox" name="is_monthly_fee" value="1" id="is_monthly_fee">
+                                        <label class="form-check-label" for="is_monthly_fee">
+                                            فیس ماهانه (For the month of becomes active)
+                                        </label>
+                                    </div>
                                  </div>
 
                                 <div class="col-6 mt-3">

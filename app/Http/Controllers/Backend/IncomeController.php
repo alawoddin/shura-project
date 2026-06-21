@@ -22,46 +22,43 @@ class IncomeController extends Controller
 
     public function AddIncome()
     {
-
-        $categories = Category::all();
+        $categories = Category::incomeSources()->get();
         $users = User::all();
+
+        if ($categories->isEmpty()) {
+            $categories = Category::all();
+        }
 
         return view('admin.pages.income.add_income', compact('categories', 'users'));
     }
 
     public function StoreIncome(Request $request)
     {
+        $request->validate([
+            'category_id' => 'required|exists:categories,id',
+            'creditor_name' => 'required|string',
+            'amount' => 'required|numeric|min:0.01',
+            'date' => 'required|date',
+            'note' => 'nullable|string',
+        ]);
 
         $income = Income::create([
-
             'category_id' => $request->category_id,
-
             'creditor_name' => $request->creditor_name,
-
             'amount' => $request->amount,
-
             'date' => $request->date,
-
-            'note' => $request->note
-
+            'note' => $request->note,
         ]);
 
         Undeposited::create([
-
             'income_id' => $income->id,
-
-            'status' => 'pending'
-
+            'status' => 'pending',
         ]);
 
-
-
-        $notification = array(
-            'message' => 'کاربر موفقانه اضافه شد',
-            'alert-type' => 'success'
-        );
-
-
+        $notification = [
+            'message' => 'درآمد با موفقیت ثبت شد',
+            'alert-type' => 'success',
+        ];
 
         return redirect()->route('undeposited.income')->with($notification);
     }
@@ -69,8 +66,12 @@ class IncomeController extends Controller
     public function EditIncome(int $id)
     {
         $editdata = Income::findOrFail($id);
-        $categories = Category::all();
+        $categories = Category::incomeSources()->get();
         $users = User::all();
+
+        if ($categories->isEmpty()) {
+            $categories = Category::all();
+        }
 
         return view('admin.pages.income.edit_income', compact('editdata', 'categories', 'users'));
     }
@@ -80,10 +81,10 @@ class IncomeController extends Controller
         $income_id = $request->id;
 
         $request->validate([
-            'category_id' => 'required',
-            'creditor_name' => 'required',
-            'amount' => 'required|numeric|min:1',
-            'date' => 'required',
+            'category_id' => 'required|exists:categories,id',
+            'creditor_name' => 'required|string',
+            'amount' => 'required|numeric|min:0.01',
+            'date' => 'required|date',
         ]);
 
         Income::findOrFail($income_id)->update([
@@ -94,10 +95,10 @@ class IncomeController extends Controller
             'note' => $request->note,
         ]);
 
-        $notification = array(
-            'message' => 'کاربر موفقانه اپدیت شد',
-            'alert-type' => 'success'
-        );
+        $notification = [
+            'message' => 'درآمد با موفقیت به روز شد',
+            'alert-type' => 'success',
+        ];
 
         return redirect()->route('all.income')->with($notification);
     }
@@ -106,29 +107,40 @@ class IncomeController extends Controller
     {
         Income::findOrFail($id)->delete();
 
-        $notification = array(
-            'message' => 'کاربر موفقانه حذف شد',
-            'alert-type' => 'success'
-        );
+        $notification = [
+            'message' => 'درآمد با موفقیت حذف شد',
+            'alert-type' => 'success',
+        ];
 
         return redirect()->route('all.income')->with($notification);
     }
 
     public function UndepositedIncome()
     {
-        $undepositedIncomes = Undeposited::with('income.category')->where('status', 'pending')->get();
+        $undepositedIncomes = Undeposited::with(['income.category', 'targetAccount'])->where('status', 'pending')->get();
+        $cashAccounts = Category::cashAccounts()->get();
 
-        return view('admin.pages.income.undeposited_income', compact('undepositedIncomes'));
+        return view('admin.pages.income.undeposited_income', compact('undepositedIncomes', 'cashAccounts'));
     }
 
-    public function TransferIncome($id)
+    public function TransferIncome(Request $request, $id)
     {
-        $income = Undeposited::findOrFail($id);
-
-        $income->update([
-            'status' => 'transferred'
+        $request->validate([
+            'target_account_id' => 'required|exists:categories,id',
         ]);
 
-        return back();
+        $undeposited = Undeposited::findOrFail($id);
+
+        $undeposited->update([
+            'status' => 'transferred',
+            'target_account_id' => $request->target_account_id,
+        ]);
+
+        $notification = [
+            'message' => 'مبلغ با موفقیت به حساب منتقل شد',
+            'alert-type' => 'success',
+        ];
+
+        return back()->with($notification);
     }
 }

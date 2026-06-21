@@ -68,6 +68,17 @@
 
                     </div>
 
+                    {{-- Credit Account --}}
+                    <div class="col-md-6">
+                        <label class="form-label">Credit Account</label>
+                        <select name="source_account_id" class="form-control">
+                            <option value="">انتخاب حساب</option>
+                            @foreach ($sourceAccounts as $account)
+                                <option value="{{ $account->id }}">{{ $account->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
 
 
 
@@ -180,9 +191,8 @@
 
                 rules: {
 
-                    category_id: {
-                        required: true
-                    },
+                    source_account_id: { required: true },
+                    category_id: { required: true },
 
                     user_id: {
                         required: true

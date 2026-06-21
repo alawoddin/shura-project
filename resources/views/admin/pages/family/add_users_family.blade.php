@@ -80,7 +80,7 @@
 
                                             </label>
 
-                                            <input type="date" name="birth_date" class="form-control">
+                                            <input type="date" name="birth_date" id="birth_date" class="form-control">
 
                                         </div>
 
@@ -92,7 +92,7 @@
 
                                             </label>
 
-                                            <input type="number" name="age" class="form-control">
+                                            <input type="number" name="age" id="age" class="form-control" readonly>
 
                                         </div>
 
@@ -163,5 +163,25 @@
         </div>
 
     </div>
+
+    <script>
+        document.getElementById('birth_date').addEventListener('change', function() {
+            const birthDate = new Date(this.value);
+            if (!this.value || Number.isNaN(birthDate.getTime())) {
+                document.getElementById('age').value = '';
+                return;
+            }
+
+            const today = new Date();
+            let age = today.getFullYear() - birthDate.getFullYear();
+            const monthDiff = today.getMonth() - birthDate.getMonth();
+
+            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+                age--;
+            }
+
+            document.getElementById('age').value = age;
+        });
+    </script>
 
 @endsection

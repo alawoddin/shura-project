@@ -33,12 +33,12 @@
                                     <thead>
                                         <tr>
                                             <th class="text-center">آیدی</th>
-                                            <th class="text-center">اسم کاربر</th>
-                                            <th class="text-center">بخش</th>
                                             <th class="text-center">تاریخ</th>
-                                            <th class="text-center">ماه</th>
-                                            <th class="text-center">مفدار پول</th>
-                                            <th class="text-center">نوت</th>
+                                            <th class="text-center">عضو</th>
+                                            <th class="text-center">توضیحات</th>
+                                            <th class="text-center">نوع پرداخت</th>
+                                            <th class="text-center">برای ماه</th>
+                                            <th class="text-center">مقدار</th>
                                             <th class="text-center">عملیات</th>
                                         </tr>
                                     </thead>
@@ -46,12 +46,12 @@
                                         @foreach ($alldata as $key => $item)
                                             <tr>
                                                 <td class="text-center">{{ $key + 1 }}</td>
-                                                <td class="text-center">{{ $item->users->name }}</td>
-                                                <td class="text-center">{{ $item->category->name }}</td>
                                                 <td class="text-center">{{ $item->date }}</td>
-                                                <td class="text-center">{{ $item->month_of }}</td>
-                                                <td class="text-center">{{ $item->amount }}</td>
+                                                <td class="text-center">{{ $item->users->name }}</td>
                                                 <td class="text-center">{{ $item->description }}</td>
+                                                <td class="text-center">{{ $item->category->name }}</td>
+                                                <td class="text-center">{{ $item->month_of ?? '-' }}</td>
+                                                <td class="text-center">{{ $item->amount }}</td>
                                                 
 
                                                 <td class="text-center">

@@ -27,12 +27,25 @@
                             <input type="hidden" name="id" value="{{ $editdata->id }}">
 
                             <div class="col-md-6">
-                                <label>بخش</label>
+                                <label>بخش مصرف</label>
                                 <select name="category_id" class="form-control">
                                     @foreach ($categories as $category)
                                         <option value="{{ $category->id }}"
                                             {{ $editdata->category_id == $category->id ? 'selected' : '' }}>
                                             {{ $category->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label>حساب منبع (Expense Account)</label>
+                                <select name="source_account_id" class="form-control">
+                                    <option value="">انتخاب حساب</option>
+                                    @foreach ($sourceAccounts as $account)
+                                        <option value="{{ $account->id }}"
+                                            {{ $editdata->source_account_id == $account->id ? 'selected' : '' }}>
+                                            {{ $account->name }}
                                         </option>
                                     @endforeach
                                 </select>

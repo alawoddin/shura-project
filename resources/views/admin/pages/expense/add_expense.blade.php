@@ -25,11 +25,21 @@
                             @csrf
 
                             <div class="col-md-6">
-                                <label>بخش</label>
+                                <label>بخش مصرف</label>
                                 <select name="category_id" class="form-control">
-
+                                    <option value="">انتخاب بخش</option>
                                     @foreach ($categories as $category)
                                         <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label>حساب منبع (Expense Account)</label>
+                                <select name="source_account_id" class="form-control">
+                                    <option value="">انتخاب حساب</option>
+                                    @foreach ($sourceAccounts as $account)
+                                        <option value="{{ $account->id }}">{{ $account->name }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -81,6 +91,9 @@
             $('#myForm').validate({
                 rules: {
                     category_id: {
+                        required: true,
+                    },
+                    source_account_id: {
                         required: true,
                     },
                     expense_name: {

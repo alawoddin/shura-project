@@ -31,10 +31,33 @@
                                     <label for="validationDefault01" class="form-label">اسم</label>
                                     <input type="text" class="form-control" name="name" value="{{ $category->name }}">
                                 </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label">نوع حساب</label>
+                                    <select name="account_type" class="form-control">
+                                        <option value="">عمومی</option>
+                                        <option value="receivable" {{ $category->account_type == 'receivable' ? 'selected' : '' }}>Accounts Receivable</option>
+                                        <option value="payable" {{ $category->account_type == 'payable' ? 'selected' : '' }}>Accounts Payable</option>
+                                        <option value="cash" {{ $category->account_type == 'cash' ? 'selected' : '' }}>Cash / Fund Account</option>
+                                        <option value="income" {{ $category->account_type == 'income' ? 'selected' : '' }}>Income Source</option>
+                                        <option value="expense" {{ $category->account_type == 'expense' ? 'selected' : '' }}>Expense Account</option>
+                                        <option value="payment_type" {{ $category->account_type == 'payment_type' ? 'selected' : '' }}>Payment Type</option>
+                                    </select>
+                                </div>
                               
                                  <div class="col-md-6">
                                     <label for="validationDefault02" class="form-label">توضیحات</label>
                                     <textarea class="form-control" name="description">{{ $category->description }}</textarea>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-check mt-4">
+                                        <input class="form-check-input" type="checkbox" name="is_monthly_fee" value="1" id="is_monthly_fee"
+                                            {{ $category->is_monthly_fee ? 'checked' : '' }}>
+                                        <label class="form-check-label" for="is_monthly_fee">
+                                            فیس ماهانه (For the month of becomes active)
+                                        </label>
+                                    </div>
                                 </div>
 
                                 <div class="col-12 mt-3">

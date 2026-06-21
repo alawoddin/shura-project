@@ -25,47 +25,49 @@
                             @csrf
 
                             <div class="col-md-6">
-                                <label class="form-label">اسم</label>
+                                <label class="form-label">تاریخ</label>
+                                <input type="date" class="form-control" name="date">
+                            </div>
 
+                            <div class="col-md-6">
+                                <label class="form-label">عضو</label>
                                 <select name="user_id" class="form-control">
                                     <option value="">انتخاب کاربر</option>
-
                                     @foreach ($users as $user)
-                                        <option value="{{ $user->id }}">
-                                            {{ $user->name }}
-                                        </option>
+                                        <option value="{{ $user->id }}">{{ $user->name }}</option>
                                     @endforeach
                                 </select>
                             </div>
 
+                            <div class="col-md-12">
+                                <label class="form-label">توضیحات</label>
+                                <textarea class="form-control" name="description" rows="3"></textarea>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Aid Source Account</label>
+                                <select name="source_account_id" class="form-control">
+                                    <option value="">انتخاب حساب</option>
+                                    @foreach ($sourceAccounts as $account)
+                                        <option value="{{ $account->id }}">{{ $account->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
 
                             <div class="col-md-6">
                                 <label>بخش</label>
                                 <select name="category_id" class="form-control">
                                     <option value="">انتخاب بخش</option>
-
                                     @foreach ($categories as $category)
                                         <option value="{{ $category->id }}">{{ $category->name }}</option>
                                     @endforeach
                                 </select>
                             </div>
 
-
-
                             <div class="col-md-6">
-                                <label for="validationDefault01" class="form-label">مقدار</label>
-                                <input type="number" class="form-control" name="amount">
+                                <label class="form-label">مقدار</label>
+                                <input type="number" step="0.01" class="form-control" name="amount">
                             </div>
-
-                            <div class="col-md-6">
-                                <label for="validationDefault01" class="form-label">تاریخ</label>
-                                <input type="date" class="form-control" name="date">
-                            </div>
-
-
-                            <div class="col-md-6">
-                                <label for="validationDefault02" class="form-label">نوت</label>
-                                <textarea class="form-control" name="description"></textarea>
 
 
 
@@ -103,12 +105,12 @@
                         required: true,
                         number: true,
                     },
+                    source_account_id: {
+                        required: true,
+                    },
                     date: {
                         required: true,
                     },
-
-
-                },
                 messages: {
                     user_id: {
                         required: 'لطفاً کاربر را انتخاب کنید',

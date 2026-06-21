@@ -12,158 +12,129 @@ class CreditController extends Controller
 {
     public function AllCredits()
     {
-        $alldata = Credit::with('user', 'category')->get();
+        $alldata = Credit::with('user', 'category', 'sourceAccount')->get();
         return view('admin.pages.credit.all_credit', compact('alldata'));
     }
 
     public function AddCredit()
     {
-        $users = User::all();
+        $users = User::where('role', 'user')->get();
         $categories = Category::all();
+        $sourceAccounts = Category::cashAccounts()->get();
 
-        return view('admin.pages.credit.add_credit' , compact('users', 'categories'));
+        return view('admin.pages.credit.add_credit', compact('users', 'categories', 'sourceAccounts'));
     }
 
     public function StoreCredit(Request $request)
     {
+        $request->validate([
+            'user_id' => 'required|exists:users,id',
+            'category_id' => 'required|exists:categories,id',
+            'source_account_id' => 'required|exists:categories,id',
+            'date' => 'required|date',
+            'amount' => 'required|numeric|min:0.01',
+            'description' => 'nullable|string',
+        ]);
+
         Credit::create([
             'user_id' => $request->user_id,
             'category_id' => $request->category_id,
+            'source_account_id' => $request->source_account_id,
             'date' => $request->date,
             'amount' => $request->amount,
             'remaining_amount' => $request->amount,
             'description' => $request->description,
         ]);
 
-         $notification = array(
+        $notification = [
             'message' => 'Credit Inserted Successfully',
-            'alert-type' => 'success'
-        );
+            'alert-type' => 'success',
+        ];
 
         return redirect()->route('all.credits')->with($notification);
-
-
     }
 
     public function EditCredit($id)
     {
         $credit = Credit::findOrFail($id);
-        $users = User::all();
+        $users = User::where('role', 'user')->get();
         $categories = Category::all();
+        $sourceAccounts = Category::cashAccounts()->get();
 
-        return view('admin.pages.credit.edit_credit', compact('credit', 'users', 'categories'));
+        return view('admin.pages.credit.edit_credit', compact('credit', 'users', 'categories', 'sourceAccounts'));
     }
 
     public function UpdateCredit(Request $request)
     {
-        $id = $request->id;
+        $request->validate([
+            'id' => 'required|exists:credits,id',
+            'user_id' => 'required|exists:users,id',
+            'category_id' => 'required|exists:categories,id',
+            'source_account_id' => 'required|exists:categories,id',
+            'date' => 'required|date',
+            'amount' => 'required|numeric|min:0.01',
+            'description' => 'nullable|string',
+        ]);
 
-        Credit::findOrFail($id)->update([
+        Credit::findOrFail($request->id)->update([
             'user_id' => $request->user_id,
             'category_id' => $request->category_id,
+            'source_account_id' => $request->source_account_id,
             'date' => $request->date,
             'amount' => $request->amount,
             'description' => $request->description,
         ]);
 
-         $notification = array(
+        $notification = [
             'message' => 'Credit Updated Successfully',
-            'alert-type' => 'success'
-        );
+            'alert-type' => 'success',
+        ];
+
         return redirect()->route('all.credits')->with($notification);
     }
 
     public function DeleteCredit($id)
     {
-            Credit::findOrFail($id)->delete();
-    
-            $notification = array(
-                'message' => 'Credit Deleted Successfully',
-                'alert-type' => 'success'
-            );
-
-            return redirect()->route('all.credits')->with($notification);
-    }
-
-public function PaidCredit(Request $request)
-{
-
-    $credit =
-    Credit::findOrFail(
-        $request->id
-    );
-
-    $paidAmount =
-    $request->paid_amount;
-
-
-    if (
-        $paidAmount >
-        $credit->remaining_amount
-    ) {
+        Credit::findOrFail($id)->delete();
 
         $notification = [
-
-            'message' =>
-            'Paid amount cannot be greater than remaining amount',
-
-            'alert-type' =>
-            'error'
-
+            'message' => 'Credit Deleted Successfully',
+            'alert-type' => 'success',
         ];
 
-        return redirect()
-            ->route(
-                'all.credits'
-            )
-            ->with(
-                $notification
-            );
+        return redirect()->route('all.credits')->with($notification);
     }
 
+    public function PaidCredit(Request $request)
+    {
+        $credit = Credit::findOrFail($request->id);
+        $paidAmount = $request->paid_amount;
 
-    // subtract paid amount
-    $credit->amount -= $paidAmount;
+        if ($paidAmount > $credit->remaining_amount) {
+            $notification = [
+                'message' => 'Paid amount cannot be greater than remaining amount',
+                'alert-type' => 'error',
+            ];
 
-    $credit->remaining_amount -= $paidAmount;
+            return redirect()->route('all.credits')->with($notification);
+        }
 
+        $credit->amount -= $paidAmount;
+        $credit->remaining_amount -= $paidAmount;
 
-    // if fully paid
-    if (
-        $credit->amount <= 0
-    ) {
+        if ($credit->amount <= 0) {
+            $credit->amount = 0;
+            $credit->remaining_amount = 0;
+            $credit->status = 'paid';
+        }
 
-        $credit->amount = 0;
+        $credit->save();
 
-        $credit->remaining_amount = 0;
+        $notification = [
+            'message' => 'Credit Paid Successfully',
+            'alert-type' => 'success',
+        ];
 
-        $credit->status = 'paid';
-
+        return redirect()->route('all.credits')->with($notification);
     }
-
-
-    $credit->save();
-
-
-    $notification = [
-
-        'message' =>
-        'Credit Paid Successfully',
-
-        'alert-type' =>
-        'success'
-
-    ];
-
-
-    return redirect()
-        ->route(
-            'all.credits'
-        )
-        ->with(
-            $notification
-        );
-
-}
-
 }

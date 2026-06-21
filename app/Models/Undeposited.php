@@ -15,4 +15,9 @@ class Undeposited extends Model
     );
 }
 
+public function targetAccount()
+{
+    return $this->belongsTo(Category::class, 'target_account_id');
+}
+
 }

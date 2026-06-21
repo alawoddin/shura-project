@@ -24,6 +24,8 @@ class CategoryController extends Controller
             'name' => $request->name,
             'slug' => strtolower(str_replace(' ', '-', $request->name)),
             'description' => $request->description,
+            'account_type' => $request->account_type,
+            'is_monthly_fee' => $request->boolean('is_monthly_fee'),
         ]);
 
           $notification = array(
@@ -47,6 +49,8 @@ class CategoryController extends Controller
             'name' => $request->name,
             'slug' => strtolower(str_replace(' ', '-', $request->name)),
             'description' => $request->description,
+            'account_type' => $request->account_type,
+            'is_monthly_fee' => $request->boolean('is_monthly_fee'),
         ]);
 
         $notification = array(

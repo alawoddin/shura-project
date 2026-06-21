@@ -8,6 +8,30 @@ class Category extends Model
 {
     protected $guarded = [];
 
+    protected $casts = [
+        'is_monthly_fee' => 'boolean',
+    ];
+
+    public function scopePaymentTypes($query)
+    {
+        return $query->where('account_type', 'payment_type');
+    }
+
+    public function scopeCashAccounts($query)
+    {
+        return $query->where('account_type', 'cash');
+    }
+
+    public function scopeIncomeSources($query)
+    {
+        return $query->where('account_type', 'income');
+    }
+
+    public function scopeExpenseAccounts($query)
+    {
+        return $query->where('account_type', 'expense');
+    }
+
     public function incomes()
     {
         return $this->hasMany(Income::class);

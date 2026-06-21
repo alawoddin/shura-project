@@ -10,68 +10,96 @@ use Illuminate\Http\Request;
 
 class AidController extends Controller
 {
-    public function AllAids(){
-        $alldata = Aids::with(['user', 'category'])->get();
+    public function AllAids()
+    {
+        $alldata = Aids::with(['user', 'category', 'sourceAccount'])->get();
         return view('admin.pages.aid.all_aids', compact('alldata'));
     }
 
-    public function AddAid(){
-        $users = User::all();
+    public function AddAid()
+    {
+        $users = User::where('role', 'user')->get();
         $categories = Category::all();
+        $sourceAccounts = Category::cashAccounts()->get();
 
-        return view('admin.pages.aid.add_aid', compact('users', 'categories'));
+        return view('admin.pages.aid.add_aid', compact('users', 'categories', 'sourceAccounts'));
     }
 
-    public function StoreAid(Request $request){
+    public function StoreAid(Request $request)
+    {
+        $request->validate([
+            'user_id' => 'required|exists:users,id',
+            'category_id' => 'required|exists:categories,id',
+            'source_account_id' => 'required|exists:categories,id',
+            'amount' => 'required|numeric|min:0.01',
+            'date' => 'required|date',
+            'description' => 'nullable|string',
+        ]);
+
         Aids::create([
             'user_id' => $request->user_id,
             'category_id' => $request->category_id,
+            'source_account_id' => $request->source_account_id,
             'amount' => $request->amount,
             'date' => $request->date,
             'description' => $request->description,
         ]);
 
-         $notification = array(
+        $notification = [
             'message' => 'کمک مالی با موفقیت اضافه شد',
-            'alert-type' => 'success'
-        );
+            'alert-type' => 'success',
+        ];
 
         return redirect()->route('all.aid')->with($notification);
     }
 
-    public function EditAid($id){
+    public function EditAid($id)
+    {
         $editdata = Aids::findOrFail($id);
-        $users = User::all();
+        $users = User::where('role', 'user')->get();
         $categories = Category::all();
+        $sourceAccounts = Category::cashAccounts()->get();
 
-        return view('admin.pages.aid.edit_aid', compact('editdata', 'users', 'categories'));
+        return view('admin.pages.aid.edit_aid', compact('editdata', 'users', 'categories', 'sourceAccounts'));
     }
 
-    public function UpdateAid(Request $request){
-        $aid = Aids::findOrFail($request->id);
-        $aid->update([
+    public function UpdateAid(Request $request)
+    {
+        $request->validate([
+            'id' => 'required|exists:aids,id',
+            'user_id' => 'required|exists:users,id',
+            'category_id' => 'required|exists:categories,id',
+            'source_account_id' => 'required|exists:categories,id',
+            'amount' => 'required|numeric|min:0.01',
+            'date' => 'required|date',
+            'description' => 'nullable|string',
+        ]);
+
+        Aids::findOrFail($request->id)->update([
             'user_id' => $request->user_id,
             'category_id' => $request->category_id,
+            'source_account_id' => $request->source_account_id,
             'amount' => $request->amount,
             'date' => $request->date,
             'description' => $request->description,
         ]);
 
-         $notification = array(
+        $notification = [
             'message' => 'کمک مالی با موفقیت به روز شد',
-            'alert-type' => 'success'
-        );
+            'alert-type' => 'success',
+        ];
 
         return redirect()->route('all.aid')->with($notification);
     }
 
-    public function DeleteAid($id){
+    public function DeleteAid($id)
+    {
         Aids::findOrFail($id)->delete();
 
-         $notification = array(
+        $notification = [
             'message' => 'کمک مالی با موفقیت حذف شد',
-            'alert-type' => 'success'
-        );
+            'alert-type' => 'success',
+        ];
 
         return redirect()->route('all.aid')->with($notification);
     }
