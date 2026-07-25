@@ -135,12 +135,7 @@
                     </li>
                 @endif
 
-                {{-- <li>
-                    <a href="{{ route('all.expense') }}" class="tp-link">
-                        <i data-feather="home"></i>
-                        <span> مصارف </span>
-                    </a>
-                </li> --}}
+                
 
                 @if (Auth::guard('web')->user()->can('all.report'))
                     <li>
