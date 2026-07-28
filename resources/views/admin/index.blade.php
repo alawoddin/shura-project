@@ -2,59 +2,72 @@
 @section('admin')
     <div class="content">
 
-        @php
+       @php
 
-            $incomes = \App\Models\Income::with('category')
-                ->selectRaw('category_id, SUM(amount) as total')
-                ->groupBy('category_id')
-                ->orderByDesc('total')
-                ->limit(6)
-                ->get();
+$incomes = \App\Models\Income::with('category')
+    ->selectRaw('category_id, SUM(amount) as total')
+    ->groupBy('category_id')
+    ->orderByDesc('total')
+    ->limit(6)
+    ->get();
 
-            $totalIncome = $incomes->sum('total');
-            $monthIncome = \App\Models\Income::whereMonth('date', now()->month)
 
-                ->whereYear('date', now()->year)
+// Total Income
+$totalIncome = \App\Models\Income::sum('amount');
 
-                ->sum('amount');
 
-            $totalExpense = \App\Models\Expense::sum('amount');
-            $monthExpense = \App\Models\Expense::whereMonth('date', now()->month)
+// Monthly Income
+$monthIncome = \App\Models\Income::whereMonth('date', now()->month)
+    ->whereYear('date', now()->year)
+    ->sum('amount');
 
-                ->whereYear('date', now()->year)
 
-                ->sum('amount');
+// Total Expense
+$totalExpense = \App\Models\Expense::sum('amount');
 
-            // receive payment data for charts
 
-            // Total Receive
+// Monthly Expense
+$monthExpense = \App\Models\Expense::whereMonth('date', now()->month)
+    ->whereYear('date', now()->year)
+    ->sum('amount');
 
-            $totalReceive = \App\Models\ReceivePayment::sum('amount');
 
-            $totalcredit = \App\Models\Credit::sum('amount');
-            $remaining_amount = \App\Models\Credit::sum('remaining_amount');
+// Total Balance
+$totalBalance = $totalIncome;
 
-            // Current Month Receive
 
-            $monthReceive = \App\Models\ReceivePayment::whereMonth('date', now()->month)
+// Current Balance
+$currentBalance = $totalIncome - $totalExpense;
 
-                ->whereYear('date', now()->year)
 
-                ->sum('amount');
+// Monthly Current Balance
+$currentMonthBalance = $monthIncome - $monthExpense;
 
-        @endphp
 
-        {{-- user chart  --}}
+// Receive Payment
+$totalReceive = \App\Models\ReceivePayment::sum('amount');
 
-        @php
-            $totalUser = \App\Models\User::count();
-            $monthUser = \App\Models\User::whereMonth('created_at', now()->month)
+$monthReceive = \App\Models\ReceivePayment::whereMonth('date', now()->month)
+    ->whereYear('date', now()->year)
+    ->sum('amount');
 
-                ->whereYear('created_at', now()->year)
 
-                ->count();
-        @endphp
+// Credit
+$totalcredit = \App\Models\Credit::sum('amount');
 
+$remaining_amount = \App\Models\Credit::sum('remaining_amount');
+
+@endphp
+
+@php
+
+$totalUser = \App\Models\User::count();
+
+$monthUser = \App\Models\User::whereMonth('created_at', now()->month)
+    ->whereYear('created_at', now()->year)
+    ->count();
+
+@endphp
 
 
         <!-- Start Content-->
@@ -162,6 +175,78 @@
             </div> <!-- end row -->
 
 
+             <div class="row mt-3">
+
+        <!-- Total Balance -->
+        <div class="col-md-6 col-xl-6">
+            <div class="card">
+                <div class="card-body">
+
+                    <div class="d-flex align-items-center">
+                        <div class="fs-14 mb-1">
+                            Total Balance
+                        </div>
+                    </div>
+
+                    <div class="d-flex align-items-baseline mb-2">
+
+                        <div class="fs-22 mb-0 me-2 fw-semibold text-primary">
+                            {{ number_format($totalBalance,2) }}
+                        </div>
+
+                        <div class="me-auto">
+                            <span class="text-primary">
+                                <i data-feather="credit-card"></i>
+                            </span>
+                        </div>
+
+                    </div>
+
+                    <small class="text-muted">
+                        Total Income
+                    </small>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Current Balance -->
+        <div class="col-md-6 col-xl-6">
+            <div class="card">
+                <div class="card-body">
+
+                    <div class="d-flex align-items-center">
+                        <div class="fs-14 mb-1">
+                            Current Balance
+                        </div>
+                    </div>
+
+                    <div class="d-flex align-items-baseline mb-2">
+
+                        <div class="fs-22 mb-0 me-2 fw-semibold text-success">
+                            {{ number_format($currentBalance,2) }}
+                        </div>
+
+                        <div class="me-auto">
+                            <span class="text-success">
+                                <i data-feather="wallet"></i>
+                            </span>
+                        </div>
+
+                    </div>
+
+                    <small class="text-muted">
+                        Income - Expense
+                    </small>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+    
 
 
             <!-- Start Monthly Sales -->
@@ -441,5 +526,5 @@
             <!-- End Monthly Sales -->
 
         </div> <!-- container-fluid -->
-    </div>
+    </div>  
 @endsection
