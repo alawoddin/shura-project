@@ -40,8 +40,7 @@
 
                         <div class="col-md-3">
                             <label>سن</label>
-                            <input type="number" name="age" id="age" class="form-control" value="{{ $familyMember->age }}"
-                                readonly>
+                            <input type="number" id="age" class="form-control" value="{{ \Carbon\Carbon::parse($familyMember->birth_date)->age }}" readonly>
                         </div>
 
                         <div class="col-md-6">
@@ -91,6 +90,9 @@
             }
 
             document.getElementById('age').value = age;
+        });
+        window.addEventListener('load', function () {
+            document.getElementById('birth_date').dispatchEvent(new Event('change'));
         });
     </script>
 @endsection

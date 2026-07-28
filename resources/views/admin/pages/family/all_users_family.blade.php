@@ -56,7 +56,7 @@
                                                 <td class="text-center">{{ $item->name }}</td>
                                                 <td class="text-center">{{ $item->gender }}</td>
                                                 <td class="text-center">{{ $item->birth_date }}</td>
-                                                <td class="text-center">{{ $item->age }}</td>
+                                                <td class="text-center">{{ \Carbon\Carbon::parse($item->birth_date)->age }}</td>
                                                 <td class="text-center">{{ $item->qualification }}</td>
                                                 <td class="text-center">{{ $item->degree }}</td>
                                                 <td class="text-center">{{ $item->note }}</td>

@@ -37,14 +37,14 @@ class FamilyController extends Controller
             ]);
         }
 
-        $age = $this->calculateAge($request->birth_date);
+        // $age = $this->calculateAge($request->birth_date);
 
         FamilyMembers::create([
             'user_id' => $request->user_id,
             'name' => $request->name,
             'gender' => $request->gender,
             'birth_date' => $request->birth_date,
-            'age' => $age ?? $request->age,
+            // 'age' => $age ?? $request->age,
             'qualification' => $request->qualification,
             'degree' => $request->degree,
             'note' => $request->note,
@@ -68,13 +68,13 @@ class FamilyController extends Controller
     public function UpdateUsersFamily(Request $request)
     {
         $familyMember = FamilyMembers::findOrFail($request->id);
-        $age = $this->calculateAge($request->birth_date);
+        // $age = $this->calculateAge($request->birth_date);
 
         $familyMember->update([
             'name' => $request->name,
             'gender' => $request->gender,
             'birth_date' => $request->birth_date,
-            'age' => $age ?? $request->age,
+            // 'age' => $age ?? $request->age,
             'qualification' => $request->qualification,
             'degree' => $request->degree,
             'note' => $request->note,

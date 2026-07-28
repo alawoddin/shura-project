@@ -92,7 +92,7 @@
 
                                             </label>
 
-                                            <input type="number" name="age" id="age" class="form-control" readonly>
+                                            <input type="number" id="age" class="form-control" readonly>
 
                                         </div>
 
