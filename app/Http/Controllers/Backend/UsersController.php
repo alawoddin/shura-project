@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Hash;
 class UsersController extends Controller
 {
     public function AllUsers(){
-        $users = User::latest()->get();
+        $users = User::where('role', 'user')->latest()->get();
         return view('admin.pages.users.all_users', compact('users'));
     }
 
