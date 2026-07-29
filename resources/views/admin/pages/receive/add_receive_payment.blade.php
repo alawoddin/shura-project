@@ -50,6 +50,19 @@
                         <textarea name="description" rows="3" class="form-control">{{ old('description') }}</textarea>
                     </div>
 
+                    {{-- Transaction Type --}}
+                    <div class="col-md-6">
+                        <label class="form-label">نوع تراکنش</label>
+                        <select name="transaction_type" class="form-control">
+                            <option value="credit" {{ old('transaction_type', 'credit') === 'credit' ? 'selected' : '' }}>
+                                بستانکار (Credit)
+                            </option>
+                            <option value="debit" {{ old('transaction_type') === 'debit' ? 'selected' : '' }}>
+                                بدهکار (Debit)
+                            </option>
+                        </select>
+                    </div>
+
                     {{-- Payment Type --}}
                     <div class="col-md-6">
                         <label class="form-label">نوع پرداخت</label>
@@ -115,6 +128,7 @@
                 rules: {
                     user_id: { required: true },
                     category_id: { required: true },
+                    transaction_type: { required: true },
                     amount: { required: true, number: true, min: 0.01 },
                     date: { required: true },
                     month_of: {

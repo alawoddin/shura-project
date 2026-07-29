@@ -10,6 +10,7 @@ class Category extends Model
 
     protected $casts = [
         'is_monthly_fee' => 'boolean',
+        'balance' => 'decimal:2',
     ];
 
     public function scopePaymentTypes($query)

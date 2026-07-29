@@ -3,11 +3,13 @@
 use App\Http\Controllers\Backend\AdminController;
 use App\Http\Controllers\Backend\CategoryController;
 use App\Http\Controllers\Backend\CreditController;
+use App\Http\Controllers\Backend\DashboardController;
 use App\Http\Controllers\Backend\ExpenseController;
 use App\Http\Controllers\Backend\FamilyController;
 use App\Http\Controllers\Backend\IncomeController;
 use App\Http\Controllers\Backend\ReceivePaymentController;
 use App\Http\Controllers\Backend\MemberFinancialReportController;
+use App\Http\Controllers\Backend\UnpaidPaymentController;
 use App\Http\Controllers\Backend\UsersController;
 use App\Http\Controllers\Backend\AidController;
 use App\Http\Controllers\Backend\ReportController;
@@ -42,9 +44,7 @@ Route::post('/user/password/update', [ClientController::class, 'UserPasswordUpda
 Route::prefix('admin')->middleware(['auth' ,IsAdmin::class ])->group(function () {
 
 
-    Route::get('/dashboard', function () {
-        return view('admin.index');
-    })->name('admin.dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
 
     Route::get('/logout', [AdminController::class, 'AdminLogout'])->name('admin.logout');
     Route::get('/profile', [AdminController::class, 'AdminProfile'])->name('admin.profile');
@@ -120,6 +120,12 @@ Route::prefix('admin')->middleware(['auth' ,IsAdmin::class ])->group(function ()
         Route::get('/edit/receive/payment/{id}', 'EditReceivePayment')->name('edit.receive.payment');
         Route::post('/update/receive/payment',  'UpdateReceivePayment')->name('update.receive.payment');
         Route::get('/delete/receive/payment/{id}', 'DeleteReceivePayment')->name('delete.receive.payment');
+    });
+
+    Route::controller(UnpaidPaymentController::class)->group(function () {
+        Route::get('/unpaid/payments', 'index')->name('unpaid.payments');
+        Route::post('/unpaid/payments/mark-reviewed', 'markReviewed')->name('unpaid.payments.mark.reviewed');
+        Route::post('/unpaid/payments/mark-all-reviewed', 'markAllReviewed')->name('unpaid.payments.mark.all');
     });
 
         Route::controller(CreditController::class)->group(function () {

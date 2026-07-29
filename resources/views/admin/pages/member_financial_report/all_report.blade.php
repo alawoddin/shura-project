@@ -38,6 +38,7 @@
                                             <th class="text-center">توضیحات</th>
                                             <th class="text-center">دبیت </th>
                                             <th class="text-center">کردیت </th>
+                                            <th class="text-center">قرض مرتبط</th>
                                             <th class="text-center">بیلانس</th>
                                             <th class="text-center">عملیات</th>
                                         </tr>
@@ -60,6 +61,15 @@
                                                 </td>
                                                 <td class="text-center">
                                                     {{ $item->credit }}
+                                                </td>
+                                                <td class="text-center">
+                                                    @if ($item->linkedCredit)
+                                                        <a href="{{ route('all.credits') }}" class="badge bg-info text-decoration-none">
+                                                            #{{ $item->linkedCredit->id }} — {{ number_format($item->linkedCredit->amount, 2) }}
+                                                        </a>
+                                                    @else
+                                                        -
+                                                    @endif
                                                 </td>
                                                 <td class="text-center">
                                                     {{ $item->balance }}

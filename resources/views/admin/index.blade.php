@@ -2,74 +2,6 @@
 @section('admin')
     <div class="content">
 
-       @php
-
-$incomes = \App\Models\Income::with('category')
-    ->selectRaw('category_id, SUM(amount) as total')
-    ->groupBy('category_id')
-    ->orderByDesc('total')
-    ->limit(6)
-    ->get();
-
-
-// Total Income
-$totalIncome = \App\Models\Income::sum('amount');
-
-
-// Monthly Income
-$monthIncome = \App\Models\Income::whereMonth('date', now()->month)
-    ->whereYear('date', now()->year)
-    ->sum('amount');
-
-
-// Total Expense
-$totalExpense = \App\Models\Expense::sum('amount');
-
-
-// Monthly Expense
-$monthExpense = \App\Models\Expense::whereMonth('date', now()->month)
-    ->whereYear('date', now()->year)
-    ->sum('amount');
-
-
-// Total Balance
-$totalBalance = $totalIncome;
-
-
-// Current Balance
-$currentBalance = $totalIncome - $totalExpense;
-
-
-// Monthly Current Balance
-$currentMonthBalance = $monthIncome - $monthExpense;
-
-
-// Receive Payment
-$totalReceive = \App\Models\ReceivePayment::sum('amount');
-
-$monthReceive = \App\Models\ReceivePayment::whereMonth('date', now()->month)
-    ->whereYear('date', now()->year)
-    ->sum('amount');
-
-
-// Credit
-$totalcredit = \App\Models\Credit::sum('amount');
-
-$remaining_amount = \App\Models\Credit::sum('remaining_amount');
-
-@endphp
-
-@php
-
-$totalUser = \App\Models\User::count();
-
-$monthUser = \App\Models\User::whereMonth('created_at', now()->month)
-    ->whereYear('created_at', now()->year)
-    ->count();
-
-@endphp
-
-
         <!-- Start Content-->
         <div class="container-fluid">
 
@@ -203,7 +135,7 @@ $monthUser = \App\Models\User::whereMonth('created_at', now()->month)
                     </div>
 
                     <small class="text-muted">
-                        Total Income
+                        Income + Receive Payment
                     </small>
 
                 </div>
@@ -236,7 +168,7 @@ $monthUser = \App\Models\User::whereMonth('created_at', now()->month)
                     </div>
 
                     <small class="text-muted">
-                        Income - Expense
+                        Income + Receive - Expense - Aids
                     </small>
 
                 </div>
@@ -349,19 +281,19 @@ $monthUser = \App\Models\User::whereMonth('created_at', now()->month)
 
                                             <td>
 
-                                                Total Credit
+                                                Total Credit (Available)
 
                                             </td>
 
                                             <td>
 
-                                                {{ number_format($totalcredit) }}
+                                                {{ number_format($totalcredit, 2) }}
 
                                             </td>
 
                                             <td>
 
-                                                {{ number_format($remaining_amount) }}
+                                                {{ number_format($remaining_amount, 2) }}
 
                                             </td>
 
@@ -409,13 +341,13 @@ $monthUser = \App\Models\User::whereMonth('created_at', now()->month)
 
                                             <td>
 
-                                                {{ number_format($totalIncome) }}
+                                                {{ number_format($currentBalance, 2) }}
 
                                             </td>
 
                                             <td>
 
-                                                {{ number_format($monthIncome) }}
+                                                {{ number_format($monthCurrentBalance, 2) }}
 
 
                                             </td>

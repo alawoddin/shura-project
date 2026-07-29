@@ -96,6 +96,12 @@
                             <span> دریافت پرداخت </span>
                         </a>
                     </li>
+                    <li>
+                        <a href="{{ route('unpaid.payments') }}" class="tp-link">
+                            <i data-feather="alert-circle"></i>
+                            <span> پرداخت‌های پرداخت نشده </span>
+                        </a>
+                    </li>
                 @endif
 
                 @if (Auth::guard('web')->user()->can('all.financial.report'))

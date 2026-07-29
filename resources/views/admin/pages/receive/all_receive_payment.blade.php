@@ -36,6 +36,7 @@
                                             <th class="text-center">تاریخ</th>
                                             <th class="text-center">عضو</th>
                                             <th class="text-center">توضیحات</th>
+                                            <th class="text-center">نوع تراکنش</th>
                                             <th class="text-center">نوع پرداخت</th>
                                             <th class="text-center">برای ماه</th>
                                             <th class="text-center">مقدار</th>
@@ -49,6 +50,11 @@
                                                 <td class="text-center">{{ $item->date }}</td>
                                                 <td class="text-center">{{ $item->users->name }}</td>
                                                 <td class="text-center">{{ $item->description }}</td>
+                                                <td class="text-center">
+                                                    <span class="badge {{ ($item->transaction_type ?? 'credit') === 'debit' ? 'bg-warning' : 'bg-success' }}">
+                                                        {{ ($item->transaction_type ?? 'credit') === 'debit' ? 'بدهکار' : 'بستانکار' }}
+                                                    </span>
+                                                </td>
                                                 <td class="text-center">{{ $item->category->name }}</td>
                                                 <td class="text-center">{{ $item->month_of ?? '-' }}</td>
                                                 <td class="text-center">{{ $item->amount }}</td>

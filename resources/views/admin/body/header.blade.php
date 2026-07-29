@@ -31,31 +31,34 @@
                       </li>
 
                       <li class="dropdown notification-list topbar-dropdown">
-                          <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button"
+                          <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="{{ route('unpaid.payments') }}" role="button"
                               aria-haspopup="false" aria-expanded="false">
                               <i data-feather="bell" class="noti-icon"></i>
-                              <span class="badge bg-danger rounded-circle noti-icon-badge">9</span>
+                              @if (($pendingPaymentCount ?? 0) > 0)
+                                  <span class="badge bg-danger rounded-circle noti-icon-badge">{{ $pendingPaymentCount }}</span>
+                              @endif
                           </a>
                           <div class="dropdown-menu dropdown-menu-end dropdown-lg">
 
-                              <!-- item-->
                               <div class="dropdown-item noti-title">
                                   <h5 class="m-0">
                                       <span class="float-end">
-                                          <a href="" class="text-dark">
-                                              <small>حذف همه</small>
+                                          <a href="{{ route('unpaid.payments') }}" class="text-dark">
+                                              <small>مشاهده همه</small>
                                           </a>
-                                      </span>اطلاع رسانی
+                                      </span>پرداخت‌های جدید
                                   </h5>
                               </div>
 
-
-                              <!-- All-->
-                              <a href="javascript:void(0);"
-                                  class="dropdown-item text-center text-primary notify-item notify-all">
-                                  مشاهده همه
-                                  <i class="fe-arrow-right"></i>
-                              </a>
+                              @if (($pendingPaymentCount ?? 0) > 0)
+                                  <div class="dropdown-item text-muted">
+                                      {{ $pendingPaymentCount }} پرداخت جدید نیاز به بررسی دارد
+                                  </div>
+                              @else
+                                  <div class="dropdown-item text-muted">
+                                      اعلان جدیدی وجود ندارد
+                                  </div>
+                              @endif
 
                           </div>
                       </li>

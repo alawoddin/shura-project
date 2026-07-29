@@ -8,7 +8,13 @@ class MemberFinancialReport extends Model
 {
      protected $guarded = [];
 
-    public function member(){
+    public function member()
+    {
         return $this->belongsTo(User::class, 'member_id');
+    }
+
+    public function linkedCredit()
+    {
+        return $this->belongsTo(Credit::class, 'credit_id');
     }
 }

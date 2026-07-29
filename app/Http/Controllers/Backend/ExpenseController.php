@@ -2,20 +2,28 @@
 
 namespace App\Http\Controllers\Backend;
 
+use App\Exceptions\InsufficientBalanceException;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Expense;
+use App\Services\FinancialService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ExpenseController extends Controller
 {
+    public function __construct(
+        protected FinancialService $financialService
+    ) {}
+
     public function AllExpense()
     {
-        if (!auth()->user()->hasPermissionTo('all.expense')) {
+        if (! auth()->user()->hasPermissionTo('all.expense')) {
             abort(403, 'Unauthorized Action');
         }
 
         $alldata = Expense::with(['category', 'sourceAccount'])->get();
+
         return view('admin.pages.expense.all_expense', compact('alldata'));
     }
 
@@ -42,14 +50,28 @@ class ExpenseController extends Controller
             'description' => 'nullable|string',
         ]);
 
-        Expense::create([
-            'category_id' => $request->category_id,
-            'source_account_id' => $request->source_account_id,
-            'expense_name' => $request->expense_name,
-            'amount' => $request->amount,
-            'date' => $request->date,
-            'description' => $request->description,
-        ]);
+        try {
+            DB::transaction(function () use ($request) {
+                $this->financialService->decreaseAccountBalance(
+                    (int) $request->source_account_id,
+                    (float) $request->amount
+                );
+
+                Expense::create([
+                    'category_id' => $request->category_id,
+                    'source_account_id' => $request->source_account_id,
+                    'expense_name' => $request->expense_name,
+                    'amount' => $request->amount,
+                    'date' => $request->date,
+                    'description' => $request->description,
+                ]);
+            });
+        } catch (InsufficientBalanceException $e) {
+            return back()->withInput()->with([
+                'message' => $e->getMessage(),
+                'alert-type' => 'error',
+            ]);
+        }
 
         $notification = [
             'message' => 'Expense Inserted Successfully',
@@ -84,14 +106,41 @@ class ExpenseController extends Controller
             'description' => 'nullable|string',
         ]);
 
-        Expense::findOrFail($request->id)->update([
-            'category_id' => $request->category_id,
-            'source_account_id' => $request->source_account_id,
-            'expense_name' => $request->expense_name,
-            'amount' => $request->amount,
-            'date' => $request->date,
-            'description' => $request->description,
-        ]);
+        try {
+            DB::transaction(function () use ($request) {
+                $expense = Expense::findOrFail($request->id);
+                $oldAmount = (float) $expense->amount;
+                $oldSourceAccountId = $expense->source_account_id;
+
+                if ($oldSourceAccountId != $request->source_account_id) {
+                    $this->financialService->increaseAccountBalance($oldSourceAccountId, $oldAmount);
+                    $this->financialService->decreaseAccountBalance(
+                        (int) $request->source_account_id,
+                        (float) $request->amount
+                    );
+                } else {
+                    $this->financialService->adjustAccountBalance(
+                        (int) $request->source_account_id,
+                        $oldAmount,
+                        (float) $request->amount
+                    );
+                }
+
+                $expense->update([
+                    'category_id' => $request->category_id,
+                    'source_account_id' => $request->source_account_id,
+                    'expense_name' => $request->expense_name,
+                    'amount' => $request->amount,
+                    'date' => $request->date,
+                    'description' => $request->description,
+                ]);
+            });
+        } catch (InsufficientBalanceException $e) {
+            return back()->withInput()->with([
+                'message' => $e->getMessage(),
+                'alert-type' => 'error',
+            ]);
+        }
 
         $notification = [
             'message' => 'Expense Updated Successfully',
@@ -103,7 +152,14 @@ class ExpenseController extends Controller
 
     public function DeleteExpense(int $id)
     {
-        Expense::findOrFail($id)->delete();
+        DB::transaction(function () use ($id) {
+            $expense = Expense::findOrFail($id);
+            $this->financialService->increaseAccountBalance(
+                $expense->source_account_id,
+                (float) $expense->amount
+            );
+            $expense->delete();
+        });
 
         $notification = [
             'message' => 'Expense Deleted Successfully',

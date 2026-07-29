@@ -2,17 +2,25 @@
 
 namespace App\Http\Controllers\Backend;
 
+use App\Exceptions\InsufficientBalanceException;
 use App\Http\Controllers\Controller;
 use App\Models\Aids;
 use App\Models\Category;
 use App\Models\User;
+use App\Services\FinancialService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class AidController extends Controller
 {
+    public function __construct(
+        protected FinancialService $financialService
+    ) {}
+
     public function AllAids()
     {
         $alldata = Aids::with(['user', 'category', 'sourceAccount'])->get();
+
         return view('admin.pages.aid.all_aids', compact('alldata'));
     }
 
@@ -36,14 +44,28 @@ class AidController extends Controller
             'description' => 'nullable|string',
         ]);
 
-        Aids::create([
-            'user_id' => $request->user_id,
-            'category_id' => $request->category_id,
-            'source_account_id' => $request->source_account_id,
-            'amount' => $request->amount,
-            'date' => $request->date,
-            'description' => $request->description,
-        ]);
+        try {
+            DB::transaction(function () use ($request) {
+                $this->financialService->decreaseAccountBalance(
+                    (int) $request->source_account_id,
+                    (float) $request->amount
+                );
+
+                Aids::create([
+                    'user_id' => $request->user_id,
+                    'category_id' => $request->category_id,
+                    'source_account_id' => $request->source_account_id,
+                    'amount' => $request->amount,
+                    'date' => $request->date,
+                    'description' => $request->description,
+                ]);
+            });
+        } catch (InsufficientBalanceException $e) {
+            return back()->withInput()->with([
+                'message' => $e->getMessage(),
+                'alert-type' => 'error',
+            ]);
+        }
 
         $notification = [
             'message' => 'کمک مالی با موفقیت اضافه شد',
@@ -75,14 +97,41 @@ class AidController extends Controller
             'description' => 'nullable|string',
         ]);
 
-        Aids::findOrFail($request->id)->update([
-            'user_id' => $request->user_id,
-            'category_id' => $request->category_id,
-            'source_account_id' => $request->source_account_id,
-            'amount' => $request->amount,
-            'date' => $request->date,
-            'description' => $request->description,
-        ]);
+        try {
+            DB::transaction(function () use ($request) {
+                $aid = Aids::findOrFail($request->id);
+                $oldAmount = (float) $aid->amount;
+                $oldSourceAccountId = $aid->source_account_id;
+
+                if ($oldSourceAccountId != $request->source_account_id) {
+                    $this->financialService->increaseAccountBalance($oldSourceAccountId, $oldAmount);
+                    $this->financialService->decreaseAccountBalance(
+                        (int) $request->source_account_id,
+                        (float) $request->amount
+                    );
+                } else {
+                    $this->financialService->adjustAccountBalance(
+                        (int) $request->source_account_id,
+                        $oldAmount,
+                        (float) $request->amount
+                    );
+                }
+
+                $aid->update([
+                    'user_id' => $request->user_id,
+                    'category_id' => $request->category_id,
+                    'source_account_id' => $request->source_account_id,
+                    'amount' => $request->amount,
+                    'date' => $request->date,
+                    'description' => $request->description,
+                ]);
+            });
+        } catch (InsufficientBalanceException $e) {
+            return back()->withInput()->with([
+                'message' => $e->getMessage(),
+                'alert-type' => 'error',
+            ]);
+        }
 
         $notification = [
             'message' => 'کمک مالی با موفقیت به روز شد',
@@ -94,7 +143,14 @@ class AidController extends Controller
 
     public function DeleteAid($id)
     {
-        Aids::findOrFail($id)->delete();
+        DB::transaction(function () use ($id) {
+            $aid = Aids::findOrFail($id);
+            $this->financialService->increaseAccountBalance(
+                $aid->source_account_id,
+                (float) $aid->amount
+            );
+            $aid->delete();
+        });
 
         $notification = [
             'message' => 'کمک مالی با موفقیت حذف شد',

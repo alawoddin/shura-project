@@ -2,14 +2,21 @@
 
 namespace App\Http\Controllers\Backend;
 
+use App\Exceptions\InsufficientBalanceException;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\User;
 use App\Models\ReceivePayment;
+use App\Services\FinancialService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ReceivePaymentController extends Controller
 {
+    public function __construct(
+        protected FinancialService $financialService
+    ) {}
+
     public function AllReceivePayment()
     {
         $alldata = ReceivePayment::with('users', 'category')->latest()->get();
@@ -34,6 +41,7 @@ class ReceivePaymentController extends Controller
         $validated = $request->validate([
             'user_id' => 'required|exists:users,id',
             'category_id' => 'required|exists:categories,id',
+            'transaction_type' => 'required|in:credit,debit',
             'date' => 'required|date',
             'amount' => 'required|numeric|min:0.01',
             'description' => 'nullable|string',
@@ -49,7 +57,21 @@ class ReceivePaymentController extends Controller
             $validated['month_of'] = null;
         }
 
-        ReceivePayment::create($validated);
+        try {
+            DB::transaction(function () use ($validated) {
+                $payment = ReceivePayment::create([
+                    ...$validated,
+                    'review_status' => 'pending_review',
+                ]);
+
+                $this->financialService->applyReceivePaymentBalance($payment);
+            });
+        } catch (InsufficientBalanceException $e) {
+            return back()->withInput()->with([
+                'message' => $e->getMessage(),
+                'alert-type' => 'error',
+            ]);
+        }
 
         $notification = [
             'message' => 'دریافت پرداخت با موفقیت اضافه شد',
@@ -81,6 +103,7 @@ class ReceivePaymentController extends Controller
             'id' => 'required|exists:receive_payments,id',
             'user_id' => 'required|exists:users,id',
             'category_id' => 'required|exists:categories,id',
+            'transaction_type' => 'required|in:credit,debit',
             'date' => 'required|date',
             'amount' => 'required|numeric|min:0.01',
             'description' => 'nullable|string',
@@ -88,7 +111,7 @@ class ReceivePaymentController extends Controller
         ]);
 
         $category = Category::findOrFail($validated['category_id']);
-        $data = ReceivePayment::findOrFail($validated['id']);
+        $payment = ReceivePayment::findOrFail($validated['id']);
 
         if ($category->is_monthly_fee) {
             $request->validate(['month_of' => 'required|string']);
@@ -97,8 +120,29 @@ class ReceivePaymentController extends Controller
             $validated['month_of'] = null;
         }
 
-        unset($validated['id']);
-        $data->update($validated);
+        $previousType = $payment->transaction_type;
+        $previousAmount = (float) $payment->amount;
+        $previousCategoryId = $payment->category_id;
+
+        try {
+            DB::transaction(function () use ($payment, $validated, $previousType, $previousAmount, $previousCategoryId) {
+                $this->financialService->reverseReceivePaymentBalance(
+                    $previousType,
+                    $previousAmount,
+                    $previousCategoryId
+                );
+
+                unset($validated['id']);
+                $payment->update($validated);
+
+                $this->financialService->applyReceivePaymentBalance($payment->fresh());
+            });
+        } catch (InsufficientBalanceException $e) {
+            return back()->withInput()->with([
+                'message' => $e->getMessage(),
+                'alert-type' => 'error',
+            ]);
+        }
 
         $notification = [
             'message' => 'دریافت پرداخت با موفقیت به روز شد',
@@ -110,7 +154,17 @@ class ReceivePaymentController extends Controller
 
     public function DeleteReceivePayment($id)
     {
-        ReceivePayment::findOrFail($id)->delete();
+        $payment = ReceivePayment::findOrFail($id);
+
+        DB::transaction(function () use ($payment) {
+            $this->financialService->reverseReceivePaymentBalance(
+                $payment->transaction_type,
+                (float) $payment->amount,
+                $payment->category_id
+            );
+
+            $payment->delete();
+        });
 
         $notification = [
             'message' => 'دریافت پرداخت با موفقیت حذف شد',
