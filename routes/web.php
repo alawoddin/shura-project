@@ -27,7 +27,7 @@ Route::get('/', function () {
 ///User Route
 Route::middleware(['auth' ,IsUser::class ])->group(function () {
 
-Route::get('/dashboard', [ClientController::class, 'UserDashboard'])->name('dashboard');
+Route::get('/user/dashboard', [ClientController::class, 'UserDashboard'])->name('dashboard');
 
 Route::get('/client/logout', [ClientController::class, 'ClientLogout'])->name('client.logout');
 Route::get('/user/profile', [ClientController::class, 'UserProfile'])->name('user.profile');
