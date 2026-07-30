@@ -42,12 +42,6 @@
                         </select>
                     </div>
 
-                    {{-- Description --}}
-                    <div class="col-md-12">
-                        <label class="form-label">توضیحات</label>
-                        <textarea name="description" rows="3" class="form-control">{{ old('description', $editData->description) }}</textarea>
-                    </div>
-
                     {{-- Transaction Type --}}
                     <div class="col-md-6">
                         <label class="form-label">نوع تراکنش</label>
@@ -90,6 +84,12 @@
                         <label class="form-label">مقدار</label>
                         <input type="number" step="0.01" name="amount" class="form-control"
                             value="{{ old('amount', $editData->amount) }}">
+                    </div>
+
+                    {{-- Description --}}
+                    <div class="col-md-12">
+                        <label class="form-label">توضیحات</label>
+                        <textarea name="description" rows="3" class="form-control">{{ old('description', $editData->description) }}</textarea>
                     </div>
 
                     <div class="col-12">

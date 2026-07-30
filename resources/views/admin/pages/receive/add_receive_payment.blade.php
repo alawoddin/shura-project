@@ -4,33 +4,25 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 
     <div class="container-fluid">
-
         <div class="py-3">
             <h4 class="fw-semibold">
                 اضافه کردن دریافت پرداخت
             </h4>
         </div>
-
         <div class="card">
-
             <div class="card-header">
                 <h5>
                     دریافت پرداخت
                 </h5>
             </div>
-
             <div class="card-body">
-
                 <form id="myForm" action="{{ route('store.receive.payment') }}" method="POST" class="row g-3">
-
                     @csrf
-
                     {{-- Date --}}
                     <div class="col-md-6">
                         <label class="form-label">تاریخ</label>
                         <input type="date" name="date" class="form-control" value="{{ old('date', date('Y-m-d')) }}">
                     </div>
-
                     {{-- Member --}}
                     <div class="col-md-6">
                         <label class="form-label">عضو</label>
@@ -43,13 +35,6 @@
                             @endforeach
                         </select>
                     </div>
-
-                    {{-- Description --}}
-                    <div class="col-md-12">
-                        <label class="form-label">توضیحات</label>
-                        <textarea name="description" rows="3" class="form-control">{{ old('description') }}</textarea>
-                    </div>
-
                     {{-- Transaction Type --}}
                     <div class="col-md-6">
                         <label class="form-label">نوع تراکنش</label>
@@ -62,7 +47,6 @@
                             </option>
                         </select>
                     </div>
-
                     {{-- Payment Type --}}
                     <div class="col-md-6">
                         <label class="form-label">نوع پرداخت</label>
@@ -77,32 +61,29 @@
                             @endforeach
                         </select>
                     </div>
-
                     {{-- For the month of --}}
                     <div class="col-md-6" id="monthField">
                         <label class="form-label">برای ماه</label>
                         <input type="month" name="month_of" id="month_of" class="form-control"
                             value="{{ old('month_of') }}" disabled>
                     </div>
-
                     {{-- Amount --}}
                     <div class="col-md-6">
                         <label class="form-label">مقدار</label>
                         <input type="number" step="0.01" name="amount" class="form-control" value="{{ old('amount') }}">
                     </div>
-
+                     {{-- Description --}}
+                    <div class="col-md-12">
+                        <label class="form-label">توضیحات</label>
+                        <textarea name="description" rows="3" class="form-control">{{ old('description') }}</textarea>
+                    </div>
                     <div class="col-12">
                         <button class="btn btn-primary">ذخیره</button>
                     </div>
-
                 </form>
-
             </div>
-
         </div>
-
     </div>
-
     <script>
         $(document).ready(function() {
             function toggleMonthField() {
