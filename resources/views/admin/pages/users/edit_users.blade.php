@@ -59,6 +59,21 @@
                     </div>
 
                     <div class="col-md-4 mb-3">
+                        <label>گروپ خون</label>
+                        <select name="blood_group" class="form-control">
+                            <option value="">انتخاب کنید</option>
+                            <option value="A+" {{ $users->blood_group == 'A+' ? 'selected' : '' }}>A+</option>
+                            <option value="A-" {{ $users->blood_group == 'A-' ? 'selected' : '' }}>A-</option>
+                            <option value="B+" {{ $users->blood_group == 'B+' ? 'selected' : '' }}>B+</option>
+                            <option value="B-" {{ $users->blood_group == 'B-' ? 'selected' : '' }}>B-</option>
+                            <option value="AB+" {{ $users->blood_group == 'AB+' ? 'selected' : '' }}>AB+</option>
+                            <option value="AB-" {{ $users->blood_group == 'AB-' ? 'selected' : '' }}>AB-</option>
+                            <option value="O+" {{ $users->blood_group == 'O+' ? 'selected' : '' }}>O+</option>
+                            <option value="O-" {{ $users->blood_group == 'O-' ? 'selected' : '' }}>O-</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-4 mb-3">
                         <label>سکونت اصلی</label>
                         <textarea name="permanent_address" class="form-control">{{ $users->permanent_address }}</textarea>
                     </div>
@@ -143,31 +158,31 @@
                         <input type="text" name="representative_name" value="{{ $users->representative_name }}" class="form-control">
                     </div>
 
-                    <div class="col-md-6 mb-3">
+                    <div class="col-md-4 mb-3">
                         <label>عکس جدید</label>
                         <input type="file" name="photo" class="form-control">
                     </div>
 
-                    <div class="col-md-6 mb-3">
+                    <div class="col-md-4 mb-3">
                         <img src="{{ url('upload/user_images/'.$users->photo) }}" width="80" class="rounded">
                     </div>
 
-                    <div class="col-md-6 mb-3">
+                    <div class="col-md-4 mb-3">
                         <label>اسناد جدید</label>
                         <input type="file" name="documents" class="form-control">
                     </div>
 
-                    <div class="col-md-6 mb-3">
+                    <div class="col-md-4 mb-3">
                         <label>ایمیل</label>
                         <input type="email" name="email" value="{{ $users->email }}" class="form-control">
                     </div>
 
-                    <div class="col-md-6 mb-3">
+                    <div class="col-md-4 mb-3">
                         <label>پسورد جدید</label>
                         <input type="password" name="password" class="form-control">
                     </div>
 
-                    <div class="col-md-6 mb-3">
+                    <div class="col-md-4 mb-3">
                         <label>نقش</label>
                         <select name="role" class="form-control">
                             <option value="user" {{ $users->role == 'user' ? 'selected' : '' }}>User</option>

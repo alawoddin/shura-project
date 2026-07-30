@@ -38,6 +38,7 @@
                                             <th class="text-center">ولدیت</th>
                                             <th class="text-center">تخلص</th>
                                             <th class="text-center">جنسیت</th>
+                                            <th class="text-center">گروپ خون</th>
                                             <th class="text-center">تعداد فرزندان</th>
                                             <th class="text-center">حالت مدنی</th>
                                             <th class="text-center">نوعیت وضعیت</th>
@@ -59,6 +60,7 @@
                                                 <td class="text-center">{{ $item->grandfather_name }}</td>
                                                 <td class="text-center">{{ $item->lastname }}</td>
                                                 <td class="text-center">{{ $item->gender }}</td>
+                                                <td class="text-center">{{ $item->blood_group }}</td>
                                                 <td class="text-center">
                                                     <a href="{{ route('all.users.family', $item->id) }}" class="btn btn-success btn-sm">
                                                         {{ $item->family_members ? $item->family_members : 0 }}

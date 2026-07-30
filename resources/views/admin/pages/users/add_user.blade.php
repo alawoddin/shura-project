@@ -58,6 +58,21 @@
                         </div>
 
                         <div class="col-md-4 mb-3">
+                            <label>گروپ خون</label>
+                            <select name="blood_group" class="form-control">
+                                <option value="">انتخاب کنید</option>
+                                <option value="A+">A+</option>
+                                <option value="A-">A-</option>
+                                <option value="B+">B+</option>
+                                <option value="B-">B-</option>
+                                <option value="AB+">AB+</option>
+                                <option value="AB-">AB-</option>
+                                <option value="O+">O+</option>
+                                <option value="O-">O-</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-4 mb-3">
                             <label>سکونت اصلی</label>
                             <textarea name="permanent_address" class="form-control"></textarea>
                         </div>
@@ -142,7 +157,7 @@
                             <input type="text" name="representative_name" class="form-control">
                         </div>
 
-                        <div class="col-md-6 mb-3">
+                        <div class="col-md-4 mb-3">
                             <label>عکس</label>
                             <input type="file" name="photo" class="form-control" id="image">
                         </div>
@@ -153,26 +168,26 @@
                                 class="rounded-circle avatar-xl img-thumbnail float-start" alt="image profile">
                         </div>
 
-                        <div class="col-md-6 mb-3">
+                        <div class="col-md-4 mb-3">
                             <label>اسناد</label>
                             <input type="file" name="documents" class="form-control">
                         </div>
 
-                        <div class="col-md-6 mb-3">
+                        <div class="col-md-4 mb-3">
                             <label>ایمیل</label>
                             <input type="email" name="email" class="form-control">
                         </div>
 
-                        <div class="col-md-6 mb-3">
+                        <div class="col-md-4 mb-3">
                             <label>پسورد</label>
                             <input type="password" name="password" class="form-control">
                         </div>
 
-                        <div class="col-md-6 mb-3">
+                        <div class="col-md-4 mb-3">
                             <label>نقش</label>
                             <select name="role" class="form-control">
                                 <option value="user">User</option>
-                                <option value="admin">Admin</option>
+                                {{-- <option value="admin">Admin</option> --}}
                             </select>
                         </div>
 
