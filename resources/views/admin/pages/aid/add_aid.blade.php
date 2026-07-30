@@ -39,11 +39,6 @@
                                 </select>
                             </div>
 
-                            <div class="col-md-12">
-                                <label class="form-label">توضیحات</label>
-                                <textarea class="form-control" name="description" rows="3"></textarea>
-                            </div>
-
                             <div class="col-md-6">
                                 <label class="form-label">Aid Source Account</label>
                                 <select name="source_account_id" class="form-control">
@@ -69,7 +64,10 @@
                                 <input type="number" step="0.01" class="form-control" name="amount">
                             </div>
 
-
+                            <div class="col-md-12">
+                                <label class="form-label">توضیحات</label>
+                                <textarea class="form-control" name="description" rows="3"></textarea>
+                            </div>
 
                                 <div class="col-12 mt-3">
                                     <button class="btn btn-primary" type="submit">ذخیره</button>

@@ -7,7 +7,7 @@
 
             <div class="py-3 d-flex align-items-sm-center flex-sm-row flex-column">
                 <div class="flex-grow-1">
-                    <h4 class="fs-18 fw-semibold m-0">Dashboard</h4>
+                    <h4 class="fs-18 fw-semibold m-0">داشبورد</h4>
                 </div>
             </div>
 
@@ -20,7 +20,7 @@
                             <div class="card">
                                 <div class="card-body">
                                     <div class="d-flex align-items-center">
-                                        <div class="fs-14 mb-1">Total Users</div>
+                                        <div class="fs-14 mb-1">کاربران</div>
                                     </div>
 
                                     <div class="d-flex align-items-baseline mb-2">
@@ -41,7 +41,7 @@
                             <div class="card">
                                 <div class="card-body">
                                     <div class="d-flex align-items-center">
-                                        <div class="fs-14 mb-1">Expense Total</div>
+                                        <div class="fs-14 mb-1">مجموعه مصارفات</div>
                                     </div>
 
                                     <div class="d-flex align-items-baseline mb-2">
@@ -63,7 +63,7 @@
                             <div class="card">
                                 <div class="card-body">
                                     <div class="d-flex align-items-center">
-                                        <div class="fs-14 mb-1">Receive Payment</div>
+                                        <div class="fs-14 mb-1">مبلغ دریافت شده</div>
                                     </div>
 
                                     <div class="d-flex align-items-baseline mb-2">
@@ -85,7 +85,7 @@
                             <div class="card">
                                 <div class="card-body">
                                     <div class="d-flex align-items-center">
-                                        <div class="fs-14 mb-1">Monthly Recive Payment</div>
+                                        <div class="fs-14 mb-1">فیس دریافتی ماهانه</div>
                                     </div>
 
                                     <div class="d-flex align-items-baseline mb-2">
@@ -116,7 +116,7 @@
 
                     <div class="d-flex align-items-center">
                         <div class="fs-14 mb-1">
-                            Total Balance
+                            مجموعه بلانس
                         </div>
                     </div>
 
@@ -135,7 +135,7 @@
                     </div>
 
                     <small class="text-muted">
-                        Income + Receive Payment
+                        درآمد + پول دریافتی
                     </small>
 
                 </div>
@@ -149,7 +149,7 @@
 
                     <div class="d-flex align-items-center">
                         <div class="fs-14 mb-1">
-                            Current Balance
+                            مبلغ فعلی
                         </div>
                     </div>
 
@@ -168,7 +168,7 @@
                     </div>
 
                     <small class="text-muted">
-                        Income + Receive - Expense - Aids
+                        درآمد + دریافتی - مصارف - کمک ها
                     </small>
 
                 </div>
@@ -180,7 +180,6 @@
 
     
 
-
             <!-- Start Monthly Sales -->
             <div class="row">
                 <div class="col-md-6 col-xl-6">
@@ -191,7 +190,7 @@
                                 <div class="border border-dark rounded-2 me-2 widget-icons-sections">
                                     <i data-feather="table" class="widgets-icons"></i>
                                 </div>
-                                <h5 class="card-title mb-0">Info In Chart</h5>
+                                <h5 class="card-title mb-0">اطلاعات آماری</h5>
                             </div>
                         </div>
 
@@ -199,170 +198,79 @@
                             <div class="table-responsive">
                                 <table class="table table-traffic mb-0">
                                     <tbody>
-
                                         <thead>
                                             <tr>
-
                                                 <th>
-                                                    Section
+                                                    بخش
                                                 </th>
-
                                                 <th>
-                                                    Total
+                                                    مجموع
                                                 </th>
-
                                                 <th>
-                                                    Current Month
+                                                    ماه جاری
                                                 </th>
-
-
-
                                             </tr>
                                         </thead>
-
-
-
                                         <tr>
-
                                             <td>
-
-                                                Total Users
-
+                                                مجموع کاربران
                                             </td>
-
                                             <td>
-
                                                 {{ number_format($totalUser) }}
-
                                             </td>
-
                                             <td>
-
                                                 {{ number_format($monthUser) }}
 
-
                                             </td>
-
-
-
                                         </tr>
-
-
-
-
                                         <tr>
-
                                             <td>
-
-                                                Total Receive
-
+                                                مجموع دریافتی
                                             </td>
-
                                             <td>
-
                                                 {{ number_format($totalReceive) }}
-
                                             </td>
-
                                             <td>
-
                                                 {{ number_format($monthReceive) }}
-
                                             </td>
-
-
-
                                         </tr>
-
-
-
-
                                         <tr>
-
                                             <td>
-
-                                                Total Credit (Available)
-
+                                                مجموع اعتبار (موجودی)
                                             </td>
-
                                             <td>
-
                                                 {{ number_format($totalcredit, 2) }}
-
                                             </td>
-
                                             <td>
-
                                                 {{ number_format($remaining_amount, 2) }}
-
                                             </td>
-
-
-
                                         </tr>
-
-
-
-
                                         <tr>
-
                                             <td>
-
-                                                Total Expense
-
+                                                مجموع مصارف
                                             </td>
-
                                             <td>
-
                                                 {{ number_format($totalExpense) }}
-
                                             </td>
-
                                             <td>
-
                                                 {{ number_format($monthExpense) }}
-
                                             </td>
-
-
-
                                         </tr>
-
-
-
-
                                         <tr>
-
                                             <td>
-
-                                                Balance
-
+                                                بلانس
                                             </td>
-
                                             <td>
-
                                                 {{ number_format($currentBalance, 2) }}
-
                                             </td>
-
                                             <td>
-
                                                 {{ number_format($monthCurrentBalance, 2) }}
-
-
                                             </td>
-
-
-
                                         </tr>
-
-
-
                                     </tbody>
                                 </table>
                             </div>
                         </div>
-
                     </div>
                 </div>
 
@@ -376,7 +284,7 @@
                                 <div class="border border-dark rounded-2 me-2 widget-icons-sections">
                                     <i data-feather="tablet" class="widgets-icons"></i>
                                 </div>
-                                <h5 class="card-title mb-0">Best Source</h5>
+                                <h5 class="card-title mb-0">بهترین منابع درآمد</h5>
                             </div>
                         </div>
 
@@ -384,74 +292,40 @@
                             <div class="table-responsive">
                                 <table class="table table-traffic mb-0">
                                     <tbody>
-
                                         <thead>
-
                                             <tr>
-
                                                 <th>
-
-                                                    Income Type
-
+                                                    نوع درآمد
                                                 </th>
-
                                                 <th colspan="2">
-
-                                                    Amount
-
+                                                    مبلغ
                                                 </th>
-
                                             </tr>
-
                                         </thead>
-
-
-
                                         @foreach ($incomes as $item)
                                             @php
-
                                                 $percent = $totalIncome > 0 ? ($item->total / $totalIncome) * 100 : 0;
                                             @endphp
-
-
                                             <tr>
-
                                                 <td>
-
                                                     {{ $item->category->name }}
-
                                                 </td>
-
-
                                                 <td>
-
                                                     {{ number_format($item->total) }}
-
                                                 </td>
-
-
                                                 <td class="w-50">
-
                                                     <div class="progress progress-md">
-
                                                         <div class="progress-bar bg-primary"
                                                             style="width:{{ $percent }}%">
-
                                                         </div>
-
                                                     </div>
-
                                                 </td>
-
                                             </tr>
                                         @endforeach
-
-
                                     </tbody>
                                 </table>
                             </div>
                         </div>
-
                     </div>
                 </div>
             </div>
