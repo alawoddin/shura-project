@@ -151,14 +151,14 @@
                 @if (Auth::guard('web')->user()->can('all.report'))
                     <li>
                         <a href="#Reports" data-bs-toggle="collapse">
-                            <span> Reports </span>
+                            <span> گذارشات </span>
                             <span class="menu-arrow"></span>
                         </a>
                         <div class="collapse" id="Reports">
                             <ul class="nav-second-level">
                                 <li>
                                     <a href="{{ route('all.report') }}" class="tp-link">
-                                        <span> All Reports </span>
+                                        <span> تمام گدارشات </span>
                                     </a>
                                 </li>
                             </ul>
