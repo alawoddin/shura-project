@@ -51,4 +51,15 @@ class EthnicBranchController extends Controller
 
         return redirect()->route('all.ethnic')->with($notification);
     }
+
+    public function DeleteEthnic($id){
+        EthnicBranch::findOrFail($id)->delete();
+
+        $notification = array(
+            'message' => 'شاخه قومی موفقانه حذف شد',
+            'alert-type' => 'success'
+        );
+
+        return redirect()->route('all.ethnic')->with($notification);
+    }
 }
