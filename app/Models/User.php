@@ -51,6 +51,16 @@ class User extends Authenticatable
         return $this->hasMany(MemberFinancialReport::class, 'member_id');
     }
 
+    public function ethnicBranch()
+    {
+        return $this->belongsTo(EthnicBranch::class);
+    }
+
+    public function representativeName()
+    {
+        return $this->belongsTo(Representative::class, 'representative_id');
+    }
+
      public static function getpermissionGroups(){
         $permission_groups = DB::table('permissions')->select('group_name')->groupBy('group_name')->get();
         return $permission_groups;

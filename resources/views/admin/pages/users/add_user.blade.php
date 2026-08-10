@@ -154,12 +154,21 @@
 
                         <div class="col-md-4 mb-3">
                             <label>شاخه قومی</label>
-                            <input type="text" name="ethnic_branch" class="form-control">
+                            <select name="ethnic_branch_id" id="ethnic_branch_id" class="form-control">
+                                <option value="">انتخاب شاخه قومی</option>
+                                @foreach ($ethnicBranches as $branch)
+                                    <option value="{{ $branch->id }}" {{ old('ethnic_branch_id') == $branch->id ? 'selected' : '' }}>
+                                        {{ $branch->name }}
+                                    </option>
+                                @endforeach
+                            </select>
                         </div>
 
                         <div class="col-md-4 mb-3">
                             <label>اسم نماینده</label>
-                            <input type="text" name="representative_name" class="form-control">
+                            <select name="representative_id" id="representative_id" class="form-control">
+                                <option value="">ابتدا شاخه قومی را انتخاب کنید</option>
+                            </select>
                         </div>
 
                         <div class="col-md-4 mb-3">
@@ -253,6 +262,36 @@
                     $(element).removeClass('is-invalid');
                 },
             });
+
+            function loadRepresentatives(ethnicBranchId, selectedId = null) {
+                const $representativeSelect = $('#representative_id');
+
+                if (!ethnicBranchId) {
+                    $representativeSelect.html('<option value="">ابتدا شاخه قومی را انتخاب کنید</option>');
+                    return;
+                }
+
+                $representativeSelect.html('<option value="">در حال بارگذاری...</option>');
+
+                $.get("{{ url('admin/representatives/by-ethnic') }}/" + ethnicBranchId, function(data) {
+                    let options = '<option value="">انتخاب نماینده</option>';
+
+                    data.forEach(function(item) {
+                        const selected = selectedId == item.id ? 'selected' : '';
+                        options += `<option value="${item.id}" ${selected}>${item.name}</option>`;
+                    });
+
+                    $representativeSelect.html(options);
+                });
+            }
+
+            $('#ethnic_branch_id').on('change', function() {
+                loadRepresentatives($(this).val());
+            });
+
+            if ($('#ethnic_branch_id').val()) {
+                loadRepresentatives($('#ethnic_branch_id').val(), "{{ old('representative_id') }}");
+            }
         });
     </script>
 

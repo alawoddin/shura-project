@@ -457,12 +457,12 @@
 
                                     <div class="info-item">
                                         <span>شاخه قومی</span>
-                                        <strong>{{ $users->ethnic_branch }}</strong>
+                                        <strong>{{ $users->ethnicBranch->name ?? '-' }}</strong>
                                     </div>
 
                                     <div class="info-item">
                                         <span>نام نماینده</span>
-                                        <strong>{{ $users->representative_name }}</strong>
+                                        <strong>{{ $users->representativeName->name ?? '-' }}</strong>
                                     </div>
 
                                     <div class="info-item">

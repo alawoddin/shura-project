@@ -3,22 +3,32 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
+use App\Models\EthnicBranch;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
 class UsersController extends Controller
 {
-    public function AllUsers(){
-        $users = User::where('role', 'user')->latest()->get();
+    public function AllUsers()
+    {
+        $users = User::with(['ethnicBranch', 'representativeName'])
+            ->where('role', 'user')
+            ->latest()
+            ->get();
+
         return view('admin.pages.users.all_users', compact('users'));
     }
 
-    public function AddUser(){
-        return view('admin.pages.users.add_user');
+    public function AddUser()
+    {
+        $ethnicBranches = EthnicBranch::orderBy('name')->get();
+
+        return view('admin.pages.users.add_user', compact('ethnicBranches'));
     }
 
-    public function StoreUser(Request $request){
+    public function StoreUser(Request $request)
+    {
         $photoName = null;
         $documentName = null;
 
@@ -31,14 +41,14 @@ class UsersController extends Controller
             '۰'=>'0', '۱'=>'1', '۲'=>'2', '۳'=>'3', '۴'=>'4',
             '۵'=>'5', '۶'=>'6', '۷'=>'7', '۸'=>'8', '۹'=>'9',
         ]);
-       
-        if($request->file('photo')){
+
+        if ($request->file('photo')) {
             $photo = $request->file('photo');
             $photoName = date('YmdHi').$photo->getClientOriginalName();
             $photo->move(public_path('upload/user_images'), $photoName);
         }
 
-        if($request->file('documents')){
+        if ($request->file('documents')) {
             $document = $request->file('documents');
             $documentName = date('YmdHi').$document->getClientOriginalName();
             $document->move(public_path('upload/user_documents'), $documentName);
@@ -66,8 +76,8 @@ class UsersController extends Controller
             'status' => $request->status,
             'member_type' => $request->member_type,
             'monthly_fee' => $request->monthly_fee,
-            'ethnic_branch' => $request->ethnic_branch,
-            'representative_name' => $request->representative_name,
+            'ethnic_branch_id' => $request->ethnic_branch_id,
+            'representative_id' => $request->representative_id,
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'role' => $request->role,
@@ -75,20 +85,22 @@ class UsersController extends Controller
             'documents' => $documentName,
         ]);
 
-        $notification = array(
+        return redirect()->route('all.users')->with([
             'message' => 'کاربر موفقانه اضافه شد',
-            'alert-type' => 'success'
-        );
-
-        return redirect()->route('all.users')->with($notification);
+            'alert-type' => 'success',
+        ]);
     }
 
-    public function EditUsers($id){
+    public function EditUsers($id)
+    {
         $users = User::findOrFail($id);
-        return view('admin.pages.users.edit_users', compact('users'));
+        $ethnicBranches = EthnicBranch::orderBy('name')->get();
+
+        return view('admin.pages.users.edit_users', compact('users', 'ethnicBranches'));
     }
 
-    public function UpdateUsers(Request $request){
+    public function UpdateUsers(Request $request)
+    {
         $user = User::findOrFail($request->id);
 
         $nationalId = strtr($request->national_id, [
@@ -101,7 +113,7 @@ class UsersController extends Controller
             '۵'=>'5', '۶'=>'6', '۷'=>'7', '۸'=>'8', '۹'=>'9',
         ]);
 
-        if($request->file('photo')){
+        if ($request->file('photo')) {
             @unlink(public_path('upload/user_images/'.$user->photo));
             $photo = $request->file('photo');
             $photoName = date('YmdHi').$photo->getClientOriginalName();
@@ -109,7 +121,7 @@ class UsersController extends Controller
             $user->photo = $photoName;
         }
 
-        if($request->file('documents')){
+        if ($request->file('documents')) {
             @unlink(public_path('upload/user_documents/'.$user->documents));
             $document = $request->file('documents');
             $documentName = date('YmdHi').$document->getClientOriginalName();
@@ -139,46 +151,46 @@ class UsersController extends Controller
             'status' => $request->status,
             'member_type' => $request->member_type,
             'monthly_fee' => $request->monthly_fee,
-            'ethnic_branch' => $request->ethnic_branch,
-            'representative_name' => $request->representative_name,
+            'ethnic_branch_id' => $request->ethnic_branch_id,
+            'representative_id' => $request->representative_id,
             'email' => $request->email,
             'role' => $request->role,
         ]);
 
-        if($request->password){
+        if ($request->password) {
             $user->update([
-                'password' => Hash::make($request->password)
+                'password' => Hash::make($request->password),
             ]);
         }
 
-        $notification = array(
+        return redirect()->route('all.users')->with([
             'message' => 'کاربر موفقانه ویرایش شد',
-            'alert-type' => 'success'
-        );
-
-        return redirect()->route('all.users')->with($notification);
+            'alert-type' => 'success',
+        ]);
     }
 
-    public function DeleteUser($id){
+    public function DeleteUser($id)
+    {
         $user = User::findOrFail($id);
 
-        if($user->photo){
+        if ($user->photo) {
             @unlink(public_path('upload/user_images/'.$user->photo));
         }
-        if($user->documents){
+        if ($user->documents) {
             @unlink(public_path('upload/user_documents/'.$user->documents));
         }
         $user->delete();
 
-        $notification = array(
+        return redirect()->route('all.users')->with([
             'message' => 'کاربر موفقانه حذف شد',
-            'alert-type' => 'success'
-        );
-        return redirect()->route('all.users')->with($notification);
+            'alert-type' => 'success',
+        ]);
     }
 
-    public function UsersDetails(int $id){
-        $users = User::findOrFail($id);
+    public function UsersDetails(int $id)
+    {
+        $users = User::with(['ethnicBranch', 'representativeName'])->findOrFail($id);
+
         return view('admin.pages.users.users_details', compact('users'));
     }
 }

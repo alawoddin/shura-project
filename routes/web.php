@@ -13,6 +13,7 @@ use App\Http\Controllers\Backend\UnpaidPaymentController;
 use App\Http\Controllers\Backend\UsersController;
 use App\Http\Controllers\Backend\AidController;
 use App\Http\Controllers\Backend\EthnicBranchController;
+use App\Http\Controllers\Backend\RepresentativeController;
 use App\Http\Controllers\Backend\ReportController;
 use App\Http\Controllers\Backend\RoleController;
 use App\Http\Controllers\Client\ClientController;
@@ -72,7 +73,17 @@ Route::prefix('admin')->middleware(['auth' ,IsAdmin::class ])->group(function ()
         Route::get('/edit/ethnic/{id}', 'EditEthnic')->name('edit.ethnic');
         Route::post('/update/ethnic',  'UpdateEthnic')->name('update.ethnic');
         Route::get('/delete/ethnic/{id}', 'DeleteEthnic')->name('delete.ethnic');
-        // Route::get('/users/details/{id}', 'UsersEthnic')->name('users.details');
+    });
+
+    // Representatives
+    Route::controller(RepresentativeController::class)->group(function () {
+        Route::get('/all/representatives', 'AllRepresentatives')->name('all.representatives');
+        Route::get('/add/representative', 'AddRepresentative')->name('add.representative');
+        Route::post('/store/representative', 'StoreRepresentative')->name('store.representative');
+        Route::get('/edit/representative/{id}', 'EditRepresentative')->name('edit.representative');
+        Route::post('/update/representative', 'UpdateRepresentative')->name('update.representative');
+        Route::get('/delete/representative/{id}', 'DeleteRepresentative')->name('delete.representative');
+        Route::get('/representatives/by-ethnic/{ethnicBranchId}', 'ByEthnicBranch')->name('representatives.by.ethnic');
     });
 
     Route::controller(FamilyController::class)->group(function () {

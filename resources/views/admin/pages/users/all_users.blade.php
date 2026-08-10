@@ -101,8 +101,8 @@
                                                     </span>
                                                 </td>
                                                 <td class="text-center">{{ $item->monthly_fee }}</td>
-                                                <td class="text-center">{{ $item->ethnic_branch }}</td>
-                                                <td class="text-center">{{ $item->representative_name }}</td>
+                                                <td class="text-center">{{ $item->ethnicBranch->name ?? '-' }}</td>
+                                                <td class="text-center">{{ $item->representativeName->name ?? '-' }}</td>
 
                                                 <td class="text-center">
                                                     <img src="{{ (!empty($item->photo)) 

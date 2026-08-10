@@ -4,13 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class EthnicBranch extends Model
+class Representative extends Model
 {
     protected $guarded = [];
 
-    public function representatives()
+    public function ethnicBranch()
     {
-        return $this->hasMany(Representative::class);
+        return $this->belongsTo(EthnicBranch::class);
     }
 
     public function users()

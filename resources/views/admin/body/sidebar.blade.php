@@ -52,6 +52,13 @@
                         </a>
                     </li>
 
+                    <li>
+                        <a href="{{ route('all.representatives') }}" class="tp-link">
+                            <i data-feather="users"></i>
+                            <span> نماینده‌ها </span>
+                        </a>
+                    </li>
+
                 {{-- <li>
                     <a href="{{ route('all.users.family') }}" class="tp-link">
                         <i data-feather="home"></i>
