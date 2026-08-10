@@ -12,6 +12,7 @@ use App\Http\Controllers\Backend\MemberFinancialReportController;
 use App\Http\Controllers\Backend\UnpaidPaymentController;
 use App\Http\Controllers\Backend\UsersController;
 use App\Http\Controllers\Backend\AidController;
+use App\Http\Controllers\Backend\EthnicBranchController;
 use App\Http\Controllers\Backend\ReportController;
 use App\Http\Controllers\Backend\RoleController;
 use App\Http\Controllers\Client\ClientController;
@@ -61,6 +62,17 @@ Route::prefix('admin')->middleware(['auth' ,IsAdmin::class ])->group(function ()
         Route::post('/update/users',  'UpdateUsers')->name('update.users');
         Route::get('/delete/user/{id}', 'DeleteUser')->name('delete.user');
         Route::get('/users/details/{id}', 'UsersDetails')->name('users.details');
+    });
+
+    // All Ethnic Branches
+    Route::controller(EthnicBranchController::class)->group(function () {
+        Route::get('/all/ethnic', 'AllEthnic')->name('all.ethnic');
+        Route::get('/add/ethnic', 'AddEthnic')->name('add.ethnic');
+        Route::post('/store/ethnic', 'StoreEthnic')->name('store.ethnic');
+        Route::get('/edit/ethnic/{id}', 'EditEthnic')->name('edit.ethnic');
+        Route::post('/update/ethnic',  'UpdateEthnic')->name('update.ethnic');
+        Route::get('/delete/ethnic/{id}', 'DeleteEthnic')->name('delete.ethnic');
+        // Route::get('/users/details/{id}', 'UsersEthnic')->name('users.details');
     });
 
     Route::controller(FamilyController::class)->group(function () {

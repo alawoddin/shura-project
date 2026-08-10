@@ -45,6 +45,12 @@
                     </li>
                 @endif
 
+                    <li>
+                        <a href="{{ route('all.ethnic') }}" class="tp-link">
+                            <i data-feather="home"></i>
+                            <span> شاخه های قومی </span>
+                        </a>
+                    </li>
 
                 {{-- <li>
                     <a href="{{ route('all.users.family') }}" class="tp-link">
