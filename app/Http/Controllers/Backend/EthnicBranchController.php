@@ -12,4 +12,22 @@ class EthnicBranchController extends Controller
         $all_ethnic = EthnicBranch::all();
         return view('admin.pages.ethnics.all_ethnic', compact('all_ethnic'));
     }
+
+    public function AddEthnic(){
+        return view('admin.pages.ethnics.add_ethnic');
+    }
+
+    public function StoreEthnic(Request $request){
+
+        EthnicBranch::create([
+            'name' => $request->name,
+        ]);
+
+          $notification = array(
+            'message' => 'شاخه قومی موفقانه اضافه شد',
+            'alert-type' => 'success'
+        );
+
+        return redirect()->route('all.ethnic')->with($notification);
+    }
 }
