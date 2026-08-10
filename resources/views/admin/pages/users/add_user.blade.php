@@ -45,6 +45,11 @@
                         </div>
 
                         <div class="col-md-4 mb-3">
+                            <label>نمبر تذکره </label>
+                            <input type="text" name="national_id" class="form-control">
+                        </div>
+
+                        <div class="col-md-4 mb-3">
                             <label>تاریخ تولد</label>
                             <input type="date" name="birth_date" class="form-control">
                         </div>

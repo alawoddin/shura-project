@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('grandfather_name')->nullable();
             $table->string('lastname')->nullable();
             $table->enum('gender', ['male', 'female'])->default('male');
+            $table->string('national_id')->nullable()->unique();
             $table->date('birth_date')->nullable();
             $table->string('marital_status')->nullable();
             $table->string('blood_group')->nullable();

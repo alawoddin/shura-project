@@ -21,6 +21,16 @@ class UsersController extends Controller
     public function StoreUser(Request $request){
         $photoName = null;
         $documentName = null;
+
+        $nationalId = strtr($request->national_id, [
+            '۰'=>'0', '۱'=>'1', '۲'=>'2', '۳'=>'3', '۴'=>'4',
+            '۵'=>'5', '۶'=>'6', '۷'=>'7', '۸'=>'8', '۹'=>'9',
+        ]);
+
+        $phone = strtr($request->phone, [
+            '۰'=>'0', '۱'=>'1', '۲'=>'2', '۳'=>'3', '۴'=>'4',
+            '۵'=>'5', '۶'=>'6', '۷'=>'7', '۸'=>'8', '۹'=>'9',
+        ]);
        
         if($request->file('photo')){
             $photo = $request->file('photo');
@@ -40,6 +50,7 @@ class UsersController extends Controller
             'grandfather_name' => $request->grandfather_name,
             'lastname' => $request->lastname,
             'gender' => $request->gender,
+            'national_id' => $nationalId,
             'birth_date' => $request->birth_date,
             'marital_status' => $request->marital_status,
             'blood_group' => $request->blood_group,
@@ -48,7 +59,7 @@ class UsersController extends Controller
             'education_level' => $request->education_level,
             'job' => $request->job,
             'work_place' => $request->work_place,
-            'phone' => $request->phone,
+            'phone' => $phone,
             'economic_status' => $request->economic_status,
             'family_members' => $request->family_members,
             'register_date' => $request->register_date,
@@ -79,6 +90,17 @@ class UsersController extends Controller
 
     public function UpdateUsers(Request $request){
         $user = User::findOrFail($request->id);
+
+        $nationalId = strtr($request->national_id, [
+            '۰'=>'0', '۱'=>'1', '۲'=>'2', '۳'=>'3', '۴'=>'4',
+            '۵'=>'5', '۶'=>'6', '۷'=>'7', '۸'=>'8', '۹'=>'9',
+        ]);
+
+        $phone = strtr($request->phone, [
+            '۰'=>'0', '۱'=>'1', '۲'=>'2', '۳'=>'3', '۴'=>'4',
+            '۵'=>'5', '۶'=>'6', '۷'=>'7', '۸'=>'8', '۹'=>'9',
+        ]);
+
         if($request->file('photo')){
             @unlink(public_path('upload/user_images/'.$user->photo));
             $photo = $request->file('photo');
@@ -101,6 +123,7 @@ class UsersController extends Controller
             'grandfather_name' => $request->grandfather_name,
             'lastname' => $request->lastname,
             'gender' => $request->gender,
+            'national_id' => $nationalId,
             'birth_date' => $request->birth_date,
             'marital_status' => $request->marital_status,
             'blood_group' => $request->blood_group,
@@ -109,7 +132,7 @@ class UsersController extends Controller
             'education_level' => $request->education_level,
             'job' => $request->job,
             'work_place' => $request->work_place,
-            'phone' => $request->phone,
+            'phone' => $phone,
             'economic_status' => $request->economic_status,
             'family_members' => $request->family_members,
             'register_date' => $request->register_date,
