@@ -44,7 +44,7 @@
                                                 <td class="text-center">{{ $item->name }}</td>
 
                                                 <td class="text-center">
-                                                    <a href="{{ route('edit.aid', $item->id) }}" class="btn btn-success btn-sm">ویرایش</a>
+                                                    <a href="{{ route('edit.ethnic', $item->id) }}" class="btn btn-success btn-sm">ویرایش</a>
 
                                                     <a href="{{ route('delete.aid', $item->id) }}" class="btn btn-danger btn-sm" id="delete">حذف</a>
                                                 </td>
