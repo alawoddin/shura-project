@@ -10,6 +10,7 @@ use App\Models\Expense;
 use App\Models\Income;
 use App\Models\MemberFinancialReport;
 use App\Models\ReceivePayment;
+use App\Models\Undeposited;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 
@@ -17,7 +18,11 @@ class FinancialService
 {
     public function getDashboardStats(): array
     {
+        $totalIncomeAll = (float) Income::sum('amount');
         $totalIncome = $this->getTransferredIncomeTotal();
+        $monthIncomeAll = (float) Income::whereMonth('date', now()->month)
+            ->whereYear('date', now()->year)
+            ->sum('amount');
         $monthIncome = $this->getTransferredIncomeTotal(now()->month, now()->year);
 
         $totalReceiveCredit = (float) ReceivePayment::where('transaction_type', 'credit')->sum('amount');
@@ -34,50 +39,136 @@ class FinancialService
             ->sum('amount');
         $monthReceive = $monthReceiveCredit - $monthReceiveDebit;
 
+        $totalMemberDebit = (float) MemberFinancialReport::sum('debit');
+        $totalMemberCredit = (float) MemberFinancialReport::sum('credit');
+        $monthMemberDebit = (float) MemberFinancialReport::whereMonth('date', now()->month)
+            ->whereYear('date', now()->year)
+            ->sum('debit');
+        $monthMemberCredit = (float) MemberFinancialReport::whereMonth('date', now()->month)
+            ->whereYear('date', now()->year)
+            ->sum('credit');
+
+        $totalDebit = $totalReceiveDebit + $totalMemberDebit;
+        $totalCredit = $totalReceiveCredit + $totalMemberCredit;
+        $monthDebit = $monthReceiveDebit + $monthMemberDebit;
+        $monthCredit = $monthReceiveCredit + $monthMemberCredit;
+
         $totalExpense = (float) Expense::sum('amount');
         $monthExpense = (float) Expense::whereMonth('date', now()->month)
             ->whereYear('date', now()->year)
             ->sum('amount');
 
         $totalAids = (float) Aids::sum('amount');
+        $monthAids = (float) Aids::whereMonth('date', now()->month)
+            ->whereYear('date', now()->year)
+            ->sum('amount');
+
         $totalLoansDisbursed = (float) Credit::sum('amount');
         $totalLoansRemaining = (float) Credit::where('status', 'active')->sum('remaining_amount');
 
-        $totalBalance = $totalIncome + $totalReceive;
+        $totalMoneyIn = $totalIncome + $totalReceive;
+        $totalBalance = $totalMoneyIn;
         $currentBalance = $totalBalance - $totalExpense - $totalAids;
-        $monthCurrentBalance = ($monthIncome + $monthReceive) - $monthExpense;
+        $monthCurrentBalance = ($monthIncome + $monthReceive) - $monthExpense - $monthAids;
 
         $totalCreditPool = $totalBalance - $totalExpense - $totalAids;
-        $totalCredit = max(0, $totalCreditPool - $totalLoansDisbursed);
+        $totalCreditAvailable = max(0, $totalCreditPool - $totalLoansDisbursed);
 
         $incomes = Income::with('category')
             ->selectRaw('category_id, SUM(amount) as total')
             ->groupBy('category_id')
             ->orderByDesc('total')
-            ->limit(6)
             ->get();
+
+        $accountSummaries = $this->getAccountBalanceSummaries();
 
         return [
             'incomes' => $incomes,
+            'accountSummaries' => $accountSummaries,
+            'totalIncomeAll' => $totalIncomeAll,
             'totalIncome' => $totalIncome,
+            'monthIncomeAll' => $monthIncomeAll,
             'monthIncome' => $monthIncome,
             'totalExpense' => $totalExpense,
             'monthExpense' => $monthExpense,
+            'totalAids' => $totalAids,
+            'monthAids' => $monthAids,
             'totalBalance' => $totalBalance,
             'currentBalance' => $currentBalance,
             'monthCurrentBalance' => $monthCurrentBalance,
             'totalReceive' => $totalReceive,
             'monthReceive' => $monthReceive,
+            'totalReceiveCredit' => $totalReceiveCredit,
+            'totalReceiveDebit' => $totalReceiveDebit,
+            'totalDebit' => $totalDebit,
             'totalCredit' => $totalCredit,
+            'monthDebit' => $monthDebit,
+            'monthCredit' => $monthCredit,
+            'totalMemberDebit' => $totalMemberDebit,
+            'totalMemberCredit' => $totalMemberCredit,
+            'totalCreditAvailable' => $totalCreditAvailable,
             'totalLoansDisbursed' => $totalLoansDisbursed,
             'totalLoansRemaining' => $totalLoansRemaining,
             'totalUser' => User::count(),
             'monthUser' => User::whereMonth('created_at', now()->month)
                 ->whereYear('created_at', now()->year)
                 ->count(),
-            'totalcredit' => $totalCredit,
+            'totalcredit' => $totalCreditAvailable,
             'remaining_amount' => $totalLoansRemaining,
         ];
+    }
+
+    public function getAccountBalanceSummaries()
+    {
+        $cashAccounts = Category::cashAccounts()->orderBy('name')->get();
+        $incomeAccounts = Category::incomeSources()->orderBy('name')->get();
+        $accounts = $cashAccounts->concat($incomeAccounts);
+
+        $expenseTotals = Expense::selectRaw('source_account_id, SUM(amount) as total')
+            ->groupBy('source_account_id')
+            ->pluck('total', 'source_account_id');
+
+        $aidTotals = Aids::selectRaw('source_account_id, SUM(amount) as total')
+            ->groupBy('source_account_id')
+            ->pluck('total', 'source_account_id');
+
+        $loanTotals = Credit::selectRaw('source_account_id, SUM(amount) as total')
+            ->groupBy('source_account_id')
+            ->pluck('total', 'source_account_id');
+
+        $transferTotals = Undeposited::query()
+            ->where('status', 'transferred')
+            ->whereNotNull('target_account_id')
+            ->join('incomes', 'undepositeds.income_id', '=', 'incomes.id')
+            ->selectRaw('undepositeds.target_account_id as account_id, SUM(incomes.amount) as total')
+            ->groupBy('undepositeds.target_account_id')
+            ->pluck('total', 'account_id');
+
+        $incomeByCategory = Income::selectRaw('category_id, SUM(amount) as total')
+            ->groupBy('category_id')
+            ->pluck('total', 'category_id');
+
+        return $accounts->map(function ($account) use ($expenseTotals, $aidTotals, $loanTotals, $transferTotals, $incomeByCategory) {
+            $expenseOut = (float) ($expenseTotals[$account->id] ?? 0);
+            $aidOut = (float) ($aidTotals[$account->id] ?? 0);
+            $loanOut = (float) ($loanTotals[$account->id] ?? 0);
+            $transferIn = (float) ($transferTotals[$account->id] ?? 0);
+            $incomeIn = (float) ($incomeByCategory[$account->id] ?? 0);
+            $moneyIn = $account->account_type === 'cash' ? $transferIn : $incomeIn;
+            $moneyOut = $expenseOut + $aidOut + $loanOut;
+
+            return [
+                'id' => $account->id,
+                'name' => $account->name,
+                'account_type' => $account->account_type,
+                'money_in' => $moneyIn,
+                'expense_out' => $expenseOut,
+                'aid_out' => $aidOut,
+                'loan_out' => $loanOut,
+                'money_out' => $moneyOut,
+                'remaining' => (float) $account->balance,
+            ];
+        });
     }
 
     public function getTransferredIncomeTotal(?int $month = null, ?int $year = null): float

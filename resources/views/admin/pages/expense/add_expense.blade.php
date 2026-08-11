@@ -35,9 +35,9 @@
                             </div>
 
                             <div class="col-md-6">
-                                <label>حساب منبع (Expense Account)</label>
+                                <label>حساب درآمد (کسر مصرف از این حساب)</label>
                                 <select name="source_account_id" class="form-control">
-                                    <option value="">انتخاب حساب</option>
+                                    <option value="">انتخاب حساب — مثلاً Collected Fees</option>
                                     @foreach ($sourceAccounts as $account)
                                         <option value="{{ $account->id }}">{{ $account->name }}</option>
                                     @endforeach

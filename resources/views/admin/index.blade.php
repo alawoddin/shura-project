@@ -11,7 +11,7 @@
                 </div>
             </div>
 
-            <!-- start row -->
+            <!-- Summary cards -->
             <div class="row">
                 <div class="col-md-12 col-xl-12">
                     <div class="row g-3">
@@ -19,168 +19,180 @@
                         <div class="col-md-6 col-xl-3">
                             <div class="card">
                                 <div class="card-body">
-                                    <div class="d-flex align-items-center">
-                                        <div class="fs-14 mb-1">کاربران</div>
+                                    <div class="fs-14 mb-1">مجموع درآمد</div>
+                                    <div class="d-flex align-items-baseline mb-1">
+                                        <div class="fs-22 mb-0 me-2 fw-semibold text-success">
+                                            {{ number_format($totalIncomeAll, 2) }}
+                                        </div>
+                                        <span class="text-success"><i data-feather="trending-up"></i></span>
                                     </div>
+                                    <small class="text-muted">واریز شده: {{ number_format($totalIncome, 2) }}</small>
+                                </div>
+                            </div>
+                        </div>
 
-                                    <div class="d-flex align-items-baseline mb-2">
+                        <div class="col-md-6 col-xl-3">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="fs-14 mb-1">مجموع مصارف</div>
+                                    <div class="d-flex align-items-baseline mb-1">
+                                        <div class="fs-22 mb-0 me-2 fw-semibold text-danger">
+                                            {{ number_format($totalExpense, 2) }}
+                                        </div>
+                                        <span class="text-danger"><i data-feather="trending-down"></i></span>
+                                    </div>
+                                    <small class="text-muted">ماه جاری: {{ number_format($monthExpense, 2) }}</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 col-xl-3">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="fs-14 mb-1">مجموع بستانکار (Credit)</div>
+                                    <div class="d-flex align-items-baseline mb-1">
+                                        <div class="fs-22 mb-0 me-2 fw-semibold text-primary">
+                                            {{ number_format($totalCredit, 2) }}
+                                        </div>
+                                        <span class="text-primary"><i data-feather="plus-circle"></i></span>
+                                    </div>
+                                    <small class="text-muted">دریافتی: {{ number_format($totalReceiveCredit, 2) }}</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 col-xl-3">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="fs-14 mb-1">مجموع بدهکار (Debit)</div>
+                                    <div class="d-flex align-items-baseline mb-1">
+                                        <div class="fs-22 mb-0 me-2 fw-semibold text-warning">
+                                            {{ number_format($totalDebit, 2) }}
+                                        </div>
+                                        <span class="text-warning"><i data-feather="minus-circle"></i></span>
+                                    </div>
+                                    <small class="text-muted">دریافتی: {{ number_format($totalReceiveDebit, 2) }}</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 col-xl-3">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="fs-14 mb-1">مبلغ دریافت شده</div>
+                                    <div class="d-flex align-items-baseline mb-1">
+                                        <div class="fs-22 mb-0 me-2 fw-semibold text-black">
+                                            {{ number_format($totalReceive, 2) }}
+                                        </div>
+                                    </div>
+                                    <small class="text-muted">ماه جاری: {{ number_format($monthReceive, 2) }}</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 col-xl-3">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="fs-14 mb-1">مجموعه بلانس</div>
+                                    <div class="d-flex align-items-baseline mb-1">
+                                        <div class="fs-22 mb-0 me-2 fw-semibold text-primary">
+                                            {{ number_format($totalBalance, 2) }}
+                                        </div>
+                                    </div>
+                                    <small class="text-muted">درآمد واریز شده + دریافتی</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 col-xl-3">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="fs-14 mb-1">مبلغ فعلی</div>
+                                    <div class="d-flex align-items-baseline mb-1">
+                                        <div class="fs-22 mb-0 me-2 fw-semibold text-success">
+                                            {{ number_format($currentBalance, 2) }}
+                                        </div>
+                                    </div>
+                                    <small class="text-muted">بلانس - مصارف - کمک‌ها</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 col-xl-3">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="fs-14 mb-1">کاربران</div>
+                                    <div class="d-flex align-items-baseline mb-1">
                                         <div class="fs-22 mb-0 me-2 fw-semibold text-black">{{ $totalUser }}</div>
-                                        <div class="me-auto">
-                                            <span class="text-primary d-inline-flex align-items-center">
-                                                <i data-feather="trending-up" class="ms-1"
-                                                    style="height: 22px; width: 22px;"></i>
-                                            </span>
-                                        </div>
                                     </div>
-                                    <div id="website-visitors" class="apex-charts"></div>
+                                    <small class="text-muted">ماه جاری: {{ $monthUser }}</small>
                                 </div>
                             </div>
-                        </div>
-
-                        <div class="col-md-6 col-xl-3">
-                            <div class="card">
-                                <div class="card-body">
-                                    <div class="d-flex align-items-center">
-                                        <div class="fs-14 mb-1">مجموعه مصارفات</div>
-                                    </div>
-
-                                    <div class="d-flex align-items-baseline mb-2">
-                                        <div class="fs-22 mb-0 me-2 fw-semibold text-black">
-                                            {{ number_format($totalExpense, 2) }}</div>
-                                        <div class="me-auto">
-                                            <span class="text-danger d-inline-flex align-items-center">
-                                                <i data-feather="trending-down" class="ms-1"
-                                                    style="height: 22px; width: 22px;"></i>
-                                            </span>
-                                        </div>
-                                    </div>
-                                    <div id="conversion-visitors" class="apex-charts"></div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-md-6 col-xl-3">
-                            <div class="card">
-                                <div class="card-body">
-                                    <div class="d-flex align-items-center">
-                                        <div class="fs-14 mb-1">مبلغ دریافت شده</div>
-                                    </div>
-
-                                    <div class="d-flex align-items-baseline mb-2">
-                                        <div class="fs-22 mb-0 me-2 fw-semibold text-black">
-                                            {{ number_format($totalReceive, 2) }}</div>
-                                        <div class="me-auto">
-                                            <span class="text-success d-inline-flex align-items-center">
-                                                <i data-feather="trending-up" class="ms-1"
-                                                    style="height: 22px; width: 22px;"></i>
-                                            </span>
-                                        </div>
-                                    </div>
-                                    <div id="session-visitors" class="apex-charts"></div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-md-6 col-xl-3">
-                            <div class="card">
-                                <div class="card-body">
-                                    <div class="d-flex align-items-center">
-                                        <div class="fs-14 mb-1">فیس دریافتی ماهانه</div>
-                                    </div>
-
-                                    <div class="d-flex align-items-baseline mb-2">
-                                        <div class="fs-22 mb-0 me-2 fw-semibold text-black">
-                                            {{ number_format($monthReceive, 2) }}</div>
-                                        <div class="me-auto">
-                                            <span class="text-success d-inline-flex align-items-center">
-                                                <i data-feather="trending-up" class="ms-1"
-                                                    style="height: 22px; width: 22px;"></i>
-                                            </span>
-                                        </div>
-                                    </div>
-                                    <div id="active-users" class="apex-charts"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div> <!-- end sales -->
-            </div> <!-- end row -->
-
-
-             <div class="row mt-3">
-
-        <!-- Total Balance -->
-        <div class="col-md-6 col-xl-6">
-            <div class="card">
-                <div class="card-body">
-
-                    <div class="d-flex align-items-center">
-                        <div class="fs-14 mb-1">
-                            مجموعه بلانس
-                        </div>
-                    </div>
-
-                    <div class="d-flex align-items-baseline mb-2">
-
-                        <div class="fs-22 mb-0 me-2 fw-semibold text-primary">
-                            {{ number_format($totalBalance,2) }}
-                        </div>
-
-                        <div class="me-auto">
-                            <span class="text-primary">
-                                <i data-feather="credit-card"></i>
-                            </span>
                         </div>
 
                     </div>
-
-                    <small class="text-muted">
-                        درآمد + پول دریافتی
-                    </small>
-
                 </div>
             </div>
-        </div>
 
-        <!-- Current Balance -->
-        <div class="col-md-6 col-xl-6">
-            <div class="card">
-                <div class="card-body">
-
-                    <div class="d-flex align-items-center">
-                        <div class="fs-14 mb-1">
-                            مبلغ فعلی
+            <!-- Account balances: income minus expenses per source -->
+            <div class="row mt-3">
+                <div class="col-12">
+                    <div class="card overflow-hidden">
+                        <div class="card-header">
+                            <div class="d-flex align-items-center">
+                                <div class="border border-dark rounded-2 me-2 widget-icons-sections">
+                                    <i data-feather="pie-chart" class="widgets-icons"></i>
+                                </div>
+                                <h5 class="card-title mb-0">موجودی حساب‌ها (درآمد − مصارف)</h5>
+                            </div>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="table table-traffic mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th>حساب / منبع درآمد</th>
+                                            <th>نوع</th>
+                                            <th>درآمد واریزی</th>
+                                            <th>مصارف (-)</th>
+                                            <th>کمک‌ها (-)</th>
+                                            <th>قرض‌ها (-)</th>
+                                            <th>مجموع خروجی (-)</th>
+                                            <th>موجودی فعلی</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @forelse ($accountSummaries as $account)
+                                            <tr>
+                                                <td>{{ $account['name'] }}</td>
+                                                <td>
+                                                    <span class="badge {{ $account['account_type'] === 'cash' ? 'bg-primary' : 'bg-info' }}">
+                                                        {{ $account['account_type'] === 'cash' ? 'نقدی' : 'درآمد' }}
+                                                    </span>
+                                                </td>
+                                                <td class="text-success">{{ number_format($account['money_in'], 2) }}</td>
+                                                <td class="text-danger">{{ number_format($account['expense_out'], 2) }}</td>
+                                                <td class="text-danger">{{ number_format($account['aid_out'], 2) }}</td>
+                                                <td class="text-danger">{{ number_format($account['loan_out'], 2) }}</td>
+                                                <td class="text-danger fw-semibold">{{ number_format($account['money_out'], 2) }}</td>
+                                                <td class="fw-semibold {{ $account['remaining'] >= 0 ? 'text-success' : 'text-danger' }}">
+                                                    {{ number_format($account['remaining'], 2) }}
+                                                </td>
+                                            </tr>
+                                        @empty
+                                            <tr>
+                                                <td colspan="8" class="text-center text-muted">حسابی یافت نشد</td>
+                                            </tr>
+                                        @endforelse
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
-
-                    <div class="d-flex align-items-baseline mb-2">
-
-                        <div class="fs-22 mb-0 me-2 fw-semibold text-success">
-                            {{ number_format($currentBalance,2) }}
-                        </div>
-
-                        <div class="me-auto">
-                            <span class="text-success">
-                                <i data-feather="wallet"></i>
-                            </span>
-                        </div>
-
-                    </div>
-
-                    <small class="text-muted">
-                        درآمد + دریافتی - مصارف - کمک ها
-                    </small>
-
                 </div>
             </div>
-        </div>
 
-    </div>
-
-
-    
-
-            <!-- Start Monthly Sales -->
+            <!-- Stats tables -->
             <div class="row">
                 <div class="col-md-6 col-xl-6">
                     <div class="card overflow-hidden">
@@ -212,60 +224,49 @@
                                             </tr>
                                         </thead>
                                         <tr>
-                                            <td>
-                                                مجموع کاربران
-                                            </td>
-                                            <td>
-                                                {{ number_format($totalUser) }}
-                                            </td>
-                                            <td>
-                                                {{ number_format($monthUser) }}
-
-                                            </td>
+                                            <td>مجموع درآمد</td>
+                                            <td>{{ number_format($totalIncomeAll, 2) }}</td>
+                                            <td>{{ number_format($monthIncomeAll, 2) }}</td>
                                         </tr>
                                         <tr>
-                                            <td>
-                                                مجموع دریافتی
-                                            </td>
-                                            <td>
-                                                {{ number_format($totalReceive) }}
-                                            </td>
-                                            <td>
-                                                {{ number_format($monthReceive) }}
-                                            </td>
+                                            <td>درآمد واریز شده</td>
+                                            <td>{{ number_format($totalIncome, 2) }}</td>
+                                            <td>{{ number_format($monthIncome, 2) }}</td>
                                         </tr>
                                         <tr>
-                                            <td>
-                                                مجموع اعتبار (موجودی)
-                                            </td>
-                                            <td>
-                                                {{ number_format($totalcredit, 2) }}
-                                            </td>
-                                            <td>
-                                                {{ number_format($remaining_amount, 2) }}
-                                            </td>
+                                            <td>مجموع دریافتی</td>
+                                            <td>{{ number_format($totalReceive, 2) }}</td>
+                                            <td>{{ number_format($monthReceive, 2) }}</td>
                                         </tr>
                                         <tr>
-                                            <td>
-                                                مجموع مصارف
-                                            </td>
-                                            <td>
-                                                {{ number_format($totalExpense) }}
-                                            </td>
-                                            <td>
-                                                {{ number_format($monthExpense) }}
-                                            </td>
+                                            <td>بستانکار (Credit)</td>
+                                            <td>{{ number_format($totalCredit, 2) }}</td>
+                                            <td>{{ number_format($monthCredit, 2) }}</td>
                                         </tr>
                                         <tr>
-                                            <td>
-                                                بلانس
-                                            </td>
-                                            <td>
-                                                {{ number_format($currentBalance, 2) }}
-                                            </td>
-                                            <td>
-                                                {{ number_format($monthCurrentBalance, 2) }}
-                                            </td>
+                                            <td>بدهکار (Debit)</td>
+                                            <td>{{ number_format($totalDebit, 2) }}</td>
+                                            <td>{{ number_format($monthDebit, 2) }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>مجموع مصارف</td>
+                                            <td>{{ number_format($totalExpense, 2) }}</td>
+                                            <td>{{ number_format($monthExpense, 2) }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>مجموع کمک‌ها</td>
+                                            <td>{{ number_format($totalAids, 2) }}</td>
+                                            <td>{{ number_format($monthAids, 2) }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>اعتبار موجود</td>
+                                            <td>{{ number_format($totalcredit, 2) }}</td>
+                                            <td>{{ number_format($remaining_amount, 2) }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>بلانس فعلی</td>
+                                            <td>{{ number_format($currentBalance, 2) }}</td>
+                                            <td>{{ number_format($monthCurrentBalance, 2) }}</td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -304,7 +305,7 @@
                                         </thead>
                                         @foreach ($incomes as $item)
                                             @php
-                                                $percent = $totalIncome > 0 ? ($item->total / $totalIncome) * 100 : 0;
+                                                $percent = $totalIncomeAll > 0 ? ($item->total / $totalIncomeAll) * 100 : 0;
                                             @endphp
                                             <tr>
                                                 <td>
