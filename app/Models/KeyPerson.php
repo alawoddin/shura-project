@@ -4,17 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class FamilyMembers extends Model
+class KeyPerson extends Model
 {
+    protected $table = 'key_personnel';
+
     protected $guarded = [];
 
     public function user()
     {
         return $this->belongsTo(User::class);
-    }
-
-    public function linkedUser()
-    {
-        return $this->belongsTo(User::class, 'linked_user_id');
     }
 }

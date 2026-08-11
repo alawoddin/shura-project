@@ -14,6 +14,7 @@ use App\Http\Controllers\Backend\UsersController;
 use App\Http\Controllers\Backend\AidController;
 use App\Http\Controllers\Backend\EthnicBranchController;
 use App\Http\Controllers\Backend\RepresentativeController;
+use App\Http\Controllers\Backend\KeyPersonController;
 use App\Http\Controllers\Backend\ReportController;
 use App\Http\Controllers\Backend\RoleController;
 use App\Http\Controllers\Client\ClientController;
@@ -93,6 +94,16 @@ Route::prefix('admin')->middleware(['auth' ,IsAdmin::class ])->group(function ()
         Route::get('/edit/users/family/{id}', 'EditUsersFamily')->name('edit.users.family');
         Route::post('/update/users/family', 'UpdateUsersFamily')->name('update.users.family');
         Route::get('/delete/users/family/{id}', 'DeleteUsersFamily')->name('delete.users.family');
+        Route::get('/create-account/family/{id}', 'CreateFamilyMemberAccount')->name('create.account.family');
+    });
+
+    Route::controller(KeyPersonController::class)->group(function () {
+        Route::get('/all/key-people', 'index')->name('all.key.people');
+        Route::get('/add/key-person', 'create')->name('add.key.person');
+        Route::post('/store/key-person', 'store')->name('store.key.person');
+        Route::get('/edit/key-person/{id}', 'edit')->name('edit.key.person');
+        Route::post('/update/key-person', 'update')->name('update.key.person');
+        Route::get('/delete/key-person/{id}', 'destroy')->name('delete.key.person');
     });
 
 

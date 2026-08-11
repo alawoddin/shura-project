@@ -32,6 +32,17 @@
                             </select>
                         </div>
 
+                        <div class="col-md-2">
+                            <label>حالت مدنی</label>
+                            <select name="marital_status" class="form-select" {{ $familyMember->linked_user_id ? 'disabled' : '' }}>
+                                <option value="single" {{ ($familyMember->marital_status ?? 'single') == 'single' ? 'selected' : '' }}>مجرد</option>
+                                <option value="married" {{ ($familyMember->marital_status ?? '') == 'married' ? 'selected' : '' }}>متاهل (عروسی)</option>
+                            </select>
+                            @if($familyMember->linked_user_id)
+                                <input type="hidden" name="marital_status" value="married">
+                            @endif
+                        </div>
+
                         <div class="col-md-3">
                             <label>تاریخ تولد</label>
                             <input type="date" name="birth_date" id="birth_date" class="form-control"
@@ -53,6 +64,16 @@
                             <label>درجه</label>
                             <input type="text" name="degree" class="form-control" value="{{ $familyMember->degree }}">
                         </div>
+
+                        @if($familyMember->linked_user_id)
+                            <div class="col-12">
+                                <div class="alert alert-success mb-0">
+                                    حساب کاربری ساخته شده:
+                                    <strong>{{ $familyMember->linkedUser->name ?? '' }}</strong>
+                                    ({{ $familyMember->linkedUser->email ?? '' }})
+                                </div>
+                            </div>
+                        @endif
 
                         <div class="col-12">
                             <label>یادداشت</label>

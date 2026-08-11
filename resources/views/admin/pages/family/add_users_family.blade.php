@@ -72,6 +72,24 @@
 
                                         </div>
 
+                                        <div class="col-md-2">
+
+                                            <label>
+
+                                                حالت مدنی
+
+                                            </label>
+
+                                            <select name="marital_status" class="form-select">
+
+                                                <option value="single">مجرد</option>
+
+                                                <option value="married">متاهل (عروسی)</option>
+
+                                            </select>
+
+                                        </div>
+
                                         <div class="col-md-3">
 
                                             <label>

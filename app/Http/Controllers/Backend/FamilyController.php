@@ -5,15 +5,24 @@ namespace App\Http\Controllers\Backend;
 use App\Http\Controllers\Controller;
 use App\Models\FamilyMembers;
 use App\Models\User;
+use App\Services\FamilyMemberAccountService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class FamilyController extends Controller
 {
+    public function __construct(
+        protected FamilyMemberAccountService $accountService
+    ) {}
+
     public function AllUsersFamily($id)
     {
         $user = User::findOrFail($id);
-        $familyMembers = FamilyMembers::where('user_id', $id)->latest()->get();
+        $familyMembers = FamilyMembers::with(['user', 'linkedUser'])
+            ->where('user_id', $id)
+            ->latest()
+            ->get();
 
         return view('admin.pages.family.all_users_family', compact('familyMembers', 'user'));
     }
@@ -37,30 +46,32 @@ class FamilyController extends Controller
             ]);
         }
 
-        // $age = $this->calculateAge($request->birth_date);
+        DB::transaction(function () use ($request) {
+            $familyMember = FamilyMembers::create([
+                'user_id' => $request->user_id,
+                'name' => $request->name,
+                'gender' => $request->gender,
+                'birth_date' => $request->birth_date,
+                'marital_status' => $request->marital_status ?? 'single',
+                'qualification' => $request->qualification,
+                'degree' => $request->degree,
+                'note' => $request->note,
+            ]);
 
-        FamilyMembers::create([
-            'user_id' => $request->user_id,
-            'name' => $request->name,
-            'gender' => $request->gender,
-            'birth_date' => $request->birth_date,
-            // 'age' => $age ?? $request->age,
-            'qualification' => $request->qualification,
-            'degree' => $request->degree,
-            'note' => $request->note,
-        ]);
+            if ($familyMember->marital_status === 'married') {
+                $this->accountService->createAccountFromFamilyMember($familyMember);
+            }
+        });
 
-        $notification = [
+        return redirect()->route('all.users.family', $request->user_id)->with([
             'message' => 'اعضای فامیل موفقانه اضافه شد',
             'alert-type' => 'success',
-        ];
-
-        return redirect()->route('all.users.family', $request->user_id)->with($notification);
+        ]);
     }
 
     public function EditUsersFamily($id)
     {
-        $familyMember = FamilyMembers::findOrFail($id);
+        $familyMember = FamilyMembers::with('linkedUser')->findOrFail($id);
 
         return view('admin.pages.family.edit_users_family', compact('familyMember'));
     }
@@ -68,24 +79,33 @@ class FamilyController extends Controller
     public function UpdateUsersFamily(Request $request)
     {
         $familyMember = FamilyMembers::findOrFail($request->id);
-        // $age = $this->calculateAge($request->birth_date);
+        $wasMarried = $familyMember->marital_status === 'married';
 
-        $familyMember->update([
-            'name' => $request->name,
-            'gender' => $request->gender,
-            'birth_date' => $request->birth_date,
-            // 'age' => $age ?? $request->age,
-            'qualification' => $request->qualification,
-            'degree' => $request->degree,
-            'note' => $request->note,
-        ]);
+        DB::transaction(function () use ($request, $familyMember, $wasMarried) {
+            $familyMember->update([
+                'name' => $request->name,
+                'gender' => $request->gender,
+                'birth_date' => $request->birth_date,
+                'marital_status' => $request->marital_status ?? 'single',
+                'qualification' => $request->qualification,
+                'degree' => $request->degree,
+                'note' => $request->note,
+            ]);
 
-        $notification = [
-            'message' => 'اعضای فامیل موفقانه اپدیت شد',
+            if ($request->marital_status === 'married' && ! $familyMember->linked_user_id) {
+                $this->accountService->createAccountFromFamilyMember($familyMember->fresh());
+            }
+        });
+
+        $message = 'اعضای فامیل موفقانه اپدیت شد';
+        if ($request->marital_status === 'married' && ! $wasMarried && $familyMember->fresh()->linked_user_id) {
+            $message = 'عضو فامیل به‌روزرسانی شد و حساب کاربری جداگانه ساخته شد';
+        }
+
+        return redirect()->route('all.users.family', $familyMember->user_id)->with([
+            'message' => $message,
             'alert-type' => 'success',
-        ];
-
-        return redirect()->route('all.users.family', $familyMember->user_id)->with($notification);
+        ]);
     }
 
     public function DeleteUsersFamily($id)
@@ -94,12 +114,32 @@ class FamilyController extends Controller
         $user_id = $familyMember->user_id;
         $familyMember->delete();
 
-        $notification = [
+        return redirect()->route('all.users.family', $user_id)->with([
             'message' => 'عضو فامیل با موفقیت حذف شد',
             'alert-type' => 'success',
-        ];
+        ]);
+    }
 
-        return redirect()->route('all.users.family', $user_id)->with($notification);
+    public function CreateFamilyMemberAccount($id)
+    {
+        $familyMember = FamilyMembers::findOrFail($id);
+
+        if ($familyMember->linked_user_id) {
+            return redirect()->route('all.users.family', $familyMember->user_id)->with([
+                'message' => 'برای این عضو قبلاً حساب کاربری ساخته شده است',
+                'alert-type' => 'warning',
+            ]);
+        }
+
+        DB::transaction(function () use ($familyMember) {
+            $familyMember->update(['marital_status' => 'married']);
+            $this->accountService->createAccountFromFamilyMember($familyMember->fresh());
+        });
+
+        return redirect()->route('all.users.family', $familyMember->user_id)->with([
+            'message' => 'حساب کاربری جداگانه با موفقیت ساخته شد',
+            'alert-type' => 'success',
+        ]);
     }
 
     private function calculateAge(?string $birthDate): ?int

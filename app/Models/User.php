@@ -61,6 +61,16 @@ class User extends Authenticatable
         return $this->belongsTo(Representative::class, 'representative_id');
     }
 
+    public function keyPerson()
+    {
+        return $this->hasOne(KeyPerson::class);
+    }
+
+    public function linkedFamilyMember()
+    {
+        return $this->hasOne(FamilyMembers::class, 'linked_user_id');
+    }
+
      public static function getpermissionGroups(){
         $permission_groups = DB::table('permissions')->select('group_name')->groupBy('group_name')->get();
         return $permission_groups;

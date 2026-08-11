@@ -42,6 +42,8 @@
                                             <th class="text-center">جنسیت</th>
                                             <th class="text-center">تاریخ تولد</th>
                                             <th class="text-center">سن</th>
+                                            <th class="text-center">حالت مدنی</th>
+                                            <th class="text-center">حساب کاربری</th>
                                             <th class="text-center">تحصیلات</th>
                                             <th class="text-center">درجه</th>
                                             <th class="text-center">یادداشت</th>
@@ -56,7 +58,19 @@
                                                 <td class="text-center">{{ $item->name }}</td>
                                                 <td class="text-center">{{ $item->gender }}</td>
                                                 <td class="text-center">{{ $item->birth_date }}</td>
-                                                <td class="text-center">{{ \Carbon\Carbon::parse($item->birth_date)->age }}</td>
+                                                <td class="text-center">{{ $item->birth_date ? \Carbon\Carbon::parse($item->birth_date)->age : '-' }}</td>
+                                                <td class="text-center">
+                                                    {{ ($item->marital_status ?? 'single') === 'married' ? 'متاهل' : 'مجرد' }}
+                                                </td>
+                                                <td class="text-center">
+                                                    @if($item->linked_user_id)
+                                                        <span class="badge bg-success">ساخته شده</span>
+                                                    @elseif(($item->marital_status ?? 'single') === 'married')
+                                                        <a href="{{ route('create.account.family', $item->id) }}" class="btn btn-sm btn-primary">ساخت حساب</a>
+                                                    @else
+                                                        -
+                                                    @endif
+                                                </td>
                                                 <td class="text-center">{{ $item->qualification }}</td>
                                                 <td class="text-center">{{ $item->degree }}</td>
                                                 <td class="text-center">{{ $item->note }}</td>
