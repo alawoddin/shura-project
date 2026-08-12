@@ -78,8 +78,9 @@ class UsersController extends Controller
             'monthly_fee' => $request->monthly_fee,
             'ethnic_branch_id' => $request->ethnic_branch_id,
             'representative_id' => $request->representative_id,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
+            'has_account' => $request->has('has_account'),
+            'email' => $request->has('has_account') ? $request->email : null,
+            'password' => $request->has('has_account')? Hash::make($request->password): null,
             'role' => $request->role,
             'photo' => $photoName,
             'documents' => $documentName,
@@ -153,7 +154,8 @@ class UsersController extends Controller
             'monthly_fee' => $request->monthly_fee,
             'ethnic_branch_id' => $request->ethnic_branch_id,
             'representative_id' => $request->representative_id,
-            'email' => $request->email,
+            'has_account' => $request->has('has_account'),
+            'email' => $request->has('has_account') ? $request->email : null,
             'role' => $request->role,
         ]);
 

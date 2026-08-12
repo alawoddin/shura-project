@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -29,6 +30,14 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request): RedirectResponse
     {
+        $user = User::where('email', $request->email)->first();
+
+        if (!$user || !$user->has_account) {
+            return back()->withErrors([
+                'email' => 'این عضو حساب کاربری ندارد.'
+            ]);
+        }
+
         $request->authenticate();
 
         $request->session()->regenerate();
@@ -36,15 +45,13 @@ class AuthenticatedSessionController extends Controller
         $user = $request->user();
 
         $notification = array(
-        'message' => 'Admin Login Successfully',
-        'alert-type' => 'success'
-     );
+            'message' => 'Admin Login Successfully',
+            'alert-type' => 'success'
+        );
 
-
-        if($user->role ==='admin') {
+        if ($user->role === 'admin') {
             return redirect()->intended('/admin/dashboard')->with($notification);
         }
-
 
         return redirect()->intended(route('dashboard'));
     }

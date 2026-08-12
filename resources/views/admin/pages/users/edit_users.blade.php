@@ -189,22 +189,36 @@
                     </div>
 
                     <div class="col-md-4 mb-3">
-                        <label>ایمیل</label>
-                        <input type="email" name="email" value="{{ $users->email }}" class="form-control">
+                        <label>
+                            <input type="checkbox"
+                                name="has_account"
+                                value="1"
+                                id="has_account"
+                                {{ $users->has_account ? 'checked' : '' }}>
+                            ایجاد حساب کاربری
+                        </label>
                     </div>
 
-                    <div class="col-md-4 mb-3">
-                        <label>پسورد جدید</label>
-                        <input type="password" name="password" class="form-control">
+                    <div id="account_fields"
+                        style="{{ $users->has_account ? 'display:block;' : 'display:none;' }}">
+
+                        <div class="col-md-4 mb-3">
+                            <label>ایمیل</label>
+                            <input type="email"
+                                name="email"
+                                value="{{ $users->email }}"
+                                class="form-control">
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label>پسورد جدید</label>
+                            <input type="password"
+                                name="password"
+                                class="form-control">
+                        </div>
                     </div>
 
-                    <div class="col-md-4 mb-3">
-                        <label>نقش</label>
-                        <select name="role" class="form-control">
-                            <option value="user" {{ $users->role == 'user' ? 'selected' : '' }}>User</option>
-                            <option value="admin" {{ $users->role == 'admin' ? 'selected' : '' }}>Admin</option>
-                        </select>
-                    </div>
+                    <input type="hidden" name="role" value="user">
 
                 </div>
 
@@ -249,6 +263,13 @@
             $('#ethnic_branch_id').val(),
             "{{ old('representative_id', $users->representative_id) }}"
         );
+    });
+    $('#has_account').on('change', function () {
+        if ($(this).is(':checked')) {
+            $('#account_fields').show();
+        } else {
+            $('#account_fields').hide();
+        }
     });
 </script>
 @endsection

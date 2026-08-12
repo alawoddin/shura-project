@@ -188,22 +188,25 @@
                         </div>
 
                         <div class="col-md-4 mb-3">
-                            <label>ایمیل</label>
-                            <input type="email" name="email" class="form-control">
+                            <label>
+                                <input type="checkbox" name="has_account" value="1" id="has_account">
+                                ایجاد حساب کاربری
+                            </label>
                         </div>
 
-                        <div class="col-md-4 mb-3">
-                            <label>پسورد</label>
-                            <input type="password" name="password" class="form-control">
+                        <div id="account_fields" style="display:none;">
+                            <div class="col-md-4 mb-3">
+                                <label>ایمیل</label>
+                                <input type="email" name="email" class="form-control">
+                            </div>
+
+                            <div class="col-md-4 mb-3">
+                                <label>پسورد</label>
+                                <input type="password" name="password" class="form-control">
+                            </div>
                         </div>
 
-                        <div class="col-md-4 mb-3">
-                            <label>نقش</label>
-                            <select name="role" class="form-control">
-                                <option value="user">User</option>
-                                {{-- <option value="admin">Admin</option> --}}
-                            </select>
-                        </div>
+                        <input type="hidden" name="role" value="user">
 
                     </div>
 
@@ -214,7 +217,7 @@
 
     </div>
 
-           <script type="text/javascript">
+    <script type="text/javascript">
         $(document).ready(function() {
             $('#image').change(function(e) {
                 var reader = new FileReader();
@@ -291,6 +294,13 @@
 
             if ($('#ethnic_branch_id').val()) {
                 loadRepresentatives($('#ethnic_branch_id').val(), "{{ old('representative_id') }}");
+            }
+        });
+        $('#has_account').on('change', function () {
+            if ($(this).is(':checked')) {
+                $('#account_fields').show();
+            } else {
+                $('#account_fields').hide();
             }
         });
     </script>

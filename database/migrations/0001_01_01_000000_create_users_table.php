@@ -38,9 +38,10 @@ return new class extends Migration
             $table->decimal('monthly_fee', 10, 2)->default(0);
             $table->string('ethnic_branch')->nullable();
             $table->string('representative_name')->nullable();
-            $table->string('email')->unique();
+            $table->boolean('has_account')->default(true);
+            $table->string('email')->nullable()->unique();
             $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
+            $table->string('password')->nullable();
             $table->enum('role' , ['admin' , 'user'])->default('user');
             $table->rememberToken();
             $table->timestamps();
