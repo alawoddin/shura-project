@@ -8,25 +8,32 @@ use App\Models\Credit;
 use App\Models\Category;
 use App\Models\User;
 use App\Services\FinancialService;
+use App\Services\LoanEnforcementService;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class CreditController extends Controller
 {
     public function __construct(
-        protected FinancialService $financialService
+        protected FinancialService $financialService,
+        protected LoanEnforcementService $loanEnforcement
     ) {}
 
     public function AllCredits()
     {
-        $alldata = Credit::with('user', 'category', 'sourceAccount')->get();
+        $this->loanEnforcement->syncAllLoanStatuses();
 
-        return view('admin.pages.credit.all_credit', compact('alldata'));
+        $alldata = Credit::with('user', 'category', 'sourceAccount', 'payments')->latest()->get();
+        $suspendedUsers = $this->loanEnforcement->getSuspendedLoanUsers();
+        $loanService = $this->loanEnforcement;
+
+        return view('admin.pages.credit.all_credit', compact('alldata', 'suspendedUsers', 'loanService'));
     }
 
     public function AddCredit()
     {
-        $users = User::where('role', 'user')->get();
+        $users = User::where('role', 'user')->where('status', '!=', 'suspended')->get();
         $categories = Category::all();
         $sourceAccounts = Category::cashAccounts()->get();
 
@@ -59,6 +66,7 @@ class CreditController extends Controller
                     'amount' => $request->amount,
                     'remaining_amount' => $request->amount,
                     'description' => $request->description,
+                    'last_payment_at' => null,
                 ]);
             });
         } catch (InsufficientBalanceException $e) {
@@ -68,12 +76,12 @@ class CreditController extends Controller
             ]);
         }
 
-        $notification = [
+        $this->loanEnforcement->syncUserLoanStatus((int) $request->user_id);
+
+        return redirect()->route('all.credits')->with([
             'message' => 'Credit Inserted Successfully',
             'alert-type' => 'success',
-        ];
-
-        return redirect()->route('all.credits')->with($notification);
+        ]);
     }
 
     public function EditCredit($id)
@@ -139,28 +147,32 @@ class CreditController extends Controller
             ]);
         }
 
-        $notification = [
+        $credit = Credit::findOrFail($request->id);
+        $this->loanEnforcement->syncUserLoanStatus((int) $credit->user_id);
+
+        return redirect()->route('all.credits')->with([
             'message' => 'Credit Updated Successfully',
             'alert-type' => 'success',
-        ];
-
-        return redirect()->route('all.credits')->with($notification);
+        ]);
     }
 
     public function DeleteCredit($id)
     {
+        $credit = Credit::findOrFail($id);
+        $userId = $credit->user_id;
+
         DB::transaction(function () use ($id) {
             $credit = Credit::findOrFail($id);
             $this->financialService->reverseLoanDisbursement($credit);
             $credit->delete();
         });
 
-        $notification = [
+        $this->loanEnforcement->syncUserLoanStatus((int) $userId);
+
+        return redirect()->route('all.credits')->with([
             'message' => 'Credit Deleted Successfully',
             'alert-type' => 'success',
-        ];
-
-        return redirect()->route('all.credits')->with($notification);
+        ]);
     }
 
     public function PaidCredit(Request $request)
@@ -168,21 +180,21 @@ class CreditController extends Controller
         $request->validate([
             'id' => 'required|exists:credits,id',
             'paid_amount' => 'required|numeric|min:0.01',
+            'paid_at' => 'nullable|date',
         ]);
 
         $credit = Credit::findOrFail($request->id);
         $paidAmount = (float) $request->paid_amount;
+        $paidAt = $request->paid_at ? Carbon::parse($request->paid_at) : now();
 
         if ($paidAmount > $credit->remaining_amount) {
-            $notification = [
+            return redirect()->route('all.credits')->with([
                 'message' => 'Paid amount cannot be greater than remaining amount',
                 'alert-type' => 'error',
-            ];
-
-            return redirect()->route('all.credits')->with($notification);
+            ]);
         }
 
-        DB::transaction(function () use ($credit, $paidAmount) {
+        DB::transaction(function () use ($credit, $paidAmount, $paidAt) {
             $credit->remaining_amount -= $paidAmount;
 
             if ($credit->remaining_amount <= 0) {
@@ -195,13 +207,13 @@ class CreditController extends Controller
             if ($credit->source_account_id) {
                 $this->financialService->increaseAccountBalance($credit->source_account_id, $paidAmount);
             }
+
+            $this->loanEnforcement->recordCreditPayment($credit, $paidAmount, $paidAt);
         });
 
-        $notification = [
+        return redirect()->route('all.credits')->with([
             'message' => 'Credit Paid Successfully',
             'alert-type' => 'success',
-        ];
-
-        return redirect()->route('all.credits')->with($notification);
+        ]);
     }
 }

@@ -8,6 +8,10 @@ class Credit extends Model
 {
     protected $guarded = [];
 
+    protected $casts = [
+        'last_payment_at' => 'datetime',
+    ];
+
     public function user()
     {
         return $this->belongsTo(
@@ -25,5 +29,10 @@ class Credit extends Model
     public function sourceAccount()
     {
         return $this->belongsTo(Category::class, 'source_account_id');
+    }
+
+    public function payments()
+    {
+        return $this->hasMany(CreditPayment::class);
     }
 }

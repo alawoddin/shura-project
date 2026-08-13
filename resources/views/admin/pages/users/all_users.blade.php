@@ -125,6 +125,8 @@
                                                                 bg-warning text-dark
                                                             @elseif($item->status == 'dead')
                                                                 bg-dark
+                                                            @elseif($item->status == 'suspended')
+                                                                bg-danger
                                                             @endif
                                                         "
                                                         style="border-radius:10px; font-size:13px;"
@@ -137,6 +139,8 @@
                                                             تعلیق
                                                         @elseif($item->status == 'dead')
                                                             فوت شده
+                                                        @elseif($item->status == 'suspended')
+                                                            تعلیق (قرض)
                                                         @endif
                                                     </span>
                                                 </td>

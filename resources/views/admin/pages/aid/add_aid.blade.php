@@ -15,6 +15,12 @@
         <!-- Form Validation -->
         <div class="row">
             <div class="col-xl-12">
+                @if ($errors->any())
+                    <div class="alert alert-danger">{{ $errors->first() }}</div>
+                @endif
+                <div class="alert alert-warning">
+                    اعضایی که بیش از ۶ ماه قرض خود را پرداخت نکرده‌اند، واجد دریافت کمک نیستند.
+                </div>
                 <div class="card">
                     <div class="card-header">
                         <h5 class="card-title mb-0">اضافه کردن کمک</h5>
@@ -34,7 +40,12 @@
                                 <select name="user_id" class="form-control">
                                     <option value="">انتخاب کاربر</option>
                                     @foreach ($users as $user)
-                                        <option value="{{ $user->id }}">{{ $user->name }}</option>
+                                        <option value="{{ $user->id }}" @selected(old('user_id') == $user->id)>
+                                            {{ $user->name }}
+                                            @if($user->status === 'suspended')
+                                                — تعلیق (قرض)
+                                            @endif
+                                        </option>
                                     @endforeach
                                 </select>
                             </div>

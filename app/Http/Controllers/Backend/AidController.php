@@ -8,13 +8,15 @@ use App\Models\Aids;
 use App\Models\Category;
 use App\Models\User;
 use App\Services\FinancialService;
+use App\Services\LoanEnforcementService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class AidController extends Controller
 {
     public function __construct(
-        protected FinancialService $financialService
+        protected FinancialService $financialService,
+        protected LoanEnforcementService $loanEnforcement
     ) {}
 
     public function AllAids()
@@ -26,7 +28,7 @@ class AidController extends Controller
 
     public function AddAid()
     {
-        $users = User::where('role', 'user')->get();
+        $users = User::where('role', 'user')->orderBy('name')->get();
         $categories = Category::all();
         $sourceAccounts = Category::cashAccounts()->get();
 
@@ -43,6 +45,16 @@ class AidController extends Controller
             'date' => 'required|date',
             'description' => 'nullable|string',
         ]);
+
+        $user = User::findOrFail($request->user_id);
+        $this->loanEnforcement->syncUserLoanStatus((int) $user->id);
+
+        if (! $this->loanEnforcement->canReceiveAid($user)) {
+            return back()->withInput()->with([
+                'message' => $this->loanEnforcement->aidBlockReason($user),
+                'alert-type' => 'error',
+            ]);
+        }
 
         try {
             DB::transaction(function () use ($request) {
@@ -96,6 +108,16 @@ class AidController extends Controller
             'date' => 'required|date',
             'description' => 'nullable|string',
         ]);
+
+        $user = User::findOrFail($request->user_id);
+        $this->loanEnforcement->syncUserLoanStatus((int) $user->id);
+
+        if (! $this->loanEnforcement->canReceiveAid($user)) {
+            return back()->withInput()->with([
+                'message' => $this->loanEnforcement->aidBlockReason($user),
+                'alert-type' => 'error',
+            ]);
+        }
 
         try {
             DB::transaction(function () use ($request) {

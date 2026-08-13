@@ -34,6 +34,9 @@
                                     @foreach ($users as $user)
                                         <option value="{{ $user->id }}" {{ $editdata->user_id == $user->id ? 'selected' : '' }}>
                                             {{ $user->name }}
+                                            @if($user->status === 'suspended')
+                                                — تعلیق (قرض)
+                                            @endif
                                         </option>
                                     @endforeach
                                 </select>

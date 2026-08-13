@@ -30,8 +30,25 @@
 
             </div>
 
-
-
+            @if(isset($suspendedUsers) && $suspendedUsers->count())
+                <div class="alert alert-danger mb-3">
+                    <strong>اعضای تعلیق‌شده (عدم پرداخت قرض بیش از ۶ ماه):</strong>
+                    <ul class="mb-0 mt-2">
+                        @foreach ($suspendedUsers as $sUser)
+                            <li>
+                                {{ $sUser->name }}
+                                @php
+                                    $overdueCredit = $sUser->credits->first(fn ($c) => $loanService->isCreditOverdue($c));
+                                @endphp
+                                @if($overdueCredit)
+                                    — باقیمانده: {{ number_format($overdueCredit->remaining_amount, 2) }}
+                                    — {{ $loanService->getMonthsWithoutPayment($overdueCredit) }} ماه بدون پرداخت
+                                @endif
+                            </li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
 
             <div class="card">
 
@@ -56,6 +73,10 @@
                                     <th>قرض</th>
 
                                     <th>باقیمانده</th>
+
+                                    <th>آخرین پرداخت</th>
+
+                                    <th>ماه بدون پرداخت</th>
 
                                     <th>وضعیت</th>
 
@@ -83,6 +104,9 @@
                                         <td>
 
                                             {{ $item->user->name }}
+                                            @if($item->user->status === 'suspended')
+                                                <span class="badge bg-danger ms-1">تعلیق</span>
+                                            @endif
 
                                         </td>
 
@@ -110,15 +134,38 @@
 
                                         </td>
 
+                                        <td>
+                                            @if($item->last_payment_at)
+                                                {{ $item->last_payment_at->format('Y-m-d') }}
+                                            @else
+                                                <span class="text-muted">—</span>
+                                            @endif
+                                        </td>
+
+                                        <td>
+                                            @if($item->status == 'active' && $item->remaining_amount > 0)
+                                                @php $months = $loanService->getMonthsWithoutPayment($item); @endphp
+                                                <span class="{{ $months >= 6 ? 'text-danger fw-bold' : '' }}">
+                                                    {{ $months }}
+                                                </span>
+                                            @else
+                                                —
+                                            @endif
+                                        </td>
+
 
                                         <td>
 
                                             @if ($item->status == 'active')
+                                                @if($loanService->isCreditOverdue($item))
+                                                    <span class="badge bg-danger">معوق (۶+ ماه)</span>
+                                                @else
                                                 <span class="badge bg-warning">
 
                                                     فعال
 
                                                 </span>
+                                                @endif
                                             @else
                                                 <span class="badge bg-success">
 
@@ -211,7 +258,11 @@
 
 
                                                         <input type="number" name="paid_amount" class="form-control"
-                                                            required>
+                                                            required max="{{ $item->remaining_amount }}" step="0.01">
+
+                                                        <label class="mt-2">تاریخ پرداخت</label>
+                                                        <input type="date" name="paid_at" class="form-control"
+                                                            value="{{ date('Y-m-d') }}">
 
                                                     </div>
 
