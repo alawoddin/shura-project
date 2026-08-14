@@ -25,7 +25,9 @@
 
             <ul id="side-menu">
 
-                {{-- 1. Home --}}
+                {{-- ========================================================= --}}
+                {{-- 1. داشبورد --}}
+                {{-- ========================================================= --}}
                 <li class="menu-title">خانه</li>
 
                 <li>
@@ -35,22 +37,11 @@
                     </a>
                 </li>
 
-                {{-- 2. Base setup (required before adding users) --}}
+
+                {{-- ========================================================= --}}
+                {{-- 2. تنظیمات پایه --}}
+                {{-- ========================================================= --}}
                 <li class="menu-title">تنظیمات پایه</li>
-
-                <li>
-                    <a href="{{ route('all.ethnic') }}" class="tp-link">
-                        <i data-feather="layers"></i>
-                        <span> شاخه های قومی </span>
-                    </a>
-                </li>
-
-                <li>
-                    <a href="{{ route('all.representatives') }}" class="tp-link">
-                        <i data-feather="user-check"></i>
-                        <span> نماینده‌ها </span>
-                    </a>
-                </li>
 
                 @if (Auth::guard('web')->user()->can('all.category'))
                     <li>
@@ -59,19 +50,37 @@
                             <span> مدیریت بخش ها </span>
                             <span class="menu-arrow"></span>
                         </a>
+
                         <div class="collapse" id="catalog">
                             <ul class="nav-second-level">
+
                                 <li>
                                     <a href="{{ route('all.category') }}" class="tp-link">
                                         <span> نام درامد ها </span>
                                     </a>
                                 </li>
+
+                                <li>
+                                    <a href="{{ route('all.ethnic') }}" class="tp-link">
+                                        <span> شاخه های قومی </span>
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <a href="{{ route('all.representatives') }}" class="tp-link">
+                                        <span> نماینده‌ها </span>
+                                    </a>
+                                </li>
+
                             </ul>
                         </div>
                     </li>
                 @endif
 
-                {{-- 3. Members & people --}}
+
+                {{-- ========================================================= --}}
+                {{-- 3. اعضا و افراد --}}
+                {{-- ========================================================= --}}
                 <li class="menu-title">اعضا و افراد</li>
 
                 @if (Auth::guard('web')->user()->can('all.users'))
@@ -90,7 +99,10 @@
                     </a>
                 </li>
 
-                {{-- 4. Financial --}}
+
+                {{-- ========================================================= --}}
+                {{-- 4. امور مالی --}}
+                {{-- ========================================================= --}}
                 <li class="menu-title">امور مالی</li>
 
                 @if (Auth::guard('web')->user()->can('all.income'))
@@ -118,6 +130,7 @@
                             <span> دریافت پرداخت </span>
                         </a>
                     </li>
+
                     <li>
                         <a href="{{ route('unpaid.payments') }}" class="tp-link">
                             <i data-feather="alert-circle"></i>
@@ -162,68 +175,105 @@
                     </li>
                 @endif
 
+
+                {{-- ========================================================= --}}
+                {{-- 5. گزارشات --}}
+                {{-- ========================================================= --}}
                 @if (Auth::guard('web')->user()->can('all.report'))
+                    <li class="menu-title">گزارشات</li>
+
                     <li>
                         <a href="#Reports" data-bs-toggle="collapse">
                             <i data-feather="bar-chart-2"></i>
-                            <span> گذارشات </span>
+                            <span> گزارشات </span>
                             <span class="menu-arrow"></span>
                         </a>
+
                         <div class="collapse" id="Reports">
                             <ul class="nav-second-level">
+
                                 <li>
                                     <a href="{{ route('all.report') }}" class="tp-link">
                                         <span> تمام گزارشات </span>
                                     </a>
                                 </li>
+
                             </ul>
                         </div>
                     </li>
                 @endif
 
-                {{-- 5. System admin --}}
+
+                {{-- ========================================================= --}}
+                {{-- 6. مدیریت سیستم --}}
+                {{-- ========================================================= --}}
                 @if (Auth::guard('web')->user()->canManageAccess())
+
                     <li class="menu-title">مدیریت سیستم</li>
 
+                    {{-- نقش ها و مجوزها --}}
                     <li>
                         <a href="#Role" data-bs-toggle="collapse">
                             <i data-feather="shield"></i>
                             <span> مجوز ها و نقش ها </span>
                             <span class="menu-arrow"></span>
                         </a>
+
                         <div class="collapse" id="Role">
                             <ul class="nav-second-level">
+
                                 <li>
-                                    <a href="{{ route('all.permission') }}" class="tp-link">مجوز ها</a>
+                                    <a href="{{ route('all.permission') }}" class="tp-link">
+                                        مجوز ها
+                                    </a>
                                 </li>
+
                                 <li>
-                                    <a href="{{ route('all.roles') }}" class="tp-link">نقش ها</a>
+                                    <a href="{{ route('all.roles') }}" class="tp-link">
+                                        نقش ها
+                                    </a>
                                 </li>
+
                                 <li>
-                                    <a href="{{ route('add.roles.permission') }}" class="tp-link">نقش در مجوز ها</a>
+                                    <a href="{{ route('add.roles.permission') }}" class="tp-link">
+                                        نقش در مجوز ها
+                                    </a>
                                 </li>
+
                                 <li>
-                                    <a href="{{ route('all.roles.permission') }}" class="tp-link">تمام نقش ها در مجوز ها</a>
+                                    <a href="{{ route('all.roles.permission') }}" class="tp-link">
+                                        تمام نقش ها در مجوز ها
+                                    </a>
                                 </li>
+
                             </ul>
                         </div>
                     </li>
 
+
+                    {{-- مدیریت ادمین ها --}}
                     <li>
                         <a href="#sidebarBaseui" data-bs-toggle="collapse">
                             <i data-feather="settings"></i>
                             <span> مدیریت ادمین ها </span>
                             <span class="menu-arrow"></span>
                         </a>
+
                         <div class="collapse" id="sidebarBaseui">
                             <ul class="nav-second-level">
+
                                 <li>
-                                    <a href="{{ route('all.admin') }}" class="tp-link">همه ادمین ها</a>
+                                    <a href="{{ route('all.admin') }}" class="tp-link">
+                                        همه ادمین ها
+                                    </a>
                                 </li>
+
                             </ul>
                         </div>
                     </li>
+
                 @endif
+
             </ul>
 
         </div>
