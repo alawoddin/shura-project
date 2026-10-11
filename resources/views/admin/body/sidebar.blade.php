@@ -107,7 +107,7 @@
 
                 @if (Auth::guard('web')->user()->can('all.income'))
                     <li>
-                        <a href="{{ route('all.income') }}" class="tp-link">
+                        <a href="{{ route('add.income') }}" class="tp-link">
                             <i data-feather="trending-up"></i>
                             <span> درامد ها </span>
                         </a>
