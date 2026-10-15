@@ -29,7 +29,7 @@ class CategoryController extends Controller
         ]);
 
           $notification = array(
-            'message' => 'کاربر موفقانه اضافه شد',
+            'message' => 'موفقانه اضافه شد',
             'alert-type' => 'success'
         );
 
@@ -54,7 +54,7 @@ class CategoryController extends Controller
         ]);
 
         $notification = array(
-            'message' => 'دسته بندی موفقانه به روزرسانی شد',
+            'message' => 'موفقانه به روزرسانی شد',
             'alert-type' => 'success'
         );
 
@@ -65,7 +65,7 @@ class CategoryController extends Controller
         Category::findOrFail($id)->delete();
 
         $notification = array(
-            'message' => 'دسته بندی موفقانه حذف شد',
+            'message' => 'موفقانه حذف شد',
             'alert-type' => 'success'
         );
 

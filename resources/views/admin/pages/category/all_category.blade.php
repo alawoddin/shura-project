@@ -34,6 +34,7 @@
                                             <th class="text-center">آیدی</th>
                                             <th class="text-center">اسم</th>
                                             <th class="text-center">نوع حساب</th>
+                                            <th class="text-center">مقدار پول </th>
                                             <th class="text-center">توضیحات</th>
                                             <th class="text-center">عملیات</th>
                                         </tr>
@@ -44,6 +45,7 @@
                                                 <td class="text-center">{{ $key + 1 }}</td>
                                                 <td class="text-center">{{ $item->name }}</td>
                                                 <td class="text-center">{{ $item->account_type ?? 'general' }}</td>
+                                                <td class="text-center">{{ $item->balance }}</td>
                                                 <td class="text-center">{{ $item->description }}</td>
                                                 
 
