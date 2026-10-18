@@ -114,6 +114,7 @@ Route::prefix('admin')->middleware(['auth' ,IsAdmin::class ])->group(function ()
         Route::get('/edit/category/{id}', 'EditCategory')->name('edit.category');
         Route::post('/update/category',  'UpdateCategory')->name('update.category');
         Route::get('/delete/category/{id}', 'DeleteCategory')->name('delete.category');
+        Route::get('/reports/category/{id}', 'ReportsCategory')->name('reports.category');
     });
 
 

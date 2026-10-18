@@ -44,6 +44,11 @@
                                         <option value="payment_type" {{ $category->account_type == 'payment_type' ? 'selected' : '' }}>Payment Type</option>
                                     </select>
                                 </div>
+
+                                <div class="col-md-6">
+                                    <label for="validationDefault01" class="form-label">مقدار پول</label>
+                                    <input type="text" class="form-control" name="balance" value="{{ $category->balance }}">
+                                </div>
                               
                                  <div class="col-md-6">
                                     <label for="validationDefault02" class="form-label">توضیحات</label>

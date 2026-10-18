@@ -53,7 +53,7 @@
 
 
                                                 <td class="text-center">
-                                                    @if (Auth::guard('web')->user()->can('edit.expense'))
+                                                    {{-- @if (Auth::guard('web')->user()->can('edit.expense'))
                                                          <a href="{{ route('edit.expense', $item->id) }}"
                                                         class="btn btn-success btn-sm">ویرایش</a>
                                                     @endif
@@ -61,12 +61,12 @@
                                                     @if (Auth::guard('web')->user()->can('delete.expense'))
                                                          <a href="{{ route('delete.expense', $item->id) }}"
                                                         class="btn btn-danger btn-sm" id="delete">حذف</a>
-                                                    @endif
-                                                    {{-- <a href="{{ route('edit.expense', $item->id) }}"
-                                                        class="btn btn-success btn-sm">ویرایش</a> --}}
+                                                    @endif --}}
+                                                    <a href="{{ route('edit.expense', $item->id) }}"
+                                                        class="btn btn-success btn-sm">ویرایش</a>
 
-                                                    {{-- <a href="{{ route('delete.expense', $item->id) }}"
-                                                        class="btn btn-danger btn-sm" id="delete">حذف</a> --}}
+                                                    <a href="{{ route('delete.expense', $item->id) }}"
+                                                        class="btn btn-danger btn-sm" id="delete">حذف</a>
                                                 </td>
                                             </tr>
                                         @endforeach

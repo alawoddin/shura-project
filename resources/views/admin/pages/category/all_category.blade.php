@@ -50,6 +50,11 @@
                                                 
 
                                                 <td class="text-center">
+                                                    <a href="{{ route('reports.category', $item->id) }}"
+                                                    class="btn btn-info btn-sm">
+                                                        Reports
+                                                    </a>
+
                                                     <a href="{{ route('edit.category', $item->id) }}" class="btn btn-success btn-sm">ویرایش</a>
 
                                                     <a href="{{ route('delete.category', $item->id) }}" class="btn btn-danger btn-sm" id="delete">حذف</a>
