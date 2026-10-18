@@ -18,53 +18,89 @@ class FinancialService
 {
     public function getDashboardStats(): array
     {
-        $totalIncomeAll = (float) Income::sum('amount');
-        $totalIncome = $this->getTransferredIncomeTotal();
-        $monthIncomeAll = (float) Income::whereMonth('date', now()->month)
-            ->whereYear('date', now()->year)
-            ->sum('amount');
-        $monthIncome = $this->getTransferredIncomeTotal(now()->month, now()->year);
+        $month = (int) now()->month;
+        $year = (int) now()->year;
 
-        $totalReceiveCredit = (float) ReceivePayment::where('transaction_type', 'credit')->sum('amount');
-        $totalReceiveDebit = (float) ReceivePayment::where('transaction_type', 'debit')->sum('amount');
+        $income = DB::table('incomes')
+            ->leftJoin('undepositeds', 'undepositeds.income_id', '=', 'incomes.id')
+            ->selectRaw('
+                COALESCE(SUM(incomes.amount), 0) as total_all,
+                COALESCE(SUM(CASE WHEN MONTH(incomes.date) = ? AND YEAR(incomes.date) = ? THEN incomes.amount ELSE 0 END), 0) as month_all,
+                COALESCE(SUM(CASE WHEN undepositeds.status = ? THEN incomes.amount ELSE 0 END), 0) as total_transferred,
+                COALESCE(SUM(CASE WHEN undepositeds.status = ? AND MONTH(incomes.date) = ? AND YEAR(incomes.date) = ? THEN incomes.amount ELSE 0 END), 0) as month_transferred
+            ', [$month, $year, 'transferred', 'transferred', $month, $year])
+            ->first();
+
+        $receive = ReceivePayment::selectRaw('
+                COALESCE(SUM(CASE WHEN transaction_type = "credit" THEN amount ELSE 0 END), 0) as total_credit,
+                COALESCE(SUM(CASE WHEN transaction_type = "debit" THEN amount ELSE 0 END), 0) as total_debit,
+                COALESCE(SUM(CASE WHEN transaction_type = "credit" AND MONTH(date) = ? AND YEAR(date) = ? THEN amount ELSE 0 END), 0) as month_credit,
+                COALESCE(SUM(CASE WHEN transaction_type = "debit" AND MONTH(date) = ? AND YEAR(date) = ? THEN amount ELSE 0 END), 0) as month_debit
+            ', [$month, $year, $month, $year])
+            ->first();
+
+        $members = MemberFinancialReport::selectRaw('
+                COALESCE(SUM(debit), 0) as total_debit,
+                COALESCE(SUM(credit), 0) as total_credit,
+                COALESCE(SUM(CASE WHEN MONTH(date) = ? AND YEAR(date) = ? THEN debit ELSE 0 END), 0) as month_debit,
+                COALESCE(SUM(CASE WHEN MONTH(date) = ? AND YEAR(date) = ? THEN credit ELSE 0 END), 0) as month_credit
+            ', [$month, $year, $month, $year])
+            ->first();
+
+        $expenses = Expense::selectRaw('
+                COALESCE(SUM(amount), 0) as total_amount,
+                COALESCE(SUM(CASE WHEN MONTH(date) = ? AND YEAR(date) = ? THEN amount ELSE 0 END), 0) as month_amount
+            ', [$month, $year])
+            ->first();
+
+        $aids = Aids::selectRaw('
+                COALESCE(SUM(amount), 0) as total_amount,
+                COALESCE(SUM(CASE WHEN MONTH(date) = ? AND YEAR(date) = ? THEN amount ELSE 0 END), 0) as month_amount
+            ', [$month, $year])
+            ->first();
+
+        $loans = Credit::selectRaw('
+                COALESCE(SUM(amount), 0) as disbursed,
+                COALESCE(SUM(CASE WHEN status = "active" THEN remaining_amount ELSE 0 END), 0) as remaining
+            ')
+            ->first();
+
+        $users = User::selectRaw('
+                COUNT(*) as total_users,
+                COALESCE(SUM(CASE WHEN MONTH(created_at) = ? AND YEAR(created_at) = ? THEN 1 ELSE 0 END), 0) as month_users
+            ', [$month, $year])
+            ->first();
+
+        $totalIncomeAll = (float) $income->total_all;
+        $totalIncome = (float) $income->total_transferred;
+        $monthIncomeAll = (float) $income->month_all;
+        $monthIncome = (float) $income->month_transferred;
+
+        $totalReceiveCredit = (float) $receive->total_credit;
+        $totalReceiveDebit = (float) $receive->total_debit;
         $totalReceive = $totalReceiveCredit - $totalReceiveDebit;
-
-        $monthReceiveCredit = (float) ReceivePayment::where('transaction_type', 'credit')
-            ->whereMonth('date', now()->month)
-            ->whereYear('date', now()->year)
-            ->sum('amount');
-        $monthReceiveDebit = (float) ReceivePayment::where('transaction_type', 'debit')
-            ->whereMonth('date', now()->month)
-            ->whereYear('date', now()->year)
-            ->sum('amount');
+        $monthReceiveCredit = (float) $receive->month_credit;
+        $monthReceiveDebit = (float) $receive->month_debit;
         $monthReceive = $monthReceiveCredit - $monthReceiveDebit;
 
-        $totalMemberDebit = (float) MemberFinancialReport::sum('debit');
-        $totalMemberCredit = (float) MemberFinancialReport::sum('credit');
-        $monthMemberDebit = (float) MemberFinancialReport::whereMonth('date', now()->month)
-            ->whereYear('date', now()->year)
-            ->sum('debit');
-        $monthMemberCredit = (float) MemberFinancialReport::whereMonth('date', now()->month)
-            ->whereYear('date', now()->year)
-            ->sum('credit');
+        $totalMemberDebit = (float) $members->total_debit;
+        $totalMemberCredit = (float) $members->total_credit;
+        $monthMemberDebit = (float) $members->month_debit;
+        $monthMemberCredit = (float) $members->month_credit;
 
         $totalDebit = $totalReceiveDebit + $totalMemberDebit;
         $totalCredit = $totalReceiveCredit + $totalMemberCredit;
         $monthDebit = $monthReceiveDebit + $monthMemberDebit;
         $monthCredit = $monthReceiveCredit + $monthMemberCredit;
 
-        $totalExpense = (float) Expense::sum('amount');
-        $monthExpense = (float) Expense::whereMonth('date', now()->month)
-            ->whereYear('date', now()->year)
-            ->sum('amount');
+        $totalExpense = (float) $expenses->total_amount;
+        $monthExpense = (float) $expenses->month_amount;
 
-        $totalAids = (float) Aids::sum('amount');
-        $monthAids = (float) Aids::whereMonth('date', now()->month)
-            ->whereYear('date', now()->year)
-            ->sum('amount');
+        $totalAids = (float) $aids->total_amount;
+        $monthAids = (float) $aids->month_amount;
 
-        $totalLoansDisbursed = (float) Credit::sum('amount');
-        $totalLoansRemaining = (float) Credit::where('status', 'active')->sum('remaining_amount');
+        $totalLoansDisbursed = (float) $loans->disbursed;
+        $totalLoansRemaining = (float) $loans->remaining;
 
         $totalMoneyIn = $totalIncome + $totalReceive;
         $totalBalance = $totalMoneyIn;
@@ -109,10 +145,8 @@ class FinancialService
             'totalCreditAvailable' => $totalCreditAvailable,
             'totalLoansDisbursed' => $totalLoansDisbursed,
             'totalLoansRemaining' => $totalLoansRemaining,
-            'totalUser' => User::count(),
-            'monthUser' => User::whereMonth('created_at', now()->month)
-                ->whereYear('created_at', now()->year)
-                ->count(),
+            'totalUser' => (int) $users->total_users,
+            'monthUser' => (int) $users->month_users,
             'totalcredit' => $totalCreditAvailable,
             'remaining_amount' => $totalLoansRemaining,
         ];

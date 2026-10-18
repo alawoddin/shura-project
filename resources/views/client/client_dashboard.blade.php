@@ -39,6 +39,8 @@
 
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css">
 
+    <script src="{{ asset('backend/assets/libs/jquery/jquery.min.js') }}"></script>
+
 </head>
 
 <!-- body start -->
@@ -79,23 +81,12 @@
     <!-- END wrapper -->
 
     <!-- Vendor -->
-    <script src="{{ asset('backend/assets/libs/jquery/jquery.min.js') }}"></script>
     <script src="{{ asset('backend/assets/libs/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
     <script src="{{ asset('backend/assets/libs/simplebar/simplebar.min.js') }}"></script>
     <script src="{{ asset('backend/assets/libs/node-waves/waves.min.js') }}"></script>
     <script src="{{ asset('backend/assets/libs/waypoints/lib/jquery.waypoints.min.js') }}"></script>
     <script src="{{ asset('backend/assets/libs/jquery.counterup/jquery.counterup.min.js') }}"></script>
     <script src="{{ asset('backend/assets/libs/feather-icons/feather.min.js') }}"></script>
-
-    <!-- Apexcharts JS -->
-    <script src="{{ asset('backend/assets/libs/apexcharts/apexcharts.min.js') }}"></script>
-
-
-    <!-- for basic area chart -->
-    <script src="https://apexcharts.com/samples/assets/stock-prices.js"></script>
-
-    <!-- Widgets Init Js -->
-    {{-- analytics dashboard scripts removed for member portal --}}
 
     <!-- App js-->
     <script src="{{ asset('backend/assets/js/app.js') }}"></script>

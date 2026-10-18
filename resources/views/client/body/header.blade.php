@@ -7,19 +7,7 @@
                               <i data-feather="menu" class="noti-icon"></i>
                           </button>
                       </li>
-                      <li class="d-none d-lg-block">
-                          <div class="position-relative topbar-search">
-                              <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.6.2/dist/dotlottie-wc.js" type="module"></script>
-
-                              <dotlottie-wc
-                                  src="https://lottie.host/fa10dc14-037b-4aa5-b273-5a5d0872d903/74OfnMyoZ4.lottie"
-                                  style="width: 100px;height: 50px" speed="1" autoplay loop></dotlottie-wc>
-                              {{-- <input type="text" class="form-control bg-light bg-opacity-75 border-light ps-4"
-                                  placeholder="Search...">
-                              <i
-                                  class="mdi mdi-magnify fs-16 position-absolute text-muted top-50 translate-middle-y ms-2"></i>
-                          </div> --}}
-                      </li>
+                      <li class="d-none d-lg-block"></li>
                   </ul>
 
                   <ul class="list-unstyled topnav-menu mb-0 d-flex align-items-center">
@@ -61,8 +49,7 @@
                       </li>
 
                       @php
-        $id = Auth::user()->id;
-        $profileData = App\Models\User::find($id);
+        $profileData = Auth::user();
     @endphp  
 
                       <li class="dropdown notification-list topbar-dropdown">

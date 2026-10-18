@@ -5,7 +5,7 @@
         <div id="sidebar-menu">
 
             <div class="logo-box">
-                <a href="index.html" class="logo logo-light">
+                <a href="{{ route('admin.dashboard') }}" class="logo logo-light">
                     <span class="logo-sm">
                         <img src="{{ asset('backend/assets/images/logo-sm.png') }}" alt="" height="22">
                     </span>
@@ -13,7 +13,7 @@
                         <img src="{{ asset('backend/assets/images/logo-light.png') }}" alt="" height="24">
                     </span>
                 </a>
-                <a href="index.html" class="logo logo-dark">
+                <a href="{{ route('admin.dashboard') }}" class="logo logo-dark">
                     <span class="logo-sm">
                         <img src="{{ asset('backend/assets/images/logo-sm.png') }}" alt="" height="22">
                     </span>
@@ -107,7 +107,7 @@
 
                 @if (Auth::guard('web')->user()->can('all.income'))
                     <li>
-                        <a href="{{ route('add.income') }}" class="tp-link">
+                        <a href="{{ route('all.income') }}" class="tp-link">
                             <i data-feather="trending-up"></i>
                             <span> درامد ها </span>
                         </a>
@@ -273,6 +273,15 @@
                     </li>
 
                 @endif
+
+                <li class="menu-title">پشتیبان</li>
+
+                <li>
+                    <a href="{{ route('admin.backup') }}" class="tp-link">
+                        <i data-feather="database"></i>
+                        <span> پشتیبان‌گیری </span>
+                    </a>
+                </li>
 
             </ul>
 
