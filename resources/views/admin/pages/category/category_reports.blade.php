@@ -2,17 +2,17 @@
 
 @section('admin')
 <div class="container-fluid">
-    <h4>Reports: {{ $category->name }}</h4>
+    <h4>گزارش‌ها: {{ $category->name }}</h4>
 
     <div class="table-responsive mt-4">
         <table class="table table-bordered table-striped">
             <thead>
                 <tr>
-                    <th>Type</th>
-                    <th>From Account</th>
-                    <th>To User</th>
-                    <th>Amount</th>
-                    <th>Date</th>
+                    <th>نوع</th>
+                    <th>از حساب</th>
+                    <th>به کاربر / حساب</th>
+                    <th>مبلغ</th>
+                    <th>تاریخ</th>
                 </tr>
             </thead>
 
@@ -155,23 +155,23 @@
                     <tr>
                         <td>
                             @if($report['type'] === 'Transfer Received')
-                                <span class="badge bg-success">Received</span>
+                                <span class="badge bg-success">دریافت</span>
                             @elseif($report['type'] === 'Transfer Sent')
-                                <span class="badge bg-danger">Sent</span>
+                                <span class="badge bg-danger">ارسال</span>
                             @elseif($report['type'] === 'Income')
-                                <span class="badge bg-primary">Income</span>
+                                <span class="badge bg-primary">عاید</span>
                             @elseif($report['type'] === 'Aid')
-                                <span class="badge bg-warning text-dark">Aid</span>
+                                <span class="badge bg-warning text-dark">کمک مالی</span>
                             @elseif($report['type'] === 'Credit')
-                                <span class="badge bg-info text-dark">Credit</span>
+                                <span class="badge bg-info text-dark">قرض</span>
                             @elseif($report['type'] === 'Credit Repayment')
-                                <span class="badge bg-success">Credit Repayment</span>
+                                <span class="badge bg-success">بازپرداخت قرض</span>
                             @elseif($report['type'] === 'Payment Received')
-                                <span class="badge bg-success">Payment Received</span>
+                                <span class="badge bg-success">پرداخت دریافتی</span>
                             @elseif($report['type'] === 'Payment Debit')
-                                <span class="badge bg-danger">Payment Debit</span>
+                                <span class="badge bg-danger">پرداخت خروجی</span>
                             @else
-                                <span class="badge bg-secondary">Expense</span>
+                                <span class="badge bg-secondary">مصرف</span>
                             @endif
                         </td>
 
@@ -188,7 +188,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="5" class="text-center">No reports found.</td>
+                        <td colspan="5" class="text-center">هیچ گزارشی یافت نشد.</td>
                     </tr>
                 @endforelse
             </tbody>

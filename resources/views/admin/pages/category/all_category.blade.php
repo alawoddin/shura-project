@@ -52,7 +52,7 @@
                                                 <td class="text-center">
                                                     <a href="{{ route('reports.category', $item->id) }}"
                                                     class="btn btn-info btn-sm">
-                                                        Reports
+                                                        گذارشات
                                                     </a>
 
                                                     <a href="{{ route('edit.category', $item->id) }}" class="btn btn-success btn-sm">ویرایش</a>

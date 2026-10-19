@@ -1,9 +1,5 @@
 @extends('admin.dashboard')
-
 @section('admin')
-
-
-
 
  <!-- Start Content-->
         <div class="container-fluid my-0">
@@ -28,12 +24,19 @@
                                     <label class="form-label">نوع حساب</label>
                                     <select name="account_type" class="form-control">
                                         <option value="">عمومی</option>
-                                        <option value="receivable">Accounts Receivable</option>
+                                        {{-- <option value="receivable">Accounts Receivable</option>
                                         <option value="payable">Accounts Payable</option>
                                         <option value="cash">Cash / Fund Account</option>
                                         <option value="income">Income Source</option>
                                         <option value="expense">Expense Account</option>
-                                        <option value="payment_type">Payment Type</option>
+                                        <option value="payment_type">Payment Type</option> --}}
+
+                                        <option value="receivable">حساب‌های دریافتنی</option>
+                                        <option value="payable">حساب‌های پرداختنی</option>
+                                        <option value="cash">حساب نقدی / صندوق</option>
+                                        <option value="income">منبع درآمد</option>
+                                        <option value="expense">حساب مصارف</option>
+                                        <option value="payment_type">نوع پرداخت</option>
                                     </select>
                                 </div>
                               
@@ -42,11 +45,11 @@
                                     <textarea class="form-control" name="description"></textarea>
                                  </div>
 
-                                 <div class="col-md-6">
-                                    <div class="form-check mt-4">
+                                 <div class="col-md-12">
+                                    <div class="form-check">
                                         <input class="form-check-input" type="checkbox" name="is_monthly_fee" value="1" id="is_monthly_fee">
                                         <label class="form-check-label" for="is_monthly_fee">
-                                            فیس ماهانه (For the month of becomes active)
+                                            فیس ماهانه 
                                         </label>
                                     </div>
                                  </div>
@@ -59,17 +62,10 @@
                     </div> <!-- end card-->
                 </div> <!-- end col -->
 
-
             </div>
-
-
-
         </div> <!-- container-fluid -->
 
     </div>
-
-
-
     
     <script type="text/javascript">
         $(document).ready(function() {
@@ -108,8 +104,4 @@
             });
         });
     </script>
-
-
-
-
 @endsection
