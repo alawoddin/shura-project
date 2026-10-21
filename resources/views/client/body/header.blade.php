@@ -6,7 +6,7 @@
                     <i data-feather="menu" class="noti-icon"></i>
                 </button>
                 <div class="shura-header-title d-none d-md-block">
-                    <strong>پورتال عضو شورا</strong>
+                    <strong>پنل عضو شورا</strong>
                     <small>{{ now()->format('Y/m/d') }}</small>
                 </div>
             </div>

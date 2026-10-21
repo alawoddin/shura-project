@@ -4,31 +4,24 @@
 
 @section('client')
 <div class="content">
-    <div class="container-fluid client-dash">
-
-        <div class="client-hero">
-            <div class="client-welcome">
+    <div class="container-fluid shura-dash">
+        <div class="shura-hero">
+            <div class="hero-user">
                 <img src="{{ $user->photo ? url('upload/user_images/' . $user->photo) : url('upload/no_image.jpg') }}" alt="photo">
                 <div>
-                    <p class="eyebrow">پورتال عضو شورا</p>
+                    <p class="eyebrow">سیستم مدیریت شورا</p>
                     <h1>سلام، {{ $user->name }}</h1>
-                    <p>{{ $user->email }}@if($user->phone) | {{ $user->phone }}@endif</p>
-                    <div class="badges">
-                        <span>{{ $user->member_type ?? 'عضو' }}</span>
-                        <span>{{ $user->status ?? 'active' }}</span>
-                        <span>امروز {{ now()->format('Y/m/d') }}</span>
-                    </div>
+                    <p>امروز {{ now()->format('Y/m/d') }} است. وضعیت حساب، پرداخت‌ها و قرض‌های شما اینجاست.</p>
                 </div>
             </div>
-
-            <div class="client-fee">
-                <span>فیس ماهانه</span>
-                <strong>{{ number_format($user->monthly_fee, 2) }}</strong>
-                <small>بیلانس فعلی: {{ number_format($stats['current_balance'], 2) }}</small>
+            <div class="hero-balance">
+                <span>بیلانس فعلی</span>
+                <strong>{{ number_format($stats['current_balance'], 2) }}</strong>
+                <small>فیس ماهانه: {{ number_format($user->monthly_fee, 2) }}</small>
             </div>
         </div>
 
-        <div class="client-quick">
+        <div class="quick-row">
             <a href="{{ route('user.profile') }}">پروفایل من</a>
             <a href="{{ route('user.change.password') }}">تغییر رمز</a>
             <a href="#payments">پرداخت‌ها</a>
@@ -36,36 +29,52 @@
             <a href="#family">اعضای فامیل</a>
         </div>
 
-        <div class="client-metrics">
-            <div class="client-metric green">
+        <div class="metric-grid">
+            <div class="metric green">
                 <div class="label">مجموع پرداخت‌ها</div>
                 <div class="value">{{ number_format($stats['total_payments'], 2) }}</div>
+                <div class="hint">همه دریافت‌های شما</div>
             </div>
-            <div class="client-metric gold">
+            <div class="metric gold">
                 <div class="label">قرض‌ها</div>
                 <div class="value">{{ number_format($stats['total_credits'], 2) }}</div>
+                <div class="hint">مجموع قرض‌های ثبت شده</div>
             </div>
-            <div class="client-metric red">
+            <div class="metric red">
                 <div class="label">باقی‌مانده قرض</div>
                 <div class="value">{{ number_format($stats['remaining_credits'], 2) }}</div>
+                <div class="hint">هنوز پرداخت نشده</div>
             </div>
-            <div class="client-metric blue">
+            <div class="metric blue">
                 <div class="label">کمک دریافتی</div>
                 <div class="value">{{ number_format($stats['total_aid'], 2) }}</div>
+                <div class="hint">مجموع کمک‌ها</div>
             </div>
-            <div class="client-metric green">
+            <div class="metric green">
                 <div class="label">بیلانس فعلی</div>
                 <div class="value">{{ number_format($stats['current_balance'], 2) }}</div>
+                <div class="hint">آخرین گزارش مالی</div>
             </div>
-            <div class="client-metric">
+            <div class="metric">
+                <div class="label">فیس ماهانه</div>
+                <div class="value">{{ number_format($user->monthly_fee, 2) }}</div>
+                <div class="hint">مبلغ ثابت ماهانه</div>
+            </div>
+            <div class="metric blue">
                 <div class="label">اعضای فامیل</div>
                 <div class="value">{{ $stats['family_count'] }}</div>
+                <div class="hint">ثبت شده در حساب شما</div>
+            </div>
+            <div class="metric gold">
+                <div class="label">وضعیت عضو</div>
+                <div class="value" style="font-size: 18px;">{{ $user->status ?? 'active' }}</div>
+                <div class="hint">{{ $user->member_type ?? 'عضو' }}</div>
             </div>
         </div>
 
-        <div class="client-split">
-            <div class="client-panel" id="payments">
-                <div class="client-panel-head">
+        <div class="split">
+            <div class="panel" id="payments">
+                <div class="panel-head">
                     <h5>پرداخت‌های من</h5>
                 </div>
                 <div class="table-responsive">
@@ -96,8 +105,8 @@
                 </div>
             </div>
 
-            <div class="client-panel">
-                <div class="client-panel-head">
+            <div class="panel">
+                <div class="panel-head">
                     <h5>گزارش مالی من</h5>
                 </div>
                 <div class="table-responsive">
@@ -131,9 +140,9 @@
             </div>
         </div>
 
-        <div class="client-split">
-            <div class="client-panel" id="credits">
-                <div class="client-panel-head">
+        <div class="split">
+            <div class="panel" id="credits">
+                <div class="panel-head">
                     <h5>قرض‌های من</h5>
                 </div>
                 <div class="table-responsive">
@@ -153,7 +162,7 @@
                                     <td>{{ number_format($credit->amount, 2) }}</td>
                                     <td>{{ number_format($credit->remaining_amount, 2) }}</td>
                                     <td>
-                                        <span class="client-status {{ in_array($credit->status, ['active', 'paid'], true) ? $credit->status : 'default' }}">
+                                        <span class="tag {{ in_array($credit->status, ['active', 'paid'], true) ? $credit->status : 'income' }}">
                                             {{ $credit->status }}
                                         </span>
                                     </td>
@@ -168,8 +177,8 @@
                 </div>
             </div>
 
-            <div class="client-panel">
-                <div class="client-panel-head">
+            <div class="panel">
+                <div class="panel-head">
                     <h5>کمک‌های من</h5>
                 </div>
                 <div class="table-responsive">
@@ -199,8 +208,8 @@
             </div>
         </div>
 
-        <div class="client-panel" id="family">
-            <div class="client-panel-head">
+        <div class="panel" id="family">
+            <div class="panel-head">
                 <h5>اعضای فامیل من</h5>
             </div>
             <div class="table-responsive">
@@ -230,7 +239,6 @@
                 </table>
             </div>
         </div>
-
     </div>
 </div>
 @endsection
