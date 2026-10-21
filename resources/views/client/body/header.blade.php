@@ -1,36 +1,37 @@
-<div class="topbar-custom shura-header">
+@php
+    $profileData = Auth::user();
+@endphp
+
+<div class="topbar-custom client-topbar">
     <div class="container-fluid">
-        <div class="shura-header-inner">
-            <div class="shura-header-start">
-                <button class="button-toggle-menu shura-icon-btn" type="button" aria-label="منو">
+        <div class="client-topbar-inner">
+            <div class="client-topbar-start">
+                <button class="button-toggle-menu client-top-btn" type="button" aria-label="منو">
                     <i data-feather="menu" class="noti-icon"></i>
                 </button>
-                <div class="shura-header-title d-none d-md-block">
-                    <strong>پنل عضو شورا</strong>
-                    <small>{{ now()->format('Y/m/d') }}</small>
+                <div class="client-topbar-copy d-none d-md-block">
+                    <strong>داشبورد عضو</strong>
+                    <small>سیستم مدیریت شورا · {{ now()->format('Y/m/d') }}</small>
                 </div>
             </div>
 
-            <div class="shura-header-end">
-                <button type="button" class="btn shura-icon-btn d-none d-sm-inline-flex" data-toggle="fullscreen" aria-label="تمام صفحه">
+            <div class="client-topbar-end">
+                <a href="{{ route('user.profile') }}" class="client-top-link d-none d-sm-inline-flex">پروفایل</a>
+                <button type="button" class="btn client-top-btn d-none d-sm-inline-flex" data-toggle="fullscreen" aria-label="تمام صفحه">
                     <i data-feather="maximize" class="align-middle fullscreen noti-icon"></i>
                 </button>
 
-                @php
-                    $profileData = Auth::user();
-                @endphp
-
                 <div class="dropdown notification-list topbar-dropdown">
-                    <a class="nav-link dropdown-toggle shura-user-chip" data-bs-toggle="dropdown" href="#"
+                    <a class="nav-link dropdown-toggle client-user-chip" data-bs-toggle="dropdown" href="#"
                         role="button" aria-haspopup="false" aria-expanded="false">
                         <img src="{{ !empty($profileData->photo) ? url('upload/user_images/' . $profileData->photo) : url('upload/no_image.jpg') }}"
                             alt="user-image" class="rounded-circle">
-                        <span class="pro-user-name">
+                        <span>
                             {{ $profileData->name }}
                             <i class="mdi mdi-chevron-down"></i>
                         </span>
                     </a>
-                    <div class="dropdown-menu dropdown-menu-end profile-dropdown shura-dropdown">
+                    <div class="dropdown-menu dropdown-menu-end profile-dropdown client-dropdown">
                         <div class="dropdown-header noti-title">
                             <h6 class="text-overflow m-0">خوش آمدید</h6>
                         </div>

@@ -26,6 +26,7 @@
 
     <link href="{{ asset('backend/assets/css/app-rtl.min.css') }}" rel="stylesheet" id="app-style" />
     <link href="{{ asset('backend/assets/css/shura-shell.css') }}" rel="stylesheet" />
+    <link href="{{ asset('backend/assets/css/shura-client-shell.css') }}" rel="stylesheet" />
     <link href="{{ asset('backend/assets/css/shura-dash.css') }}" rel="stylesheet" />
 
     <link href="{{ asset('backend/assets/css/icons.min.css') }}" rel="stylesheet" type="text/css" />
