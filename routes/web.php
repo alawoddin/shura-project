@@ -65,6 +65,7 @@ Route::prefix('admin')->middleware(['auth' ,IsAdmin::class ])->group(function ()
         Route::post('/update/users',  'UpdateUsers')->name('update.users');
         Route::get('/delete/user/{id}', 'DeleteUser')->name('delete.user');
         Route::get('/users/details/{id}', 'UsersDetails')->name('users.details');
+        Route::get('/users/{id}/fee-report', 'FeeReport')->name('users.fee.report');
     });
 
     // All Ethnic Branches

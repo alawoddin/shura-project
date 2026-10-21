@@ -44,7 +44,7 @@
                             </div>
 
                             <div class="col-md-6">
-                                <label class="form-label">Aid Source Account</label>
+                                <label class="form-label">حساب ها</label>
                                 <select name="source_account_id" class="form-control">
                                     <option value="">انتخاب حساب</option>
                                     @foreach ($sourceAccounts as $account)

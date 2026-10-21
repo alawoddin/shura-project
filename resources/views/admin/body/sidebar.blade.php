@@ -119,14 +119,14 @@
                     <li>
                         <a href="{{ route('all.receive.payment') }}" class="tp-link">
                             <i data-feather="credit-card"></i>
-                            <span> دریافت پرداخت </span>
+                            <span> دریافت پول </span>
                         </a>
                     </li>
 
                     <li>
                         <a href="{{ route('unpaid.payments') }}" class="tp-link">
                             <i data-feather="alert-circle"></i>
-                            <span> پرداخت‌های پرداخت نشده </span>
+                            <span> پول های پرداخت نشده </span>
                         </a>
                     </li>
                 @endif

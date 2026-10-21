@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
 use App\Models\EthnicBranch;
+use App\Models\ReceivePayment;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
@@ -194,5 +196,59 @@ class UsersController extends Controller
         $users = User::with(['ethnicBranch', 'representativeName'])->findOrFail($id);
 
         return view('admin.pages.users.users_details', compact('users'));
+    }
+
+    public function FeeReport($id){
+        $user = User::findOrFail($id);
+
+        $start = Carbon::parse($user->register_date ?? $user->created_at)
+            ->startOfMonth();
+
+        $currentYear = now()->year;
+        $year = (int) request('year', $currentYear);
+
+        $startYear = $start->year;
+        abort_if($year < $startYear || $year > $currentYear, 404);
+
+        $from = max($start->copy(), Carbon::create($year, 1, 1));
+        $to = Carbon::create($year, 12, 1);
+
+        if ($year === $currentYear) {
+            $to = now()->startOfMonth();
+        }
+
+        $payments = ReceivePayment::where('user_id', $user->id)
+            ->where('transaction_type', 'credit')
+            ->whereBetween('month_of', [
+                $from->format('Y-m'),
+                $to->format('Y-m')
+            ])
+            ->selectRaw('month_of, SUM(amount) as paid')
+            ->groupBy('month_of')
+            ->pluck('paid', 'month_of');
+
+        $months = [];
+
+        for ($date = $from->copy()->startOfMonth();
+            $date <= $to;
+            $date->addMonth()) {
+            $key = $date->format('Y-m');
+            $expected = (float) $user->monthly_fee;
+            $paid = (float) ($payments[$key] ?? 0);
+
+            $months[] = [
+                'month' => $key,
+                'expected' => $expected,
+                'paid' => $paid,
+                'remaining' => max(0, $expected - $paid),
+                'status' => $paid >= $expected
+                    ? 'پرداخت کامل'
+                    : ($paid > 0 ? 'پرداخت ناقص' : 'پرداخت نشده'),
+            ];
+        }
+
+        return view('admin.pages.users.fee_report', compact(
+            'user', 'months', 'year', 'startYear', 'currentYear'
+        ));
     }
 }

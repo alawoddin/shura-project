@@ -150,6 +150,11 @@
 
                                                     <a href="{{ route('delete.user', $item->id) }}" class="btn btn-danger btn-sm" id="delete">حذف</a>
                                                     <a href="{{ route('users.details', $item->id) }}" class="btn btn-info btn-sm">جزئیات</a>
+
+                                                    <a href="{{ route('users.fee.report', $item->id) }}"
+                                                    class="btn btn-sm btn-dark">
+                                                      گذارش فیس ها
+                                                    </a>
                                                 </td>
                                             </tr>
                                         @endforeach
