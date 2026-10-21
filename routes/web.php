@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ActivityLogController as ControllersActivityLogController;
 use App\Http\Controllers\Backend\AdminController;
 use App\Http\Controllers\Backend\BackupController;
 use App\Http\Controllers\Backend\CategoryController;
@@ -22,6 +23,7 @@ use App\Http\Controllers\Client\ClientController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Middleware\IsAdmin;
 use App\Http\Middleware\IsUser;
+use App\Http\Controllers\Backend\ActivityLogController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -47,6 +49,7 @@ Route::post('/user/password/update', [ClientController::class, 'UserPasswordUpda
 ///Admin Route
 Route::prefix('admin')->middleware(['auth' ,IsAdmin::class ])->group(function () {
 
+    Route::get('/activity-logs', [ControllersActivityLogController::class, 'index'])->name('admin.activity.logs');
 
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
 
@@ -229,11 +232,6 @@ Route::prefix('admin')->middleware(['auth' ,IsAdmin::class ])->group(function ()
         Route::get('/backup/download/{filename}', 'download')->name('admin.backup.download');
         Route::get('/backup/delete/{filename}', 'destroy')->name('admin.backup.delete');
     });
-
-
-
-
-
 
 });
 

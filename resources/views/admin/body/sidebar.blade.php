@@ -275,6 +275,13 @@
                     </a>
                 </li>
 
+                <li>
+                    <a href="{{ route('admin.activity.logs') }}" class="tp-link">
+                        <i data-feather="activity"></i>
+                        <span> گزارش فعالیت‌ها </span>
+                    </a>
+                </li>
+
             </ul>
 
         </div>
