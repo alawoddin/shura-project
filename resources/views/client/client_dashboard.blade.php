@@ -1,24 +1,18 @@
 <!DOCTYPE html>
-<html lang="en" dir="rtl">
+<html lang="fa" dir="rtl">
 
 <head>
 
     <meta charset="utf-8" />
-    <title>داشبورد عضو</title>
+    <title>@yield('title', 'پورتال عضو شورا')</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="A fully featured admin theme which can be used to build CRM, CMS, etc." />
-    <meta name="author" content="Zoyothemes" />
+    <meta name="description" content="پورتال عضو سیستم مدیریت شورا" />
+    <meta name="author" content="Shura" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="theme-color" content="#0d6efd">
+    <meta name="theme-color" content="#1f7a4d">
 
-
-    {{-- <link rel="manifest" href="{{ asset('manifest.json') }}"> --}}
-
-
-    <!-- App favicon -->
     <link rel="shortcut icon" href="{{ asset('backend/assets/images/favicon.ico') }}">
 
-    <!-- Datatables css -->
     <link href="{{ asset('backend/assets/libs/datatables.net-bs5/css/dataTables.bootstrap5.min.css') }}"
         rel="stylesheet" type="text/css" />
     <link href="{{ asset('backend/assets/libs/datatables.net-buttons-bs5/css/buttons.bootstrap5.min.css') }}"
@@ -30,11 +24,10 @@
     <link href="{{ asset('backend/assets/libs/datatables.net-select-bs5/css/select.bootstrap5.min.css') }}"
         rel="stylesheet" type="text/css" />
 
-    <!-- App css -->
-    {{-- <link href="{{ asset('backend/assets/css/app.min.css') }}" rel="stylesheet" type="text/css" id="app-style" /> --}}
     <link href="{{ asset('backend/assets/css/app-rtl.min.css') }}" rel="stylesheet" id="app-style" />
+    <link href="{{ asset('backend/assets/css/shura-shell.css') }}" rel="stylesheet" />
+    <link href="{{ asset('backend/assets/css/shura-client.css') }}" rel="stylesheet" />
 
-    <!-- Icons -->
     <link href="{{ asset('backend/assets/css/icons.min.css') }}" rel="stylesheet" type="text/css" />
 
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css">
@@ -43,9 +36,7 @@
 
 </head>
 
-<!-- body start -->
-
-<body data-menu-color="light" data-sidebar="default">
+<body data-menu-color="dark" data-sidebar="default" data-portal="client">
 
     <!-- Begin page -->
     <div id="app-layout">
