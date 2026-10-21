@@ -55,7 +55,7 @@
                 <div class="value">{{ number_format($stats['current_balance'], 2) }}</div>
                 <div class="hint">آخرین گزارش مالی</div>
             </div>
-            <div class="metric">
+            <div class="metric gold">
                 <div class="label">فیس ماهانه</div>
                 <div class="value">{{ number_format($user->monthly_fee, 2) }}</div>
                 <div class="hint">مبلغ ثابت ماهانه</div>
