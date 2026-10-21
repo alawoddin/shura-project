@@ -1,86 +1,57 @@
 @extends('client.client_dashboard')
+
+@section('title', 'تغییر رمز')
+
 @section('client')
-
-<div class="nk-content-inner">
-<div class="nk-content-body">
-    <div class="nk-block-head nk-page-head">
-        <div class="nk-block-head-between">
-            <div class="nk-block-head-content">
-                <h2 class="display-6">تغییر رمز  </h2>
-                 
+<div class="content">
+    <div class="container-fluid client-dash">
+        <div class="py-3 d-flex align-items-sm-center flex-sm-row flex-column">
+            <div class="flex-grow-1">
+                <h4 class="fs-18 fw-semibold m-0">تغییر رمز</h4>
+                <p class="text-muted mb-0">رمز عبور حساب خود را به‌روزرسانی کنید</p>
             </div>
         </div>
-    </div><!-- .nk-page-head -->
-    <div class="nk-block">
-        <div class="nk-block-head nk-block-head-sm">
-            <div class="nk-block-head-content">
-               
+
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">رمز جدید</h5>
             </div>
-        </div><!-- .nk-block-head -->
-        <div class="card shadown-none">
             <div class="card-body">
-     
-      <form action="{{ route('user.password.update') }}" method="post" enctype="multipart/form-data">
-        @csrf   
+                <form action="{{ route('user.password.update') }}" method="post" class="row g-3">
+                    @csrf
 
-     <div class="row g-3 gx-gs">
-                    
-    <div class="col-md-6">
-        <div class="form-group">
-            <label for="exampleFormControlInputText1" class="form-label">رمز گدشته </label>
-            <div class="form-control-wrap">
-                <input type="password" name="old_password" id="old_password" class="form-control @error('old_password') is-invalid @enderror " placeholder="Old Password"  >
-                @error('old_password')
-                    <span class="text-danger">{{ $message }}</span>
-                @enderror
+                    <div class="col-md-6">
+                        <label class="form-label">رمز گذشته</label>
+                        <input type="password" name="old_password" id="old_password"
+                            class="form-control @error('old_password') is-invalid @enderror"
+                            placeholder="رمز فعلی">
+                        @error('old_password')
+                            <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">رمز جدید</label>
+                        <input type="password" name="new_password" id="new_password"
+                            class="form-control @error('new_password') is-invalid @enderror"
+                            placeholder="رمز جدید">
+                        @error('new_password')
+                            <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">تایید رمز جدید</label>
+                        <input type="password" name="new_password_confirmation" id="new_password_confirmation"
+                            class="form-control" placeholder="تکرار رمز جدید">
+                    </div>
+
+                    <div class="col-12">
+                        <button type="submit" class="btn btn-primary">ذخیره</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
-
-    <div class="col-md-6">
-        <div class="form-group">
-            <label for="exampleFormControlInputText1" class="form-label">رمز جدید </label>
-            <div class="form-control-wrap">
-                <input type="password" name="new_password" id="new_password" class="form-control @error('new_password') is-invalid @enderror " placeholder="New Password"  >
-                @error('new_password')
-                    <span class="text-danger">{{ $message }}</span>
-                @enderror
-            </div>
-        </div>
-    </div>
-
-    <div class="col-md-6">
-        <div class="form-group">
-            <label for="exampleFormControlInputText1" class="form-label">تایید رمز جدید </label>
-            <div class="form-control-wrap">
-                <input type="password" name="new_password_confirmation" id="new_password_confirmation" class="form-control" placeholder="New Password Confirmation"  > 
-            </div>
-        </div>
-    </div> 
-  
-               
-    <div class="col-lg-12 col-xl-12">
-<button type="submit" class="btn btn-secondary">دخیره</button> 
-    </div>
-            
-                    
-    </div>
-    </form> 
-
-
-
-            </div><!-- .card-body -->
-        </div><!-- .card -->
-    </div><!-- .nk-block -->
-     
-
-
 </div>
-</div>
-
-
- 
-
-
-
 @endsection
