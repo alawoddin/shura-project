@@ -1,0 +1,269 @@
+/* Client portal builds on the shared shell look */
+@import url('shura-shell.css');
+
+body[data-portal="client"] .content-page {
+    background: transparent;
+}
+
+.client-dash {
+    --ink: #152033;
+    --muted: #6b7280;
+    --line: #e4ddd1;
+    --green: #1f7a4d;
+    --navy: #16324f;
+    --gold: #b8893d;
+    color: var(--ink);
+}
+
+.client-hero {
+    display: grid;
+    grid-template-columns: 1.4fr .8fr;
+    gap: 18px;
+    margin-bottom: 18px;
+}
+
+.client-welcome {
+    background: linear-gradient(135deg, #16324f 0%, #1f7a4d 100%);
+    border-radius: 22px;
+    padding: 26px;
+    color: #fff;
+    box-shadow: 0 18px 40px rgba(22, 50, 79, .18);
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+.client-welcome img {
+    width: 84px;
+    height: 84px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid rgba(255, 255, 255, .35);
+    flex-shrink: 0;
+}
+
+.client-welcome .eyebrow {
+    margin: 0 0 6px;
+    opacity: .75;
+    font-size: 12px;
+    letter-spacing: .06em;
+}
+
+.client-welcome h1 {
+    margin: 0 0 6px;
+    font-size: 28px;
+    font-weight: 800;
+}
+
+.client-welcome p {
+    margin: 0;
+    opacity: .88;
+}
+
+.client-welcome .badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.client-welcome .badges span {
+    background: rgba(255, 255, 255, .14);
+    border: 1px solid rgba(255, 255, 255, .18);
+    border-radius: 999px;
+    padding: 4px 10px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.client-fee {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 22px;
+    padding: 22px;
+    box-shadow: 0 10px 28px rgba(21, 32, 51, .05);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.client-fee span {
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.client-fee strong {
+    display: block;
+    margin: 8px 0 4px;
+    font-size: 32px;
+    color: var(--navy);
+    font-weight: 800;
+}
+
+.client-fee small {
+    color: var(--muted);
+}
+
+.client-quick {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 18px;
+}
+
+.client-quick a {
+    background: #fff;
+    border: 1px solid var(--line);
+    color: var(--ink);
+    border-radius: 999px;
+    padding: 8px 14px;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.client-quick a:hover {
+    background: var(--navy);
+    border-color: var(--navy);
+    color: #fff;
+}
+
+.client-metrics {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+    margin-bottom: 18px;
+}
+
+.client-metric {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: 16px;
+    box-shadow: 0 8px 24px rgba(21, 32, 51, .04);
+}
+
+.client-metric .label {
+    color: var(--muted);
+    font-size: 13px;
+    margin-bottom: 8px;
+}
+
+.client-metric .value {
+    font-size: 22px;
+    font-weight: 800;
+    line-height: 1.2;
+}
+
+.client-metric.green {
+    background: linear-gradient(180deg, #e7f6ee, #fff 58%);
+}
+
+.client-metric.green .value {
+    color: var(--green);
+}
+
+.client-metric.red {
+    background: linear-gradient(180deg, #fdeceb, #fff 58%);
+}
+
+.client-metric.red .value {
+    color: #b42318;
+}
+
+.client-metric.gold {
+    background: linear-gradient(180deg, #f8f1e4, #fff 58%);
+}
+
+.client-metric.gold .value {
+    color: var(--gold);
+}
+
+.client-metric.blue {
+    background: linear-gradient(180deg, #e8f1fb, #fff 58%);
+}
+
+.client-metric.blue .value {
+    color: #1d4e89;
+}
+
+.client-panel {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 8px 24px rgba(21, 32, 51, .04);
+    margin-bottom: 18px;
+}
+
+.client-panel-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--line);
+    background: #fbfaf7;
+}
+
+.client-panel-head h5 {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 800;
+    color: var(--navy);
+}
+
+.client-panel .table {
+    margin: 0;
+}
+
+.client-panel th {
+    font-size: 12px;
+    color: var(--muted);
+    font-weight: 700;
+    background: #fff;
+    white-space: nowrap;
+}
+
+.client-panel td,
+.client-panel th {
+    padding: 12px 14px;
+    vertical-align: middle;
+}
+
+.client-split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+}
+
+.client-status {
+    display: inline-block;
+    border-radius: 999px;
+    padding: 3px 9px;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.client-status.active {
+    background: #e7f6ee;
+    color: var(--green);
+}
+
+.client-status.paid {
+    background: #e8f1fb;
+    color: #1d4e89;
+}
+
+.client-status.default {
+    background: #f8f1e4;
+    color: var(--gold);
+}
+
+@media (max-width: 992px) {
+    .client-hero,
+    .client-metrics,
+    .client-split {
+        grid-template-columns: 1fr;
+    }
+}
