@@ -22,7 +22,7 @@
                     <div class="card-body">
                         <div class="table-responsive">
 
-                            <table class="table table-bordered dt-responsive nowrap">
+                            <table class="table table-bordered dt-responsive nowrap" id="datatable">
                                 <thead>
                                     <tr>
                                         <th class="text-center">شماره</th>
@@ -83,9 +83,9 @@
 
                         </div>
 
-                        <div class="mt-3">
+                        {{-- <div class="mt-3">
                             {{ $activities->links() }}
-                        </div>
+                        </div> --}}
 
                     </div>
                 </div>

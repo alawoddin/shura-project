@@ -17,34 +17,35 @@ class UnpaidPaymentController extends Controller
         $unpaidMembers = $this->financialService->getUnpaidMembers();
         $pendingNotifications = $this->financialService->getPendingPaymentNotifications();
 
-        return view('admin.pages.unpaid.all_unpaid_payments', compact('unpaidMembers', 'pendingNotifications'));
+        return view(
+            'admin.pages.unpaid.all_unpaid_payments',
+            compact('unpaidMembers', 'pendingNotifications')
+        );
     }
 
     public function markReviewed(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'payment_id' => 'required|exists:receive_payments,id',
         ]);
 
-        $this->financialService->markPaymentAsReviewed($request->payment_id);
+        $this->financialService->markPaymentAsReviewed(
+            (int) $validated['payment_id']
+        );
 
-        $notification = [
-            'message' => 'اعلان پرداخت به عنوان بررسی شده علامت گذاری شد',
+        return back()->with([
+            'message' => 'اعلان پرداخت به عنوان بررسی‌شده علامت‌گذاری شد',
             'alert-type' => 'success',
-        ];
-
-        return redirect()->route('unpaid.payments')->with($notification);
+        ]);
     }
 
     public function markAllReviewed()
     {
         $this->financialService->markAllPaymentsAsReviewed();
 
-        $notification = [
+        return back()->with([
             'message' => 'تمام اعلان‌های پرداخت بررسی شدند',
             'alert-type' => 'success',
-        ];
-
-        return redirect()->route('unpaid.payments')->with($notification);
+        ]);
     }
 }

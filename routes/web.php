@@ -163,11 +163,13 @@ Route::prefix('admin')->middleware(['auth' ,IsAdmin::class ])->group(function ()
         Route::get('/receive/payment/member-fee-status/{user}', 'MemberFeeStatus')->name('receive.payment.member.fee.status');
     });
 
+    
     Route::controller(UnpaidPaymentController::class)->group(function () {
-        Route::get('/unpaid/payments', 'index')->name('unpaid.payments');
         Route::post('/unpaid/payments/mark-reviewed', 'markReviewed')->name('unpaid.payments.mark.reviewed');
+
         Route::post('/unpaid/payments/mark-all-reviewed', 'markAllReviewed')->name('unpaid.payments.mark.all');
     });
+
 
         Route::controller(CreditController::class)->group(function () {
         Route::get('/all/credits', 'AllCredits')->name('all.credits');

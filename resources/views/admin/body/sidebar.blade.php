@@ -123,12 +123,12 @@
                         </a>
                     </li>
 
-                    <li>
+                    {{-- <li>
                         <a href="{{ route('unpaid.payments') }}" class="tp-link">
                             <i data-feather="alert-circle"></i>
                             <span> پول های پرداخت نشده </span>
                         </a>
-                    </li>
+                    </li> --}}
                 @endif
 
                 @if (Auth::guard('web')->user()->can('all.financial.report'))
