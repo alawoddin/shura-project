@@ -112,11 +112,7 @@
                         <div class="text-center">
                             <h3 class="text-dark mb-3 pera-title">Register Page For Shura Managament System </h3>
                             <div class="auth-image d-flex justify-content-center align-items-center">
-                                <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.6.2/dist/dotlottie-wc.js" type="module"></script>
-
-                                <dotlottie-wc
-                                    src="https://lottie.host/9802ef85-87b5-4ca0-9b52-c67db1524fd1/iiJMXFyqNX.lottie"
-                                    style="width: 300px;height: 300px" speed="1" autoplay loop></dotlottie-wc>
+                                <img src="{{ asset('backend/assets/images/authentication.svg') }}" class="mx-auto img-fluid" alt="images">
                                 {{-- <img src="{{asset('backend/assets/images/authentication.svg')}}" class="mx-auto img-fluid"  alt="images"> --}}
                             </div>
                         </div>

@@ -21,7 +21,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        View::composer(['admin.body.header', 'admin.dashboard'], function ($view) {
+        View::composer('admin.body.header', function ($view) {
             if (auth()->check() && auth()->user()->role === 'admin') {
                 $view->with(
                     'pendingPaymentCount',

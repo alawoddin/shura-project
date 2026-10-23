@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ActivityLogController as ControllersActivityLogController;
 use App\Http\Controllers\Backend\AdminController;
 use App\Http\Controllers\Backend\BackupController;
 use App\Http\Controllers\Backend\CategoryController;
@@ -22,6 +23,7 @@ use App\Http\Controllers\Client\ClientController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Middleware\IsAdmin;
 use App\Http\Middleware\IsUser;
+use App\Http\Controllers\Backend\ActivityLogController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -47,6 +49,7 @@ Route::post('/user/password/update', [ClientController::class, 'UserPasswordUpda
 ///Admin Route
 Route::prefix('admin')->middleware(['auth' ,IsAdmin::class ])->group(function () {
 
+    Route::get('/activity-logs', [ControllersActivityLogController::class, 'index'])->name('admin.activity.logs');
 
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
 
@@ -65,6 +68,7 @@ Route::prefix('admin')->middleware(['auth' ,IsAdmin::class ])->group(function ()
         Route::post('/update/users',  'UpdateUsers')->name('update.users');
         Route::get('/delete/user/{id}', 'DeleteUser')->name('delete.user');
         Route::get('/users/details/{id}', 'UsersDetails')->name('users.details');
+        Route::get('/users/{id}/fee-report', 'FeeReport')->name('users.fee.report');
     });
 
     // All Ethnic Branches
@@ -115,6 +119,7 @@ Route::prefix('admin')->middleware(['auth' ,IsAdmin::class ])->group(function ()
         Route::get('/edit/category/{id}', 'EditCategory')->name('edit.category');
         Route::post('/update/category',  'UpdateCategory')->name('update.category');
         Route::get('/delete/category/{id}', 'DeleteCategory')->name('delete.category');
+        Route::get('/reports/category/{id}', 'ReportsCategory')->name('reports.category');
     });
 
 
@@ -221,17 +226,24 @@ Route::prefix('admin')->middleware(['auth' ,IsAdmin::class ])->group(function ()
         Route::get('/delete/admin/{id}', 'DeleteAdmin')->name('delete.admin');
     });
 
+<<<<<<< HEAD
     Route::controller(BackupController::class)->middleware('can.manage.access')->group(function () {
+=======
+    Route::controller(BackupController::class)->group(function () {
+>>>>>>> 6c856495bc33b149b96ddf949c8af8ca03bdaa71
         Route::get('/backup', 'index')->name('admin.backup');
         Route::post('/backup', 'store')->name('admin.backup.create');
         Route::get('/backup/download/{filename}', 'download')->name('admin.backup.download');
         Route::get('/backup/delete/{filename}', 'destroy')->name('admin.backup.delete');
     });
+<<<<<<< HEAD
 
 
 
 
 
+=======
+>>>>>>> 6c856495bc33b149b96ddf949c8af8ca03bdaa71
 
 });
 

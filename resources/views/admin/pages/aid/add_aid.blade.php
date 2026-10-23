@@ -1,16 +1,9 @@
 @extends('admin.dashboard')
 
 @section('admin')
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 
     <!-- Start Content-->
     <div class="container-fluid my-0">
-
-        <div class="py-3 d-flex align-items-sm-center flex-sm-row flex-column">
-            <div class="flex-grow-1">
-                <h4 class="fs-18 fw-semibold m-0">اضافه کردن کمک</h4>
-            </div>
-        </div>
 
         <!-- Form Validation -->
         <div class="row">
@@ -51,7 +44,7 @@
                             </div>
 
                             <div class="col-md-6">
-                                <label class="form-label">Aid Source Account</label>
+                                <label class="form-label">حساب ها</label>
                                 <select name="source_account_id" class="form-control">
                                     <option value="">انتخاب حساب</option>
                                     @foreach ($sourceAccounts as $account)

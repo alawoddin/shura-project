@@ -2,17 +2,8 @@
 
 @section('admin')
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 
 <div class="container-fluid my-0">
-
-    <div class="py-3 d-flex align-items-sm-center flex-sm-row flex-column">
-        <div class="flex-grow-1">
-            <h4 class="fs-18 fw-semibold m-0">
-                اضافه کردن راپور مالی عضو
-            </h4>
-        </div>
-    </div>
 
     <div class="row">
         <div class="col-xl-12">

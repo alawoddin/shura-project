@@ -34,6 +34,7 @@
                                             <th class="text-center">آیدی</th>
                                             <th class="text-center">اسم</th>
                                             <th class="text-center">نوع حساب</th>
+                                            <th class="text-center">مقدار پول </th>
                                             <th class="text-center">توضیحات</th>
                                             <th class="text-center">عملیات</th>
                                         </tr>
@@ -44,10 +45,16 @@
                                                 <td class="text-center">{{ $key + 1 }}</td>
                                                 <td class="text-center">{{ $item->name }}</td>
                                                 <td class="text-center">{{ $item->account_type ?? 'general' }}</td>
+                                                <td class="text-center">{{ $item->balance }}</td>
                                                 <td class="text-center">{{ $item->description }}</td>
                                                 
 
                                                 <td class="text-center">
+                                                    <a href="{{ route('reports.category', $item->id) }}"
+                                                    class="btn btn-info btn-sm">
+                                                        گذارشات
+                                                    </a>
+
                                                     <a href="{{ route('edit.category', $item->id) }}" class="btn btn-success btn-sm">ویرایش</a>
 
                                                     <a href="{{ route('delete.category', $item->id) }}" class="btn btn-danger btn-sm" id="delete">حذف</a>

@@ -4,16 +4,9 @@
 
 
 
- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 
  <!-- Start Content-->
         <div class="container-fluid my-0">
-
-            <div class="py-3 d-flex align-items-sm-center flex-sm-row flex-column">
-                <div class="flex-grow-1">
-                    <h4 class="fs-18 fw-semibold m-0">ویرایش</h4>
-                </div>
-            </div>
 
             <!-- Form Validation -->
             <div class="row">
@@ -34,15 +27,20 @@
 
                                 <div class="col-md-6">
                                     <label class="form-label">نوع حساب</label>
-                                    <select name="account_type" class="form-control">
-                                        <option value="">عمومی</option>
-                                        <option value="receivable" {{ $category->account_type == 'receivable' ? 'selected' : '' }}>Accounts Receivable</option>
-                                        <option value="payable" {{ $category->account_type == 'payable' ? 'selected' : '' }}>Accounts Payable</option>
-                                        <option value="cash" {{ $category->account_type == 'cash' ? 'selected' : '' }}>Cash / Fund Account</option>
-                                        <option value="income" {{ $category->account_type == 'income' ? 'selected' : '' }}>Income Source</option>
-                                        <option value="expense" {{ $category->account_type == 'expense' ? 'selected' : '' }}>Expense Account</option>
-                                        <option value="payment_type" {{ $category->account_type == 'payment_type' ? 'selected' : '' }}>Payment Type</option>
-                                    </select>
+                                        <select name="account_type" class="form-control">
+                                            <option value="">عمومی</option>
+                                            <option value="receivable" {{ $category->account_type == 'receivable' ? 'selected' : '' }}>حساب های دریافتنی</option>
+                                            <option value="payable" {{ $category->account_type == 'payable' ? 'selected' : '' }}>حساب های پرداختنی</option>
+                                            <option value="cash" {{ $category->account_type == 'cash' ? 'selected' : '' }}>حساب نقدی / صندوق</option>
+                                            <option value="income" {{ $category->account_type == 'income' ? 'selected' : '' }}>منبع درآمد</option>
+                                            <option value="expense" {{ $category->account_type == 'expense' ? 'selected' : '' }}>حساب مصارف</option>
+                                            <option value="payment_type" {{ $category->account_type == 'payment_type' ? 'selected' : '' }}>نوع پرداخت</option>
+                                        </select>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label for="validationDefault01" class="form-label">مقدار پول</label>
+                                    <input type="text" class="form-control" name="balance" value="{{ $category->balance }}">
                                 </div>
                               
                                  <div class="col-md-6">
@@ -51,11 +49,11 @@
                                 </div>
 
                                 <div class="col-md-6">
-                                    <div class="form-check mt-4">
+                                    <div class="form-check">
                                         <input class="form-check-input" type="checkbox" name="is_monthly_fee" value="1" id="is_monthly_fee"
                                             {{ $category->is_monthly_fee ? 'checked' : '' }}>
                                         <label class="form-check-label" for="is_monthly_fee">
-                                            فیس ماهانه (For the month of becomes active)
+                                            فیس ماهانه 
                                         </label>
                                     </div>
                                 </div>

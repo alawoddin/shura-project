@@ -1,23 +1,20 @@
 @extends('admin.dashboard')
 
 @section('admin')
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 
     <!-- Start Content-->
     <div class="container-fluid my-0">
-
-        <div class="py-3 d-flex align-items-sm-center flex-sm-row flex-column">
-            <div class="flex-grow-1">
-                <h4 class="fs-18 fw-semibold m-0">اضافه کردن درآمد</h4>
-            </div>
-        </div>
 
         <!-- Form Validation -->
         <div class="row">
             <div class="col-xl-12">
                 <div class="card">
-                    <div class="card-header">
+                    <div class="card-header d-flex justify-content-between align-items-center">
                         <h5 class="card-title mb-0">اضافه کردن درآمد</h5>
+
+                        <a href="{{ route('all.income') }}" class="btn btn-secondary btn-sm">
+                            نمایش همه
+                        </a>
                     </div><!-- end card header -->
 
                     <div class="card-body">

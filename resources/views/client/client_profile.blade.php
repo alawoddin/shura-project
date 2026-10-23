@@ -1,38 +1,68 @@
 @extends('client.client_dashboard')
-@section('client')
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 
-<div class="nk-content-inner">
-<div class="nk-content-body">
-    <div class="nk-block-head nk-page-head">
-        <div class="nk-block-head-between">
-            <div class="nk-block-head-content">
-                <h2 class="display-6">پروفایل شخصی </h2>
-                 
+@section('title', 'پروفایل من')
+
+@section('client')
+<div class="content">
+    <div class="container-fluid shura-dash">
+        <div class="py-3 d-flex align-items-sm-center flex-sm-row flex-column">
+            <div class="flex-grow-1">
+                <h4 class="fs-18 fw-semibold m-0">پروفایل شخصی</h4>
+                <p class="text-muted mb-0">اطلاعات حساب خود را به‌روزرسانی کنید</p>
             </div>
         </div>
-    </div><!-- .nk-page-head -->
-    <div class="nk-block">
-        <div class="nk-block-head nk-block-head-sm">
-            <div class="nk-block-head-content">
-               
+
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">ویرایش پروفایل</h5>
             </div>
-        </div><!-- .nk-block-head -->
-        <div class="card shadown-none">
             <div class="card-body">
-     
-      <form action="{{ route('user.profile.store') }}" method="post" enctype="multipart/form-data">
-        @csrf           
-     <div class="row g-3 gx-gs">
-                    
-    <div class="col-md-6">
-        <div class="form-group">
-            <label for="exampleFormControlInputText1" class="form-label">نام </label>
-            <div class="form-control-wrap">
-                <input type="text" name="name" class="form-control" value="{{ $profileData->name }}"  >
+                <form action="{{ route('user.profile.store') }}" method="post" enctype="multipart/form-data" class="row g-3">
+                    @csrf
+
+                    <div class="col-md-6">
+                        <label class="form-label">نام</label>
+                        <input type="text" name="name" class="form-control" value="{{ $profileData->name }}">
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">ایمیل</label>
+                        <input type="email" name="email" class="form-control" value="{{ $profileData->email }}">
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">نمبر</label>
+                        <input type="text" name="phone" class="form-control" value="{{ $profileData->phone }}">
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">آدرس</label>
+                        <input type="text" name="address" class="form-control" value="{{ $profileData->address }}">
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">عکس پروفایل</label>
+                        <input type="file" name="photo" class="form-control" id="image">
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">پیش‌نمایش</label>
+                        <div>
+                            <img id="showImage"
+                                src="{{ !empty($profileData->photo) ? url('upload/user_images/'.$profileData->photo) : url('upload/no_image.jpg') }}"
+                                class="rounded-circle img-thumbnail"
+                                style="width: 80px; height:80px; object-fit: cover;">
+                        </div>
+                    </div>
+
+                    <div class="col-12">
+                        <button type="submit" class="btn btn-primary">ذخیره تغییرات</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
+<<<<<<< HEAD
 
      <div class="col-md-6">
         <div class="form-group">
@@ -97,22 +127,19 @@
 
 
 </div>
+=======
+>>>>>>> 6c856495bc33b149b96ddf949c8af8ca03bdaa71
 </div>
 
-
-<script type="text/javascript">
-    $(document).ready(function(){
-        $('#image').change(function(e){
-            var reader = new FileReader();
-            reader.onload = function(e){
-                $('#showImage').attr('src',e.target.result);
-            }
-            reader.readAsDataURL(e.target.files['0']);
-        })
-    })
-
+<script>
+    document.getElementById('image')?.addEventListener('change', function (e) {
+        const file = e.target.files?.[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function (event) {
+            document.getElementById('showImage').src = event.target.result;
+        };
+        reader.readAsDataURL(file);
+    });
 </script>
-
-
-
 @endsection

@@ -131,21 +131,50 @@ class IncomeController extends Controller
         return redirect()->route('all.income')->with($notification);
     }
 
-    public function DeleteIncome(int $id)
-    {
+    
+    public function DeleteIncome(int $id){
         DB::transaction(function () use ($id) {
+<<<<<<< HEAD
             $income = Income::findOrFail($id);
             $this->financialService->reverseIncomeRecord($income);
+=======
+            $income = Income::with('undeposited')->findOrFail($id);
+
+            $undeposited = $income->undeposited;
+            $amount = (float) $income->amount;
+
+            if ($undeposited && $undeposited->status === 'transferred') {
+                // مبلغ در حساب مقصد است؛ از همان حساب کم کن
+                $this->financialService->decreaseAccountBalance(
+                    (int) $undeposited->target_account_id,
+                    $amount,
+                    true
+                );
+
+                $undeposited->delete();
+            } else {
+                // مبلغ هنوز انتقال نشده است
+                $this->financialService->decreaseAccountBalance(
+                    (int) $income->category_id,
+                    $amount,
+                    true
+                );
+
+                if ($undeposited) {
+                    $undeposited->delete();
+                }
+            }
+
+>>>>>>> 6c856495bc33b149b96ddf949c8af8ca03bdaa71
             $income->delete();
         });
 
-        $notification = [
+        return redirect()->route('all.income')->with([
             'message' => 'درآمد با موفقیت حذف شد',
             'alert-type' => 'success',
-        ];
-
-        return redirect()->route('all.income')->with($notification);
+        ]);
     }
+
 
     public function UndepositedIncome()
     {

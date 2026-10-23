@@ -2,7 +2,6 @@
 
 @section('admin')
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 
 <div class="container-fluid my-0">
 

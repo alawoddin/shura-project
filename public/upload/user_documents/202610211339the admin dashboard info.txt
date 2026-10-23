@@ -1,0 +1,63 @@
+the admin dashboard info 
+
+admin can register the client or user
+admin capital 
+client capital 
+
+
+//// purchases 
+purchase the car 
+car status where the location or status 
+the car invoice status or generated 
+admin can import and export the excel file 
+
+
+//expense 
+admin expense 
+
+
+//report system 
+day report 
+month report 
+year report 
+
+
+///live chat admin 
+live chat with client 
+
+//admin details  
+admin can change the password
+admin can change the details 
+
+
+//admin dashboard 
+
+all vehicle 
+all capital 
+all expense 
+total profit 
+total expense value 
+
+
+
+
+///////client dashboard 
+
+client capital 
+total vehicle 
+pucharese car 
+car status show like loaded / onhand like this 
+
+
+///client profile 
+change and edit the profile 
+change the password 
+logout from system 
+
+
+//client vehicles 
+check all the client reteled car show 
+//client message 
+client message with admin 
+ 
+
