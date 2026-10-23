@@ -1,183 +1,185 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fa" dir="rtl">
 
 <head>
-
-    <meta charset="utf-8" />
-    <title>Log In Page</title>
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="A fully featured admin theme which can be used to build CRM, CMS, etc." />
-    <meta name="author" content="Zoyothemes" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
-    <!-- App favicon -->
-    <link rel="shortcut icon" href="{{ asset('backend/assets/images/favicon.ico') }}">
+    <title>ورود به سیستم مدیریت شورا</title>
 
-    <!-- App css -->
-    <link href="{{ asset('backend/assets/css/app.min.css') }}" rel="stylesheet" type="text/css" id="app-style" />
+    <script src="https://cdn.tailwindcss.com"></script>
 
-    <!-- Icons -->
-    <link href="{{ asset('backend/assets/css/icons.min.css') }}" rel="stylesheet" type="text/css" />
+    <style>
+        body {
+            font-family: Tahoma, Arial, sans-serif;
+            background: #f5f7f6;
+        }
 
-    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css">
+        .login-card {
+            border: 1px solid #e2e8e5;
+            box-shadow: 0 12px 35px rgba(20, 50, 35, 0.08);
+        }
 
+        .login-button {
+            background: #176b4d;
+            transition: 0.2s;
+        }
+
+        .login-button:hover {
+            background: #12563e;
+        }
+
+        .login-input:focus {
+            border-color: #176b4d;
+            box-shadow: 0 0 0 3px rgba(23, 107, 77, 0.12);
+            outline: none;
+        }
+    </style>
 </head>
 
-<body class="bg-white">
-    <!-- Begin page -->
-    <div class="account-page">
-        <div class="container-fluid p-0">
-            <div class="row align-items-center g-0">
-                <div class="col-xl-5">
-                    <div class="row">
-                        <div class="col-md-7 mx-auto">
-                            <div class="mb-0 border-0 p-md-5 p-lg-0 p-4">
-                                <div class="mb-4 p-0">
-                                    <a href="index.html" class="auth-logo">
-                                        <img src="{{ asset('backend/assets/images/logo-dark.png') }}" alt="logo-dark"
-                                            class="mx-auto" height="28" />
-                                    </a>
-                                </div>
+<body class="flex items-center justify-center min-h-screen px-4 py-8">
 
-                                <div class="pt-0">
-                                    <form method="POST" action="{{ route('login') }}" class="my-4">
-                                        @csrf
+    <div class="w-full max-w-md">
 
-                                        @if (session('error'))
-                                            <div class="alert alert-danger">
-                                                {{ session('error') }}
-                                            </div>
-                                        @endif
+        <div class="login-card bg-white rounded-2xl p-6 sm:p-8">
 
-                                        <div class="form-group mb-3">
-                                            <label for="emailaddress" class="form-label">Email address</label>
-                                            <input class="form-control" name="email" type="email" id="email"
-                                                required="" placeholder="Enter your email">
-                                            @error('email')
-                                                <small class="text-danger">{{ $message }}</small>
-                                            @enderror
-                                        </div>
-
-                                        <div class="form-group mb-3">
-                                            <label for="password" class="form-label">Password</label>
-                                            <input class="form-control" name="password" type="password" required=""
-                                                id="password" placeholder="Enter your password">
-                                            @error('password')
-                                                <small class="text-danger">{{ $message }}</small>
-                                            @enderror
-                                        </div>
-
-                                        <div class="form-group d-flex mb-3">
-                                            <div class="col-sm-6">
-                                                <div class="form-check">
-                                                    <input type="checkbox" class="form-check-input" id="checkbox-signin"
-                                                        checked>
-                                                    <label class="form-check-label" for="checkbox-signin">Remember
-                                                        me</label>
-                                                </div>
-                                            </div>
-                                            <div class="col-sm-6 text-end">
-                                                {{-- <a class='text-muted fs-14'
-                                                    href='{{ route('admin.forget_password') }}'>Forgot password?</a> --}}
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group mb-0 row">
-                                            <div class="col-12">
-                                                <div class="d-grid">
-                                                    <button class="btn btn-primary" type="submit"> Log In </button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </form>
-
-                                    <div class="saprator my-4"><span>or sign in with</span></div>
-
-                                    <div class="text-center text-muted mb-4">
-                                        <p class="mb-0">Don't have an account ?<a class='text-primary ms-2 fw-medium'
-                                                href='{{ route('register') }}'>Sing up</a></p>
-                                    </div>
-
-                                    {{-- <div class="row">
-                                        <div class="col-12">
-                                            <a href="{{ route('google.redirect') }}"
-                                                class="btn text-dark border fw-normal d-flex align-items-center justify-content-center mb-3">
-                                                <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.6.2/dist/dotlottie-wc.js" type="module"></script>
-
-                                                <dotlottie-wc
-                                                    src="https://lottie.host/4cb787e7-8472-4712-8db1-faf6e7946fc2/LMVlwDw0GA.lottie"
-                                                    style="width: 500px;height: 100px" speed="1" autoplay
-                                                    loop></dotlottie-wc>
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 48 48" class="me-2">
-                                                        <path fill="#ffc107" d="M43.611 20.083H42V20H24v8h11.303c-1.649 4.657-6.08 8-11.303 8c-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4C12.955 4 4 12.955 4 24s8.955 20 20 20s20-8.955 20-20c0-1.341-.138-2.65-.389-3.917"/><path fill="#ff3d00" d="m6.306 14.691l6.571 4.819C14.655 15.108 18.961 12 24 12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4C16.318 4 9.656 8.337 6.306 14.691"/><path fill="#4caf50" d="M24 44c5.166 0 9.86-1.977 13.409-5.192l-6.19-5.238A11.91 11.91 0 0 1 24 36c-5.202 0-9.619-3.317-11.283-7.946l-6.522 5.025C9.505 39.556 16.227 44 24 44"/>
-                                                        <path fill="#1976d2" d="M43.611 20.083H42V20H24v8h11.303a12.04 12.04 0 0 1-4.087 5.571l.003-.002l6.19 5.238C36.971 39.205 44 34 44 24c0-1.341-.138-2.65-.389-3.917"/>
-                                                    </svg> 
-                                                <span class="d-flex align-items-center justify-content-center">Sign in with Google</span>
-                                            </a>
-                                        </div>
-
-                                    </div> --}}
-
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+            {{-- عنوان --}}
+            <div class="text-center mb-8">
+                <div class="w-14 h-14 rounded-2xl mx-auto mb-4 flex items-center justify-center"
+                     style="background:#e5f3eb;color:#176b4d;">
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                         width="30" height="30" fill="none"
+                         viewBox="0 0 24 24" stroke="currentColor"
+                         stroke-width="1.8">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                              d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-5h6v5M9 9h.01M15 9h.01M9 12h.01M15 12h.01"/>
+                    </svg>
                 </div>
 
-                <div class="col-xl-7">
-                    <div class="account-page-bg p-md-5 p-4">
-                        <div class="text-center">
-                            <h3 class="text-dark mb-3 pera-title">Login Page For Shura Managament System </h3>
-                            <div class="auth-image d-flex justify-content-center align-items-center">
-                                <img src="{{ asset('backend/assets/images/authentication.svg') }}" class="mx-auto img-fluid" alt="images">
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <h1 class="text-2xl sm:text-3xl font-bold text-gray-800">
+                    سیستم مدیریت شورا
+                </h1>
+
+                <p class="text-gray-500 mt-3 text-sm">
+                    برای ورود به حساب کاربری خود، اطلاعات را وارد کنید.
+                </p>
             </div>
+
+            {{-- پیام خطا --}}
+            @if ($errors->any())
+                <div class="mb-5 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700">
+                    اطلاعات ورود صحیح نیست. لطفاً دوباره بررسی کنید.
+                </div>
+            @endif
+
+            {{-- فرم ورود --}}
+            <form method="POST" action="{{ route('login') }}">
+                @csrf
+
+                {{-- ایمیل --}}
+                <div class="mb-5">
+                    <label for="email"
+                           class="block text-sm font-semibold text-gray-700 mb-2">
+                        ایمیل
+                    </label>
+
+                    <input
+                        id="email"
+                        name="email"
+                        type="email"
+                        value="{{ old('email') }}"
+                        required
+                        autofocus
+                        autocomplete="username"
+                        dir="ltr"
+                        placeholder="name@example.com"
+                        class="login-input w-full px-4 py-3 border border-gray-300 rounded-lg text-left transition">
+
+                    @error('email')
+                        <p class="text-red-600 text-sm mt-2">
+                            {{ $message }}
+                        </p>
+                    @enderror
+                </div>
+
+                {{-- رمز عبور --}}
+                <div class="mb-4">
+                    <label for="password"
+                           class="block text-sm font-semibold text-gray-700 mb-2">
+                        رمز عبور
+                    </label>
+
+                    <input
+                        id="password"
+                        name="password"
+                        type="password"
+                        required
+                        autocomplete="current-password"
+                        dir="ltr"
+                        placeholder="رمز عبور خود را وارد کنید"
+                        class="login-input w-full px-4 py-3 border border-gray-300 rounded-lg transition">
+
+                    @error('password')
+                        <p class="text-red-600 text-sm mt-2">
+                            {{ $message }}
+                        </p>
+                    @enderror
+                </div>
+
+                {{-- مرا به خاطر بسپار و فراموشی رمز --}}
+                <div class="flex flex-wrap justify-between items-center gap-3 mt-4 mb-6">
+
+                    <label class="flex items-center gap-2 text-sm text-gray-600 cursor-pointer">
+                        <input
+                            type="checkbox"
+                            name="remember"
+                            value="1"
+                            class="rounded border-gray-300"
+                            style="accent-color:#176b4d;"
+                            {{ old('remember') ? 'checked' : '' }}>
+
+                        مرا به خاطر بسپار
+                    </label>
+
+                    @if (Route::has('password.request'))
+                        <a href="{{ route('password.request') }}"
+                           class="text-sm font-medium hover:underline"
+                           style="color:#176b4d;">
+                            رمز عبور را فراموش کرده‌اید؟
+                        </a>
+                    @endif
+
+                </div>
+
+                {{-- دکمه ورود --}}
+                <button
+                    type="submit"
+                    class="login-button w-full text-white py-3 rounded-lg font-semibold">
+                    ورود به سیستم
+                </button>
+
+                {{-- ثبت‌نام --}}
+                @if (Route::has('register'))
+                    <div class="text-center mt-6">
+                        <p class="text-sm text-gray-600">
+                            حساب کاربری ندارید؟
+                            <a href="{{ route('register') }}"
+                               class="font-semibold hover:underline"
+                               style="color:#176b4d;">
+                                ثبت‌نام کنید
+                            </a>
+                        </p>
+                    </div>
+                @endif
+
+            </form>
         </div>
+
+        <p class="text-center text-xs text-gray-400 mt-5">
+            سیستم مدیریت شورا
+        </p>
+
     </div>
 
-    <!-- END wrapper -->
-
-    <!-- Vendor -->
-    <script src="{{ asset('backend/assets/libs/jquery/jquery.min.js') }}"></script>
-    <script src="{{ asset('backend/assets/libs/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-    <script src="{{ asset('backend/assets/libs/simplebar/simplebar.min.js') }}"></script>
-    <script src="{{ asset('backend/assets/libs/node-waves/waves.min.js') }}"></script>
-    <script src="{{ asset('backend/assets/libs/waypoints/lib/jquery.waypoints.min.js') }}"></script>
-    <script src="{{ asset('backend/assets/libs/jquery.counterup/jquery.counterup.min.js') }}"></script>
-    <script src="{{ asset('backend/assets/libs/feather-icons/feather.min.js') }}"></script>
-
-    <!-- App js-->
-    <script src="{{ asset('backend/assets/js/app.js') }}"></script>
-
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-
-    <script>
-        @if (Session::has('message'))
-            var type = "{{ Session::get('alert-type', 'info') }}"
-            switch (type) {
-                case 'info':
-                    toastr.info(" {{ Session::get('message') }} ");
-                    break;
-
-                case 'success':
-                    toastr.success(" {{ Session::get('message') }} ");
-                    break;
-
-                case 'warning':
-                    toastr.warning(" {{ Session::get('message') }} ");
-                    break;
-
-                case 'error':
-                    toastr.error(" {{ Session::get('message') }} ");
-                    break;
-            }
-        @endif
-    </script>
-
-
 </body>
-
 </html>
