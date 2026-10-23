@@ -231,7 +231,6 @@
                     </table>
                 </div>
             </div>
-<<<<<<< HEAD
 
             <!-- Stats tables -->
             <div class="row">
@@ -390,9 +389,6 @@
 
         </div> <!-- container-fluid -->
     </div>  
-@endsection
-=======
         </div>
     </div>
 @endsection
->>>>>>> 6c856495bc33b149b96ddf949c8af8ca03bdaa71

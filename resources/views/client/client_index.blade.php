@@ -60,6 +60,11 @@
                 <div class="value">{{ number_format($user->monthly_fee, 2) }}</div>
                 <div class="hint">مبلغ ثابت ماهانه</div>
             </div>
+            <div class="metric red">
+                <div class="label">قرض فیس به سیستم</div>
+                <div class="value">{{ $stats['fee_unpaid_months'] }} ماه</div>
+                <div class="hint">باقی‌مانده: {{ number_format($stats['fee_remaining_amount'], 2) }}</div>
+            </div>
             <div class="metric blue">
                 <div class="label">اعضای فامیل</div>
                 <div class="value">{{ $stats['family_count'] }}</div>
@@ -141,6 +146,37 @@
         </div>
 
         <div class="split">
+            <div class="panel" id="fee-debt">
+                <div class="panel-head">
+                    <h5>قرض فیس ماهانه به سیستم</h5>
+                </div>
+                <div class="p-3">
+                    <p class="mb-2">{{ $stats['fee_debt_message'] }}</p>
+                    @if ($stats['fee_unpaid_months'] > 0)
+                        <div class="table-responsive">
+                            <table class="table mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>ماه پرداخت‌نشده</th>
+                                        <th>پرداخت‌شده</th>
+                                        <th>باقی‌مانده</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($stats['fee_unpaid_list'] as $month)
+                                        <tr>
+                                            <td>{{ $month['month'] }}</td>
+                                            <td>{{ number_format($month['paid'], 2) }}</td>
+                                            <td class="text-danger">{{ number_format($month['remaining'], 2) }}</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    @endif
+                </div>
+            </div>
+
             <div class="panel" id="credits">
                 <div class="panel-head">
                     <h5>قرض‌های من</h5>

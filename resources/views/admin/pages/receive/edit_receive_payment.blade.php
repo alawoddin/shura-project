@@ -30,10 +30,11 @@
                     {{-- Member --}}
                     <div class="col-md-6">
                         <label class="form-label">عضو</label>
-                        <select name="user_id" class="form-control">
+                        <select name="user_id" id="user_id" class="form-control">
                             <option value="">انتخاب کاربر</option>
                             @foreach ($users as $user)
                                 <option value="{{ $user->id }}"
+                                    data-monthly-fee="{{ $user->monthly_fee }}"
                                     {{ old('user_id', $editData->user_id) == $user->id ? 'selected' : '' }}>
                                     {{ $user->name }}
                                 </option>
@@ -81,8 +82,18 @@
                     {{-- Amount --}}
                     <div class="col-md-6">
                         <label class="form-label">مقدار</label>
-                        <input type="number" step="0.01" name="amount" class="form-control"
+                        <input type="number" step="0.01" name="amount" id="amount" class="form-control"
                             value="{{ old('amount', $editData->amount) }}">
+                    </div>
+
+                    <div class="col-12" id="feeRemainingBox" style="display: none;">
+                        <div class="alert alert-warning mb-0">
+                            <div class="d-flex flex-wrap justify-content-between gap-2 mb-2">
+                                <strong id="feeRemainingTitle">باقی‌مانده فیس ماهانه</strong>
+                                <span id="feeRemainingSummary"></span>
+                            </div>
+                            <div id="feeRemainingList" class="small"></div>
+                        </div>
                     </div>
 
                     {{-- Description --}}
@@ -105,23 +116,89 @@
 
     <script>
         $(document).ready(function() {
-            function toggleMonthField() {
-                const selected = $('#category').find(':selected');
-                const isMonthlyFee = selected.data('is-monthly-fee') == 1;
+            const feeStatusUrl = @json(route('receive.payment.member.fee.status', ['user' => '__USER__']));
+            let feeStatus = null;
 
-                if (isMonthlyFee) {
+            function isMonthlyFeeSelected() {
+                return $('#category').find(':selected').data('is-monthly-fee') == 1;
+            }
+
+            function toggleMonthField() {
+                if (isMonthlyFeeSelected()) {
                     $('#month_of').prop('disabled', false).prop('required', true);
                     $('#monthField label').removeClass('text-muted');
                 } else {
                     $('#month_of').prop('disabled', true).prop('required', false).val('');
                     $('#monthField label').addClass('text-muted');
+                    $('#feeRemainingBox').hide();
                 }
             }
 
-            toggleMonthField();
+            function formatMoney(value) {
+                return Number(value || 0).toLocaleString(undefined, {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                });
+            }
 
-            $('#category').change(function() {
+            function renderFeeRemaining() {
+                if (!isMonthlyFeeSelected() || !feeStatus) {
+                    $('#feeRemainingBox').hide();
+                    return;
+                }
+
+                const count = feeStatus.unpaid_months_count || 0;
+                const remainingAmount = feeStatus.remaining_amount || 0;
+                const monthlyFee = feeStatus.monthly_fee || 0;
+
+                $('#feeRemainingTitle').text('باقی‌مانده فیس ماهانه — ' + (feeStatus.user_name || ''));
+                $('#feeRemainingSummary').text(
+                    count + ' ماه باقی‌مانده | مبلغ باقی‌مانده: ' + formatMoney(remainingAmount) +
+                    ' | فیس ماهانه: ' + formatMoney(monthlyFee)
+                );
+
+                if (!count) {
+                    $('#feeRemainingList').html('<div class="text-success">تمام ماه‌ها پرداخت شده‌اند.</div>');
+                } else {
+                    const rows = (feeStatus.months || []).map(function(item) {
+                        return '<div class="d-flex justify-content-between border-bottom py-1">' +
+                            '<span>' + item.month + '</span>' +
+                            '<span>پرداخت‌شده: ' + formatMoney(item.paid) +
+                            ' | باقی: ' + formatMoney(item.remaining) + '</span>' +
+                            '</div>';
+                    }).join('');
+                    $('#feeRemainingList').html(rows);
+                }
+
+                $('#feeRemainingBox').show();
+            }
+
+            function loadFeeStatus() {
+                const userId = $('#user_id').val();
+
+                if (!userId || !isMonthlyFeeSelected()) {
+                    feeStatus = null;
+                    $('#feeRemainingBox').hide();
+                    return;
+                }
+
+                $.get(feeStatusUrl.replace('__USER__', userId))
+                    .done(function(data) {
+                        feeStatus = data;
+                        renderFeeRemaining();
+                    })
+                    .fail(function() {
+                        feeStatus = null;
+                        $('#feeRemainingBox').hide();
+                    });
+            }
+
+            toggleMonthField();
+            loadFeeStatus();
+
+            $('#category, #user_id').change(function() {
                 toggleMonthField();
+                loadFeeStatus();
             });
 
             $('#myForm').validate({
@@ -133,7 +210,7 @@
                     date: { required: true },
                     month_of: {
                         required: function() {
-                            return $('#category').find(':selected').data('is-monthly-fee') == 1;
+                            return isMonthlyFeeSelected();
                         }
                     }
                 },

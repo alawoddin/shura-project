@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Controller;
+use App\Services\FinancialService;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
@@ -10,6 +11,10 @@ use Illuminate\Http\Request;
 
 class ClientController extends Controller
 {
+    public function __construct(
+        protected FinancialService $financialService
+    ) {}
+
        public function ClientLogout(Request $request) {
         Auth::guard('web')->logout();
         $request->session()->invalidate();
@@ -33,6 +38,8 @@ class ClientController extends Controller
             'financialReports',
         ])->findOrFail(Auth::id());
 
+        $feeDebt = $this->financialService->getMemberFeeRemaining($user);
+
         $stats = [
             'total_payments' => $user->receivePayments
                 ->where('transaction_type', 'credit')
@@ -44,6 +51,10 @@ class ClientController extends Controller
             'total_aid' => $user->aids->sum('amount'),
             'current_balance' => $user->financialReports->sortByDesc('date')->sortByDesc('id')->first()?->balance ?? 0,
             'family_count' => $user->familyMembers->count(),
+            'fee_unpaid_months' => $feeDebt['unpaid_months_count'],
+            'fee_remaining_amount' => $feeDebt['remaining_amount'],
+            'fee_debt_message' => $feeDebt['debt_message'],
+            'fee_unpaid_list' => $feeDebt['months'],
         ];
 
         return view('client.client_index', compact('user', 'stats'));

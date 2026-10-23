@@ -25,10 +25,12 @@
                     {{-- Member --}}
                     <div class="col-md-6">
                         <label class="form-label">عضو</label>
-                        <select name="user_id" class="form-control">
+                        <select name="user_id" id="user_id" class="form-control">
                             <option value="">انتخاب کاربر</option>
                             @foreach ($users as $user)
-                                <option value="{{ $user->id }}" {{ old('user_id') == $user->id ? 'selected' : '' }}>
+                                <option value="{{ $user->id }}"
+                                    data-monthly-fee="{{ $user->monthly_fee }}"
+                                    {{ old('user_id') == $user->id ? 'selected' : '' }}>
                                     {{ $user->name }}
                                 </option>
                             @endforeach
@@ -69,8 +71,21 @@
                     {{-- Amount --}}
                     <div class="col-md-6">
                         <label class="form-label">مقدار</label>
-                        <input type="number" step="0.01" name="amount" class="form-control" value="{{ old('amount') }}">
+                        <input type="number" step="0.01" name="amount" id="amount" class="form-control" value="{{ old('amount') }}">
                     </div>
+
+                    <div class="col-12" id="feeRemainingBox" style="display: none;">
+                        <div class="alert alert-danger mb-0">
+                            <div class="mb-2">
+                                <strong id="feeRemainingTitle">قرض فیس ماهانه به سیستم</strong>
+                            </div>
+                            <div id="feeRemainingSummary" class="fw-semibold mb-2"></div>
+                            <div class="small text-muted mb-2" id="feeRegisterInfo"></div>
+                            <div id="feeRemainingList" class="small"></div>
+                            <div class="small mt-2" id="feePayHint"></div>
+                        </div>
+                    </div>
+
                      {{-- Description --}}
                     <div class="col-md-12">
                         <label class="form-label">توضیحات</label>
@@ -85,23 +100,142 @@
     </div>
     <script>
         $(document).ready(function() {
-            function toggleMonthField() {
-                const selected = $('#category').find(':selected');
-                const isMonthlyFee = selected.data('is-monthly-fee') == 1;
+            const feeStatusUrl = @json(route('receive.payment.member.fee.status', ['user' => '__USER__']));
+            let feeStatus = null;
 
-                if (isMonthlyFee) {
+            function isMonthlyFeeSelected() {
+                return $('#category').find(':selected').data('is-monthly-fee') == 1;
+            }
+
+            function toggleMonthField() {
+                if (isMonthlyFeeSelected()) {
                     $('#month_of').prop('disabled', false).prop('required', true);
                     $('#monthField label').removeClass('text-muted');
                 } else {
                     $('#month_of').prop('disabled', true).prop('required', false).val('');
                     $('#monthField label').addClass('text-muted');
+                    $('#feeRemainingBox').hide();
                 }
             }
 
+            function formatMoney(value) {
+                return Number(value || 0).toLocaleString(undefined, {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                });
+            }
+
+            function renderFeeRemaining() {
+                if (!isMonthlyFeeSelected() || !feeStatus) {
+                    $('#feeRemainingBox').hide();
+                    return;
+                }
+
+                const count = feeStatus.unpaid_months_count || 0;
+                const remainingAmount = feeStatus.remaining_amount || 0;
+                const monthlyFee = feeStatus.monthly_fee || 0;
+                const box = $('#feeRemainingBox .alert');
+
+                $('#feeRemainingTitle').text('قرض فیس ماهانه به سیستم — ' + (feeStatus.user_name || ''));
+                $('#feeRegisterInfo').text(
+                    'ماه ثبت‌نام: ' + (feeStatus.register_month || '-') +
+                    ' | فیس هر ماه: ' + formatMoney(monthlyFee)
+                );
+
+                if (!count) {
+                    box.removeClass('alert-danger').addClass('alert-success');
+                    $('#feeRemainingSummary').text('بدهی فیس به سیستم ندارد. همه ماه‌ها پرداخت شده‌اند.');
+                    $('#feeRemainingList').empty();
+                    $('#feePayHint').empty();
+                } else {
+                    box.removeClass('alert-success').addClass('alert-danger');
+                    $('#feeRemainingSummary').text(
+                        feeStatus.debt_message ||
+                        (count + ' ماه پرداخت نشده — قرض سیستم: ' + formatMoney(remainingAmount))
+                    );
+
+                    const rows = (feeStatus.months || []).map(function(item, index) {
+                        const badge = index === 0 ? ' <span class="badge bg-dark">قدیمی‌ترین</span>' : '';
+                        return '<div class="d-flex justify-content-between border-bottom py-1">' +
+                            '<span>' + item.month + badge + '</span>' +
+                            '<span>پرداخت‌شده: ' + formatMoney(item.paid) +
+                            ' | باقی این ماه: ' + formatMoney(item.remaining) + '</span>' +
+                            '</div>';
+                    }).join('');
+                    $('#feeRemainingList').html(rows);
+                    $('#feePayHint').html(
+                        'اگر الان ۱ ماه بپردازد، بعد از ذخیره سیستم دوباره چک می‌کند و ماه‌های باقی‌مانده را نشان می‌دهد.'
+                    );
+                }
+
+                $('#feeRemainingBox').show();
+            }
+
+            function applyOldestUnpaidMonth() {
+                if (!feeStatus) return;
+
+                if (feeStatus.oldest_unpaid_month && !$('#month_of').val()) {
+                    $('#month_of').val(feeStatus.oldest_unpaid_month);
+                }
+
+                const selectedMonth = $('#month_of').val();
+                const match = (feeStatus.months || []).find(function(item) {
+                    return item.month === selectedMonth;
+                });
+
+                if (match && match.remaining > 0) {
+                    $('#amount').val(match.remaining);
+                } else if (feeStatus.monthly_fee) {
+                    $('#amount').val(feeStatus.monthly_fee);
+                }
+            }
+
+            function loadFeeStatus() {
+                const userId = $('#user_id').val();
+
+                if (!userId || !isMonthlyFeeSelected()) {
+                    feeStatus = null;
+                    $('#feeRemainingBox').hide();
+                    return;
+                }
+
+                $.get(feeStatusUrl.replace('__USER__', userId))
+                    .done(function(data) {
+                        feeStatus = data;
+                        renderFeeRemaining();
+                        applyOldestUnpaidMonth();
+                    })
+                    .fail(function() {
+                        feeStatus = null;
+                        $('#feeRemainingBox').hide();
+                    });
+            }
+
             toggleMonthField();
+            loadFeeStatus();
 
             $('#category').change(function() {
                 toggleMonthField();
+                loadFeeStatus();
+            });
+
+            $('#user_id').change(function() {
+                loadFeeStatus();
+            });
+
+            $('#month_of').change(function() {
+                if (!feeStatus || !feeStatus.months) return;
+
+                const selectedMonth = $(this).val();
+                const match = feeStatus.months.find(function(item) {
+                    return item.month === selectedMonth;
+                });
+
+                if (match && match.remaining > 0) {
+                    $('#amount').val(match.remaining);
+                } else if (feeStatus.monthly_fee) {
+                    $('#amount').val(feeStatus.monthly_fee);
+                }
             });
 
             $('#myForm').validate({
@@ -113,7 +247,7 @@
                     date: { required: true },
                     month_of: {
                         required: function() {
-                            return $('#category').find(':selected').data('is-monthly-fee') == 1;
+                            return isMonthlyFeeSelected();
                         }
                     }
                 },

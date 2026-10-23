@@ -12,6 +12,7 @@ use App\Models\MemberFinancialReport;
 use App\Models\ReceivePayment;
 use App\Models\Undeposited;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class FinancialService
@@ -61,8 +62,10 @@ class FinancialService
 
         $loans = Credit::selectRaw('
                 COALESCE(SUM(amount), 0) as disbursed,
-                COALESCE(SUM(CASE WHEN status = "active" THEN remaining_amount ELSE 0 END), 0) as remaining
-            ')
+                COALESCE(SUM(CASE WHEN status = "active" THEN remaining_amount ELSE 0 END), 0) as remaining,
+                COALESCE(SUM(CASE WHEN MONTH(date) = ? AND YEAR(date) = ? THEN amount ELSE 0 END), 0) as month_disbursed,
+                COALESCE(SUM(CASE WHEN status = "active" AND MONTH(date) = ? AND YEAR(date) = ? THEN remaining_amount ELSE 0 END), 0) as month_remaining
+            ', [$month, $year, $month, $year])
             ->first();
 
         $users = User::selectRaw('
@@ -99,20 +102,10 @@ class FinancialService
         $totalAids = (float) $aids->total_amount;
         $monthAids = (float) $aids->month_amount;
 
-<<<<<<< HEAD
-        $totalLoansDisbursed = (float) Credit::sum('amount');
-        $totalLoansRemaining = (float) Credit::where('status', 'active')->sum('remaining_amount');
-        $monthLoansDisbursed = (float) Credit::whereMonth('date', now()->month)
-            ->whereYear('date', now()->year)
-            ->sum('amount');
-        $monthLoansRemaining = (float) Credit::where('status', 'active')
-            ->whereMonth('date', now()->month)
-            ->whereYear('date', now()->year)
-            ->sum('remaining_amount');
-=======
         $totalLoansDisbursed = (float) $loans->disbursed;
         $totalLoansRemaining = (float) $loans->remaining;
->>>>>>> 6c856495bc33b149b96ddf949c8af8ca03bdaa71
+        $monthLoansDisbursed = (float) $loans->month_disbursed;
+        $monthLoansRemaining = (float) $loans->month_remaining;
 
         $totalMoneyIn = $totalIncome + $totalReceive;
         $totalBalance = $totalMoneyIn;
@@ -160,19 +153,11 @@ class FinancialService
             'totalCreditAvailable' => $totalCreditAvailable,
             'totalLoansDisbursed' => $totalLoansDisbursed,
             'totalLoansRemaining' => $totalLoansRemaining,
-<<<<<<< HEAD
             'monthLoansDisbursed' => $monthLoansDisbursed,
             'monthLoansRemaining' => $monthLoansRemaining,
             'monthCreditAvailable' => $monthCreditAvailable,
-            'totalUser' => User::where('role', 'user')->count(),
-            'monthUser' => User::where('role', 'user')
-                ->whereMonth('created_at', now()->month)
-                ->whereYear('created_at', now()->year)
-                ->count(),
-=======
             'totalUser' => (int) $users->total_users,
             'monthUser' => (int) $users->month_users,
->>>>>>> 6c856495bc33b149b96ddf949c8af8ca03bdaa71
             'totalcredit' => $totalCreditAvailable,
             'remaining_amount' => $totalLoansRemaining,
         ];
@@ -546,6 +531,91 @@ class FinancialService
         }
     }
 
+    public function getMemberFeeRemaining(User $user, ?string $excludePaymentId = null): array
+    {
+        $monthlyFee = (float) $user->monthly_fee;
+        $registerDate = Carbon::parse($user->register_date ?? $user->created_at)->startOfMonth();
+
+        $empty = [
+            'user_id' => $user->id,
+            'user_name' => $user->name,
+            'monthly_fee' => $monthlyFee,
+            'register_month' => $registerDate->format('Y-m'),
+            'unpaid_months_count' => 0,
+            'remaining_amount' => 0.0,
+            'oldest_unpaid_month' => null,
+            'is_system_debt' => false,
+            'debt_message' => 'این عضو بدهی فیس ماهانه به سیستم ندارد.',
+            'months' => [],
+        ];
+
+        if ($monthlyFee <= 0) {
+            return $empty;
+        }
+
+        $start = $registerDate->copy();
+        $end = now()->startOfMonth();
+
+        if ($start->gt($end)) {
+            $start = $end->copy();
+        }
+
+        $paymentsQuery = ReceivePayment::query()
+            ->where('user_id', $user->id)
+            ->where('transaction_type', 'credit')
+            ->whereNotNull('month_of')
+            ->whereBetween('month_of', [$start->format('Y-m'), $end->format('Y-m')])
+            ->whereHas('category', function ($query) {
+                $query->where('is_monthly_fee', true);
+            });
+
+        if ($excludePaymentId) {
+            $paymentsQuery->where('id', '!=', $excludePaymentId);
+        }
+
+        $payments = $paymentsQuery
+            ->selectRaw('month_of, SUM(amount) as paid')
+            ->groupBy('month_of')
+            ->pluck('paid', 'month_of');
+
+        $months = [];
+        $remainingAmount = 0.0;
+
+        for ($date = $start->copy(); $date->lte($end); $date->addMonth()) {
+            $key = $date->format('Y-m');
+            $paid = (float) ($payments[$key] ?? 0);
+            $remaining = max(0, $monthlyFee - $paid);
+
+            if ($remaining > 0) {
+                $months[] = [
+                    'month' => $key,
+                    'expected' => $monthlyFee,
+                    'paid' => $paid,
+                    'remaining' => $remaining,
+                ];
+                $remainingAmount += $remaining;
+            }
+        }
+
+        $count = count($months);
+        $oldest = $months[0]['month'] ?? null;
+
+        return [
+            'user_id' => $user->id,
+            'user_name' => $user->name,
+            'monthly_fee' => $monthlyFee,
+            'register_month' => $registerDate->format('Y-m'),
+            'unpaid_months_count' => $count,
+            'remaining_amount' => $remainingAmount,
+            'oldest_unpaid_month' => $oldest,
+            'is_system_debt' => $count > 0,
+            'debt_message' => $count > 0
+                ? "این عضو {$count} ماه فیس به سیستم بدهکار است (قرض سیستم: " . number_format($remainingAmount, 2) . ')'
+                : 'این عضو بدهی فیس ماهانه به سیستم ندارد.',
+            'months' => $months,
+        ];
+    }
+
     public function getUnpaidMembers(): array
     {
         $members = User::where('role', 'user')
@@ -555,30 +625,16 @@ class FinancialService
         $unpaid = [];
 
         foreach ($members as $member) {
-            $monthsToCheck = ReceivePayment::where('user_id', $member->id)
-                ->whereNotNull('month_of')
-                ->pluck('month_of')
-                ->unique()
-                ->push(now()->format('Y-m'))
-                ->unique();
+            $status = $this->getMemberFeeRemaining($member);
 
-            foreach ($monthsToCheck as $month) {
-                $paid = (float) ReceivePayment::where('user_id', $member->id)
-                    ->where('month_of', $month)
-                    ->where('transaction_type', 'credit')
-                    ->sum('amount');
-
-                $expected = (float) $member->monthly_fee;
-
-                if ($paid < $expected) {
-                    $unpaid[] = [
-                        'user' => $member,
-                        'month' => $month,
-                        'expected' => $expected,
-                        'paid' => $paid,
-                        'remaining' => $expected - $paid,
-                    ];
-                }
+            foreach ($status['months'] as $month) {
+                $unpaid[] = [
+                    'user' => $member,
+                    'month' => $month['month'],
+                    'expected' => $month['expected'],
+                    'paid' => $month['paid'],
+                    'remaining' => $month['remaining'],
+                ];
             }
         }
 

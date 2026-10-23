@@ -36,6 +36,15 @@ class ReceivePaymentController extends Controller
         return view('admin.pages.receive.add_receive_payment', compact('users', 'categories'));
     }
 
+    public function MemberFeeStatus(int $userId)
+    {
+        $user = User::where('role', 'user')->findOrFail($userId);
+
+        return response()->json(
+            $this->financialService->getMemberFeeRemaining($user)
+        );
+    }
+
     public function StoreReceivePayment(Request $request)
     {
         $validated = $request->validate([
@@ -73,12 +82,25 @@ class ReceivePaymentController extends Controller
             ]);
         }
 
-        $notification = [
-            'message' => 'دریافت پرداخت با موفقیت اضافه شد',
-            'alert-type' => 'success',
-        ];
+        $message = 'دریافت پرداخت با موفقیت اضافه شد';
 
-        return redirect()->route('all.receive.payment')->with($notification);
+        if ($category->is_monthly_fee) {
+            $member = User::find($validated['user_id']);
+            $remaining = $this->financialService->getMemberFeeRemaining($member);
+            $count = $remaining['unpaid_months_count'];
+
+            if ($count > 0) {
+                $message .= " — هنوز {$count} ماه فیس به سیستم بدهکار است"
+                    . ' (باقی‌مانده: ' . number_format($remaining['remaining_amount'], 2) . ')';
+            } else {
+                $message .= ' — تمام فیس‌های ماهانه تسویه شد.';
+            }
+        }
+
+        return redirect()->route('all.receive.payment')->with([
+            'message' => $message,
+            'alert-type' => 'success',
+        ]);
     }
 
     public function EditReceivePayment($id)

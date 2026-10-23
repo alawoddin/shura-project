@@ -160,6 +160,7 @@ Route::prefix('admin')->middleware(['auth' ,IsAdmin::class ])->group(function ()
         Route::get('/edit/receive/payment/{id}', 'EditReceivePayment')->name('edit.receive.payment');
         Route::post('/update/receive/payment',  'UpdateReceivePayment')->name('update.receive.payment');
         Route::get('/delete/receive/payment/{id}', 'DeleteReceivePayment')->name('delete.receive.payment');
+        Route::get('/receive/payment/member-fee-status/{user}', 'MemberFeeStatus')->name('receive.payment.member.fee.status');
     });
 
     Route::controller(UnpaidPaymentController::class)->group(function () {
@@ -226,24 +227,17 @@ Route::prefix('admin')->middleware(['auth' ,IsAdmin::class ])->group(function ()
         Route::get('/delete/admin/{id}', 'DeleteAdmin')->name('delete.admin');
     });
 
-<<<<<<< HEAD
     Route::controller(BackupController::class)->middleware('can.manage.access')->group(function () {
-=======
-    Route::controller(BackupController::class)->group(function () {
->>>>>>> 6c856495bc33b149b96ddf949c8af8ca03bdaa71
         Route::get('/backup', 'index')->name('admin.backup');
         Route::post('/backup', 'store')->name('admin.backup.create');
         Route::get('/backup/download/{filename}', 'download')->name('admin.backup.download');
         Route::get('/backup/delete/{filename}', 'destroy')->name('admin.backup.delete');
     });
-<<<<<<< HEAD
 
 
 
 
 
-=======
->>>>>>> 6c856495bc33b149b96ddf949c8af8ca03bdaa71
 
 });
 

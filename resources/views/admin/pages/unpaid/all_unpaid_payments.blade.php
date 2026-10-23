@@ -67,12 +67,38 @@
                 <div class="col-12">
                     <div class="card">
                         <div class="card-header">
-                            <h5 class="card-title mb-0">اعضای دارای پرداخت معوق</h5>
+                            <h5 class="card-title mb-0">قرض فیس ماهانه به سیستم (ماه‌های پرداخت‌نشده)</h5>
                         </div>
                         <div class="card-body">
                             @if (count($unpaidMembers) === 0)
                                 <p class="text-muted mb-0">هیچ پرداخت معوقی یافت نشد.</p>
                             @else
+                                @php
+                                    $debtByUser = collect($unpaidMembers)->groupBy(fn ($item) => $item['user']->id);
+                                @endphp
+                                <div class="row g-3 mb-4">
+                                    @foreach ($debtByUser as $rows)
+                                        @php
+                                            $member = $rows->first()['user'];
+                                            $monthsCount = $rows->count();
+                                            $debtAmount = $rows->sum('remaining');
+                                        @endphp
+                                        <div class="col-md-4">
+                                            <div class="border rounded p-3 h-100">
+                                                <div class="fw-semibold">{{ $member->name }}</div>
+                                                <div class="text-danger mt-1">
+                                                    {{ $monthsCount }} ماه بدهکار سیستم
+                                                </div>
+                                                <div class="small text-muted">
+                                                    قرض سیستم: {{ number_format($debtAmount, 2) }}
+                                                </div>
+                                                <a href="{{ route('add.receive.payment') }}" class="btn btn-sm btn-primary mt-2">
+                                                    ثبت فیس
+                                                </a>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
                                 <div class="table-responsive">
                                     <table id="datatable" class="table table-bordered dt-responsive nowrap">
                                         <thead>
@@ -81,7 +107,7 @@
                                                 <th class="text-center">ماه</th>
                                                 <th class="text-center">مبلغ مورد انتظار</th>
                                                 <th class="text-center">پرداخت شده</th>
-                                                <th class="text-center">باقی‌مانده</th>
+                                                <th class="text-center">باقی‌مانده (قرض سیستم)</th>
                                             </tr>
                                         </thead>
                                         <tbody>
