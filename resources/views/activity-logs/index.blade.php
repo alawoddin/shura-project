@@ -1,4 +1,3 @@
-```blade
 @extends('admin.dashboard')
 
 @section('admin')
