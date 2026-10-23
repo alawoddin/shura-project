@@ -234,7 +234,17 @@
                                             <td>{{ number_format($monthIncome, 2) }}</td>
                                         </tr>
                                         <tr>
-                                            <td>مجموع دریافتی</td>
+                                            <td>دریافتی بستانکار</td>
+                                            <td>{{ number_format($totalReceiveCredit, 2) }}</td>
+                                            <td>{{ number_format($monthReceiveCredit, 2) }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>دریافتی بدهکار</td>
+                                            <td>{{ number_format($totalReceiveDebit, 2) }}</td>
+                                            <td>{{ number_format($monthReceiveDebit, 2) }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>دریافتی خالص</td>
                                             <td>{{ number_format($totalReceive, 2) }}</td>
                                             <td>{{ number_format($monthReceive, 2) }}</td>
                                         </tr>
@@ -261,7 +271,12 @@
                                         <tr>
                                             <td>اعتبار موجود</td>
                                             <td>{{ number_format($totalcredit, 2) }}</td>
+                                            <td>{{ number_format($monthCreditAvailable, 2) }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>مانده قرض‌ها</td>
                                             <td>{{ number_format($remaining_amount, 2) }}</td>
+                                            <td>{{ number_format($monthLoansRemaining, 2) }}</td>
                                         </tr>
                                         <tr>
                                             <td>بلانس فعلی</td>

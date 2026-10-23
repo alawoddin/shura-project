@@ -30,8 +30,11 @@
             <div class="col-md-3">
                 <div class="card border-info shadow-sm">
                     <div class="card-body text-center">
-                        <h5>مجموع درآمد</h5>
+                        <h5>درآمد واریز شده</h5>
                         <h2>{{ number_format($totalIncome) }}</h2>
+                        @if(isset($totalIncomeAll))
+                            <small class="text-muted">ثبت‌شده: {{ number_format($totalIncomeAll) }}</small>
+                        @endif
                     </div>
                 </div>
             </div>

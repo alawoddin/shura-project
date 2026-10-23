@@ -57,7 +57,7 @@
         <div class="form-group">
             <label for="exampleFormControlInputText1" class="form-label">آدرس </label>
             <div class="form-control-wrap">
-                <input type="text" name="address" class="form-control" value="{{ $profileData->address }}"  >
+                <input type="text" name="address" class="form-control" value="{{ $profileData->current_address }}"  >
             </div>
         </div>
     </div>

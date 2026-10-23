@@ -3,14 +3,15 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
-use App\Models\Aids;
-use App\Models\Expense;
-use App\Models\Income;
-use App\Models\ReceivePayment;
+use App\Services\FinancialService;
 use Illuminate\Http\Request;
 
 class ReportController extends Controller
 {
+    public function __construct(
+        protected FinancialService $financialService
+    ) {}
+
     public function AllReport()
     {
         return view('admin.pages.report.all_report');
@@ -18,33 +19,15 @@ class ReportController extends Controller
 
     public function SearchReportsByDate(Request $request)
     {
+        $request->validate(['date' => 'required|date']);
         $date = $request->date;
 
-        $expenses = Expense::whereDate('date', $date)->get();
-        $receives = ReceivePayment::with(['users', 'category'])->whereDate('date', $date)->get();
-        $incomes = Income::whereDate('date', $date)->get();
-        $aids = Aids::whereDate('date', $date)->get();
+        $summary = $this->financialService->getPeriodFinancialSummary(date: $date);
 
-        $totalExpense = $expenses->sum('amount');
-        $totalReceive = $this->netReceiveTotal($receives);
-        $totalIncome = $incomes->sum('amount');
-        $totalAids = $aids->sum('amount');
-
-        $balance = ($totalReceive + $totalIncome) - $totalExpense - $totalAids;
-
-        return view(
-            'admin.pages.report.search_by_date',
-            compact(
-                'date',
-                'expenses',
-                'receives',
-                'incomes',
-                'totalExpense',
-                'totalReceive',
-                'totalIncome',
-                'balance'
-            )
-        );
+        return view('admin.pages.report.search_by_date', array_merge(
+            ['date' => $date],
+            $summary
+        ));
     }
 
     public function AllReportsByMonth(Request $request)
@@ -53,71 +36,25 @@ class ReportController extends Controller
             'month' => 'required|numeric|between:1,12',
         ]);
 
-        $month = $request->month;
+        $month = (int) $request->month;
+        $summary = $this->financialService->getPeriodFinancialSummary(month: $month);
 
-        $expenses = Expense::whereMonth('date', $month)->get();
-        $receives = ReceivePayment::with(['users', 'category'])->whereMonth('date', $month)->get();
-        $incomes = Income::whereMonth('date', $month)->get();
-        $aids = Aids::whereMonth('date', $month)->get();
-
-        $totalExpense = $expenses->sum('amount');
-        $totalReceive = $this->netReceiveTotal($receives);
-        $totalIncome = $incomes->sum('amount');
-        $totalAids = $aids->sum('amount');
-
-        $balance = ($totalReceive + $totalIncome) - $totalExpense - $totalAids;
-
-        return view(
-            'admin.pages.report.search_by_month',
-            compact(
-                'month',
-                'expenses',
-                'receives',
-                'incomes',
-                'totalExpense',
-                'totalReceive',
-                'totalIncome',
-                'balance'
-            )
-        );
+        return view('admin.pages.report.search_by_month', array_merge(
+            ['month' => $month],
+            $summary
+        ));
     }
 
     public function AllReportsByYear(Request $request)
     {
-        $year = $request->year;
+        $request->validate(['year' => 'required|integer|min:2000']);
 
-        $expenses = Expense::whereYear('date', $year)->get();
-        $receives = ReceivePayment::with(['users', 'category'])->whereYear('date', $year)->get();
-        $incomes = Income::whereYear('date', $year)->get();
-        $aids = Aids::whereYear('date', $year)->get();
+        $year = (int) $request->year;
+        $summary = $this->financialService->getPeriodFinancialSummary(year: $year);
 
-        $totalExpense = $expenses->sum('amount');
-        $totalReceive = $this->netReceiveTotal($receives);
-        $totalIncome = $incomes->sum('amount');
-        $totalAids = $aids->sum('amount');
-
-        $balance = ($totalReceive + $totalIncome) - $totalExpense - $totalAids;
-
-        return view(
-            'admin.pages.report.search_by_year',
-            compact(
-                'year',
-                'expenses',
-                'receives',
-                'incomes',
-                'totalExpense',
-                'totalReceive',
-                'totalIncome',
-                'balance'
-            )
-        );
-    }
-
-    private function netReceiveTotal($receives): float
-    {
-        $credit = $receives->filter(fn ($r) => ($r->transaction_type ?? 'credit') === 'credit')->sum('amount');
-        $debit = $receives->filter(fn ($r) => ($r->transaction_type ?? 'credit') === 'debit')->sum('amount');
-
-        return (float) ($credit - $debit);
+        return view('admin.pages.report.search_by_year', array_merge(
+            ['year' => $year],
+            $summary
+        ));
     }
 }

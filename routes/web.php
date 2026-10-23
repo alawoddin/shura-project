@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Backend\AdminController;
+use App\Http\Controllers\Backend\BackupController;
 use App\Http\Controllers\Backend\CategoryController;
 use App\Http\Controllers\Backend\CreditController;
 use App\Http\Controllers\Backend\DashboardController;
@@ -218,6 +219,13 @@ Route::prefix('admin')->middleware(['auth' ,IsAdmin::class ])->group(function ()
         Route::get('/edit/admin/{id}', 'EditAdmin')->name('edit.admin');
         Route::post('/update/admin/{id}', 'UpdateAdmin')->name('update.admin');
         Route::get('/delete/admin/{id}', 'DeleteAdmin')->name('delete.admin');
+    });
+
+    Route::controller(BackupController::class)->middleware('can.manage.access')->group(function () {
+        Route::get('/backup', 'index')->name('admin.backup');
+        Route::post('/backup', 'store')->name('admin.backup.create');
+        Route::get('/backup/download/{filename}', 'download')->name('admin.backup.download');
+        Route::get('/backup/delete/{filename}', 'destroy')->name('admin.backup.delete');
     });
 
 

@@ -47,25 +47,20 @@ class MemberFinancialReportController extends Controller
 
         try {
             DB::transaction(function () use ($request) {
-                $lastBalance = MemberFinancialReport::where('member_id', $request->member_id)
-                    ->latest()
-                    ->first();
-
-                $previousBalance = $lastBalance ? $lastBalance->balance : 0;
-                $newBalance = $previousBalance + ($request->debit ?? 0) - ($request->credit ?? 0);
-
                 $report = MemberFinancialReport::create([
                     'member_id' => $request->member_id,
                     'date' => $request->date,
                     'description' => $request->description,
                     'debit' => $request->debit ?? 0,
                     'credit' => $request->credit ?? 0,
-                    'balance' => $newBalance,
+                    'balance' => 0,
                 ]);
 
                 if ((float) ($request->credit ?? 0) > 0) {
                     $this->financialService->syncCreditFromFinancialReport($report);
                 }
+
+                $this->financialService->recalculateMemberBalances((int) $request->member_id);
             });
         } catch (InsufficientBalanceException $e) {
             return back()->withInput()->with([
@@ -108,14 +103,7 @@ class MemberFinancialReportController extends Controller
             DB::transaction(function () use ($request, $report_id) {
                 $report = MemberFinancialReport::findOrFail($report_id);
                 $previousCredit = (float) $report->credit;
-
-                $lastBalance = MemberFinancialReport::where('member_id', $request->member_id)
-                    ->where('id', '<', $report_id)
-                    ->latest()
-                    ->first();
-
-                $previousBalance = $lastBalance ? $lastBalance->balance : 0;
-                $newBalance = $previousBalance + ($request->debit ?? 0) - ($request->credit ?? 0);
+                $oldMemberId = (int) $report->member_id;
 
                 $report->update([
                     'member_id' => $request->member_id,
@@ -123,10 +111,14 @@ class MemberFinancialReportController extends Controller
                     'description' => $request->description,
                     'debit' => $request->debit ?? 0,
                     'credit' => $request->credit ?? 0,
-                    'balance' => $newBalance,
                 ]);
 
                 $this->financialService->syncCreditFromFinancialReport($report->fresh(), $previousCredit);
+                $this->financialService->recalculateMemberBalances((int) $request->member_id);
+
+                if ($oldMemberId !== (int) $request->member_id) {
+                    $this->financialService->recalculateMemberBalances($oldMemberId);
+                }
             });
         } catch (InsufficientBalanceException $e) {
             return back()->withInput()->with([
@@ -147,8 +139,10 @@ class MemberFinancialReportController extends Controller
     {
         DB::transaction(function () use ($id) {
             $report = MemberFinancialReport::findOrFail($id);
+            $memberId = (int) $report->member_id;
             $this->financialService->deleteLinkedCredit($report);
             $report->delete();
+            $this->financialService->recalculateMemberBalances($memberId);
         });
 
         $notification = [

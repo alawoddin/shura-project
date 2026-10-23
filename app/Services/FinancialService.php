@@ -65,6 +65,13 @@ class FinancialService
 
         $totalLoansDisbursed = (float) Credit::sum('amount');
         $totalLoansRemaining = (float) Credit::where('status', 'active')->sum('remaining_amount');
+        $monthLoansDisbursed = (float) Credit::whereMonth('date', now()->month)
+            ->whereYear('date', now()->year)
+            ->sum('amount');
+        $monthLoansRemaining = (float) Credit::where('status', 'active')
+            ->whereMonth('date', now()->month)
+            ->whereYear('date', now()->year)
+            ->sum('remaining_amount');
 
         $totalMoneyIn = $totalIncome + $totalReceive;
         $totalBalance = $totalMoneyIn;
@@ -72,7 +79,8 @@ class FinancialService
         $monthCurrentBalance = ($monthIncome + $monthReceive) - $monthExpense - $monthAids;
 
         $totalCreditPool = $totalBalance - $totalExpense - $totalAids;
-        $totalCreditAvailable = max(0, $totalCreditPool - $totalLoansDisbursed);
+        $totalCreditAvailable = max(0, $totalCreditPool - $totalLoansRemaining);
+        $monthCreditAvailable = max(0, $monthCurrentBalance - $monthLoansRemaining);
 
         $incomes = Income::with('category')
             ->selectRaw('category_id, SUM(amount) as total')
@@ -100,6 +108,8 @@ class FinancialService
             'monthReceive' => $monthReceive,
             'totalReceiveCredit' => $totalReceiveCredit,
             'totalReceiveDebit' => $totalReceiveDebit,
+            'monthReceiveCredit' => $monthReceiveCredit,
+            'monthReceiveDebit' => $monthReceiveDebit,
             'totalDebit' => $totalDebit,
             'totalCredit' => $totalCredit,
             'monthDebit' => $monthDebit,
@@ -109,13 +119,133 @@ class FinancialService
             'totalCreditAvailable' => $totalCreditAvailable,
             'totalLoansDisbursed' => $totalLoansDisbursed,
             'totalLoansRemaining' => $totalLoansRemaining,
-            'totalUser' => User::count(),
-            'monthUser' => User::whereMonth('created_at', now()->month)
+            'monthLoansDisbursed' => $monthLoansDisbursed,
+            'monthLoansRemaining' => $monthLoansRemaining,
+            'monthCreditAvailable' => $monthCreditAvailable,
+            'totalUser' => User::where('role', 'user')->count(),
+            'monthUser' => User::where('role', 'user')
+                ->whereMonth('created_at', now()->month)
                 ->whereYear('created_at', now()->year)
                 ->count(),
             'totalcredit' => $totalCreditAvailable,
             'remaining_amount' => $totalLoansRemaining,
         ];
+    }
+
+    public function getPeriodFinancialSummary(?string $date = null, ?int $month = null, ?int $year = null): array
+    {
+        $applyDateFilters = function ($query) use ($date, $month, $year) {
+            if ($date) {
+                $query->whereDate('date', $date);
+            } elseif ($month && $year) {
+                $query->whereMonth('date', $month)->whereYear('date', $year);
+            } elseif ($year) {
+                $query->whereYear('date', $year);
+            } elseif ($month) {
+                $query->whereMonth('date', $month);
+            }
+        };
+
+        $expenseQuery = Expense::query();
+        $receiveQuery = ReceivePayment::query();
+        $incomeQuery = Income::query();
+        $transferredIncomeQuery = Income::whereHas('undeposited', fn ($q) => $q->where('status', 'transferred'));
+        $aidQuery = Aids::query();
+
+        $applyDateFilters($expenseQuery);
+        $applyDateFilters($receiveQuery);
+        $applyDateFilters($incomeQuery);
+        $applyDateFilters($transferredIncomeQuery);
+        $applyDateFilters($aidQuery);
+
+        $expenses = $expenseQuery->get();
+        $receives = $receiveQuery->with(['users', 'category'])->get();
+        $incomes = $incomeQuery->get();
+        $totalExpense = (float) $expenses->sum('amount');
+        $totalReceiveCredit = (float) $receives->where('transaction_type', 'credit')->sum('amount');
+        $totalReceiveDebit = (float) $receives->where('transaction_type', 'debit')->sum('amount');
+        $totalReceive = $totalReceiveCredit - $totalReceiveDebit;
+        $totalIncomeAll = (float) $incomes->sum('amount');
+        $totalIncome = (float) $transferredIncomeQuery->sum('amount');
+        $totalAids = (float) $aidQuery->sum('amount');
+        $balance = ($totalReceive + $totalIncome) - $totalExpense - $totalAids;
+
+        return compact(
+            'expenses',
+            'receives',
+            'incomes',
+            'totalExpense',
+            'totalReceive',
+            'totalReceiveCredit',
+            'totalReceiveDebit',
+            'totalIncome',
+            'totalIncomeAll',
+            'totalAids',
+            'balance'
+        );
+    }
+
+    public function recalculateMemberBalances(int $memberId): void
+    {
+        $reports = MemberFinancialReport::where('member_id', $memberId)
+            ->orderBy('date')
+            ->orderBy('id')
+            ->get();
+
+        $balance = 0.0;
+
+        foreach ($reports as $report) {
+            $balance += (float) $report->debit - (float) $report->credit;
+
+            if ((float) $report->balance !== $balance) {
+                $report->update(['balance' => $balance]);
+            }
+        }
+    }
+
+    public function applyIncomeRecordChange(
+        Income $income,
+        float $oldAmount,
+        int $oldCategoryId,
+        float $newAmount,
+        int $newCategoryId
+    ): void {
+        $undeposited = Undeposited::where('income_id', $income->id)->first();
+
+        if ($undeposited?->status === 'transferred' && $undeposited->target_account_id) {
+            $this->adjustAccountBalance((int) $undeposited->target_account_id, $oldAmount, $newAmount);
+
+            return;
+        }
+
+        if ($oldCategoryId !== $newCategoryId) {
+            $this->decreaseAccountBalance($oldCategoryId, $oldAmount, true);
+            $this->increaseAccountBalance($newCategoryId, $newAmount);
+        } else {
+            $this->adjustAccountBalance($newCategoryId, $oldAmount, $newAmount);
+        }
+    }
+
+    public function reverseIncomeRecord(Income $income): void
+    {
+        $undeposited = Undeposited::where('income_id', $income->id)->first();
+        $amount = (float) $income->amount;
+
+        if ($undeposited?->status === 'transferred' && $undeposited->target_account_id) {
+            $this->decreaseAccountBalance((int) $undeposited->target_account_id, $amount, true);
+        } else {
+            $this->decreaseAccountBalance((int) $income->category_id, $amount, true);
+        }
+
+        $undeposited?->delete();
+    }
+
+    public function netReceiveTotal($receives): float
+    {
+        $credit = (float) collect($receives)->filter(fn ($r) => ($r->transaction_type ?? 'credit') === 'credit')->sum('amount');
+        $debit = (float) collect($receives)->filter(fn ($r) => ($r->transaction_type ?? 'credit') === 'debit')->sum('amount');
+
+        return $credit - $debit;
     }
 
     public function getAccountBalanceSummaries()
@@ -180,11 +310,6 @@ class FinancialService
         }
 
         return (float) $query->sum('amount');
-    }
-
-    public function getAccountBalance(int $accountId): float
-    {
-        return (float) Category::whereKey($accountId)->value('balance');
     }
 
     public function increaseAccountBalance(int $accountId, float $amount): void
@@ -366,13 +491,6 @@ class FinancialService
                 $credit->delete();
             }
         });
-    }
-
-    public function disburseLoan(Credit $credit): void
-    {
-        if ($credit->source_account_id) {
-            $this->decreaseAccountBalance($credit->source_account_id, (float) $credit->amount);
-        }
     }
 
     public function reverseLoanDisbursement(Credit $credit): void

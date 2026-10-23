@@ -210,6 +210,13 @@
                     </li>
 
                     <li>
+                        <a href="{{ route('admin.backup') }}" class="tp-link">
+                            <i data-feather="database"></i>
+                            <span> پشتیبان‌گیری </span>
+                        </a>
+                    </li>
+
+                    <li>
                         <a href="#sidebarBaseui" data-bs-toggle="collapse">
                             <i data-feather="settings"></i>
                             <span> مدیریت ادمین ها </span>

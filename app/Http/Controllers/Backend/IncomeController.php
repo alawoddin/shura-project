@@ -104,7 +104,7 @@ class IncomeController extends Controller
         DB::transaction(function () use ($request, $income_id) {
             $income = Income::findOrFail($income_id);
             $oldAmount = (float) $income->amount;
-            $oldCategoryId = $income->category_id;
+            $oldCategoryId = (int) $income->category_id;
 
             $income->update([
                 'category_id' => $request->category_id,
@@ -114,16 +114,13 @@ class IncomeController extends Controller
                 'note' => $request->note,
             ]);
 
-            if ($oldCategoryId != $request->category_id) {
-                $this->financialService->decreaseAccountBalance($oldCategoryId, $oldAmount, true);
-                $this->financialService->increaseAccountBalance((int) $request->category_id, (float) $request->amount);
-            } else {
-                $this->financialService->adjustAccountBalance(
-                    (int) $request->category_id,
-                    $oldAmount,
-                    (float) $request->amount
-                );
-            }
+            $this->financialService->applyIncomeRecordChange(
+                $income,
+                $oldAmount,
+                $oldCategoryId,
+                (float) $request->amount,
+                (int) $request->category_id
+            );
         });
 
         $notification = [
@@ -138,11 +135,7 @@ class IncomeController extends Controller
     {
         DB::transaction(function () use ($id) {
             $income = Income::findOrFail($id);
-            $this->financialService->decreaseAccountBalance(
-                $income->category_id,
-                (float) $income->amount,
-                true
-            );
+            $this->financialService->reverseIncomeRecord($income);
             $income->delete();
         });
 

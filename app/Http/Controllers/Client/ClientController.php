@@ -34,11 +34,15 @@ class ClientController extends Controller
         ])->findOrFail(Auth::id());
 
         $stats = [
-            'total_payments' => $user->receivePayments->sum('amount'),
+            'total_payments' => $user->receivePayments
+                ->where('transaction_type', 'credit')
+                ->sum('amount') - $user->receivePayments
+                ->where('transaction_type', 'debit')
+                ->sum('amount'),
             'total_credits' => $user->credits->sum('amount'),
-            'remaining_credits' => $user->credits->sum('remaining_amount'),
+            'remaining_credits' => $user->credits->where('status', 'active')->sum('remaining_amount'),
             'total_aid' => $user->aids->sum('amount'),
-            'current_balance' => $user->financialReports->sortByDesc('id')->first()?->balance ?? 0,
+            'current_balance' => $user->financialReports->sortByDesc('date')->sortByDesc('id')->first()?->balance ?? 0,
             'family_count' => $user->familyMembers->count(),
         ];
 
@@ -60,7 +64,7 @@ class ClientController extends Controller
         $data->name = $request->name;
         $data->email = $request->email;
         $data->phone = $request->phone;
-        $data->address = $request->address;
+        $data->current_address = $request->address;
 
         $oldPhotoPath = $data->photo;
 
