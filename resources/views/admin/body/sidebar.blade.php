@@ -77,7 +77,7 @@
 
                 @if ($adminUser->can('all.income'))
                     <li>
-                        <a href="{{ route('all.income') }}"
+                        <a href="{{ route('add.income') }}"
                            class="tp-link {{ request()->routeIs('all.income') ? 'active' : '' }}">
                             <i data-feather="trending-up"></i>
                             <span>درآمدها</span>
