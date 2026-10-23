@@ -1,141 +1,199 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fa" dir="rtl">
 
 <head>
-
-    <meta charset="utf-8" />
-    <title>Register | Page</title>
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="A fully featured admin theme which can be used to build CRM, CMS, etc." />
-    <meta name="author" content="Zoyothemes" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
-    <!-- App favicon -->
-    <link rel="shortcut icon" href="{{ asset('backend/assets/images/favicon.ico') }}">
+    <title>ثبت‌نام | سیستم مدیریت شورا</title>
 
-    <!-- App css -->
-    <link href="{{ asset('backend/assets/css/app.min.css') }}" rel="stylesheet" type="text/css" id="app-style" />
+    <script src="https://cdn.tailwindcss.com"></script>
 
-    <!-- Icons -->
-    <link href="{{ asset('backend/assets/css/icons.min.css') }}" rel="stylesheet" type="text/css" />
+    {{-- <link rel="shortcut icon" href="{{ asset('backend/assets/images/favicon.ico') }}"> --}}
 
+    <style>
+        body {
+            font-family: Tahoma, Arial, sans-serif;
+            background: #f5f7f6;
+        }
+
+        .register-card {
+            border: 1px solid #e2e8e5;
+            box-shadow: 0 12px 35px rgba(20, 50, 35, 0.08);
+        }
+
+        .register-button {
+            background: #176b4d;
+            transition: 0.2s;
+        }
+
+        .register-button:hover {
+            background: #12563e;
+        }
+
+        .register-input:focus {
+            border-color: #176b4d;
+            box-shadow: 0 0 0 3px rgba(23, 107, 77, 0.12);
+            outline: none;
+        }
+    </style>
 </head>
 
-<body class="bg-white">
+<body class="flex items-center justify-center min-h-screen px-4 py-8">
 
-    <!-- Begin page -->
-    <div class="account-page">
-        <div class="container-fluid p-0">
-            <div class="row align-items-center g-0">
-                <div class="col-xl-5">
-                    <div class="row">
-                        <div class="col-md-7 mx-auto">
-                            <div class="mb-0 border-0 p-md-5 p-lg-0 p-4">
-                                <div class="mb-4 p-0">
-                                    <a href="index.html" class="auth-logo">
-                                        <img src="{{ asset('backend/assets/images/logo-dark.png') }}" alt="logo-dark"
-                                            class="mx-auto" height="28" />
-                                    </a>
-                                </div>
+    <div class="w-full max-w-md">
 
-                                <div class="pt-0">
-                                    <form method="POST" action="{{ route('register') }}" class="my-4">
+        <div class="register-card bg-white rounded-2xl p-6 sm:p-8">
 
-                                        @csrf
-                                        <div class="form-group mb-3">
-                                            <label for="username" class="form-label">name</label>
-                                            <input class="form-control" name="name" type="text" id="name"
-                                                required="" placeholder="Enter your name">
-                                        </div>
+            {{-- عنوان --}}
+            <div class="text-center mb-8">
 
+                <div class="w-14 h-14 rounded-2xl mx-auto mb-4 flex items-center justify-center"
+                     style="background:#e5f3eb;color:#176b4d;">
 
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                         width="30" height="30" fill="none"
+                         viewBox="0 0 24 24" stroke="currentColor"
+                         stroke-width="1.8">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                              d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-5h6v5M9 9h.01M15 9h.01M9 12h.01M15 12h.01"/>
+                    </svg>
 
-
-                                        <div class="form-group mb-3">
-                                            <label for="emailaddress" class="form-label">Email address</label>
-                                            <input class="form-control" type="email" id="email" name="email"
-                                                required="" placeholder="Enter your email">
-                                        </div>
-
-                                        <div class="form-group mb-3">
-                                            <label for="password" class="form-label">Password</label>
-                                            <input class="form-control" type="password" name="password" required=""
-                                                id="password" placeholder="Enter your password">
-                                        </div>
-
-                                        <div class="form-group mb-3">
-                                            <label for="password" class="form-label">Confirm Password</label>
-                                            <input class="form-control" type="password" required=""
-                                                id="password_confirmation" name="password_confirmation"
-                                                placeholder="Enter your password confirmation">
-                                        </div>
-
-                                        <div class="form-group d-flex mb-3">
-                                            <div class="col-12">
-                                                <div class="form-check">
-                                                    <input type="checkbox" class="form-check-input"
-                                                        id="checkbox-signin">
-                                                    <label class="form-check-label" for="checkbox-signin">I agree to the
-                                                        <a href="#" class="text-primary fw-medium"> Terms and
-                                                            Conditions</a></label>
-                                                </div>
-                                            </div><!--end col-->
-                                        </div>
-
-                                        <div class="form-group mb-0 row">
-                                            <div class="col-12">
-                                                <div class="d-grid">
-                                                    <button class="btn btn-primary" type="submit"> Register</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </form>
-
-                                    <div class="saprator my-4"><span>or sign in with</span></div>
-
-                                    <div class="text-center text-muted mb-4">
-                                        <p class="mb-0">Already have an account ?<a
-                                                class='text-primary ms-2 fw-medium' href='{{ route('login') }}'>Sign
-                                                here</a></p>
-                                    </div>
-
-                             
-                                </div>
-
-                            </div>
-                        </div>
-                    </div>
                 </div>
 
-                <div class="col-xl-7">
-                    <div class="account-page-bg p-md-5 p-4">
-                        <div class="text-center">
-                            <h3 class="text-dark mb-3 pera-title">Register Page For Shura Managament System </h3>
-                            <div class="auth-image d-flex justify-content-center align-items-center">
-                                <img src="{{ asset('backend/assets/images/authentication.svg') }}" class="mx-auto img-fluid" alt="images">
-                                {{-- <img src="{{asset('backend/assets/images/authentication.svg')}}" class="mx-auto img-fluid"  alt="images"> --}}
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <h1 class="text-2xl sm:text-3xl font-bold text-gray-800">
+                    سیستم مدیریت شورا
+                </h1>
 
+                <p class="text-gray-500 mt-3 text-sm">
+                    برای ایجاد حساب کاربری، اطلاعات خود را وارد کنید.
+                </p>
             </div>
+
+            {{-- خطاهای اعتبارسنجی --}}
+            @if ($errors->any())
+                <div class="mb-5 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700">
+                    لطفاً اطلاعات واردشده را بررسی کنید.
+                </div>
+            @endif
+
+            {{-- فرم ثبت‌نام --}}
+            <form method="POST" action="{{ route('register') }}">
+                @csrf
+
+                {{-- نام --}}
+                <div class="mb-5">
+                    <label for="name"
+                           class="block text-sm font-semibold text-gray-700 mb-2">
+                        نام
+                    </label>
+
+                    <input
+                        id="name"
+                        name="name"
+                        type="text"
+                        value="{{ old('name') }}"
+                        required
+                        autofocus
+                        autocomplete="name"
+                        placeholder="نام خود را وارد کنید"
+                        class="register-input w-full px-4 py-3 border border-gray-300 rounded-lg transition">
+
+                    @error('name')
+                        <p class="text-red-600 text-sm mt-2">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                {{-- ایمیل --}}
+                <div class="mb-5">
+                    <label for="email"
+                           class="block text-sm font-semibold text-gray-700 mb-2">
+                        ایمیل
+                    </label>
+
+                    <input
+                        id="email"
+                        name="email"
+                        type="email"
+                        value="{{ old('email') }}"
+                        required
+                        autocomplete="username"
+                        dir="ltr"
+                        placeholder="name@example.com"
+                        class="register-input w-full px-4 py-3 border border-gray-300 rounded-lg text-left transition">
+
+                    @error('email')
+                        <p class="text-red-600 text-sm mt-2">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                {{-- رمز عبور --}}
+                <div class="mb-5">
+                    <label for="password"
+                           class="block text-sm font-semibold text-gray-700 mb-2">
+                        رمز عبور
+                    </label>
+
+                    <input
+                        id="password"
+                        name="password"
+                        type="password"
+                        required
+                        autocomplete="new-password"
+                        dir="ltr"
+                        placeholder="رمز عبور خود را وارد کنید"
+                        class="register-input w-full px-4 py-3 border border-gray-300 rounded-lg transition">
+
+                    @error('password')
+                        <p class="text-red-600 text-sm mt-2">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                {{-- تأیید رمز عبور --}}
+                <div class="mb-6">
+                    <label for="password_confirmation"
+                           class="block text-sm font-semibold text-gray-700 mb-2">
+                        تأیید رمز عبور
+                    </label>
+
+                    <input
+                        id="password_confirmation"
+                        name="password_confirmation"
+                        type="password"
+                        required
+                        autocomplete="new-password"
+                        dir="ltr"
+                        placeholder="رمز عبور را دوباره وارد کنید"
+                        class="register-input w-full px-4 py-3 border border-gray-300 rounded-lg transition">
+                </div>
+
+                {{-- دکمه ثبت‌نام --}}
+                <button
+                    type="submit"
+                    class="register-button w-full text-white py-3 rounded-lg font-semibold">
+                    ایجاد حساب کاربری
+                </button>
+
+                {{-- لینک ورود --}}
+                <div class="text-center mt-6">
+                    <p class="text-sm text-gray-600">
+                        قبلاً حساب کاربری ساخته‌اید؟
+                        <a href="{{ route('login') }}"
+                           class="font-semibold hover:underline"
+                           style="color:#176b4d;">
+                            وارد شوید
+                        </a>
+                    </p>
+                </div>
+
+            </form>
         </div>
+
+        <p class="text-center text-xs text-gray-400 mt-5">
+            سیستم مدیریت شورا
+        </p>
+
     </div>
-    <!-- END wrapper -->
-
-    <!-- Vendor -->
-    <script src="{{ asset('backend/assets/libs/jquery/jquery.min.js') }}"></script>
-    <script src="{{ asset('backend/assets/libs/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-    <script src="{{ asset('backend/assets/libs/simplebar/simplebar.min.js') }}"></script>
-    <script src="{{ asset('backend/assets/libs/node-waves/waves.min.js') }}"></script>
-    <script src="{{ asset('backend/assets/libs/waypoints/lib/jquery.waypoints.min.js') }}"></script>
-    <script src="{{ asset('backend/assets/libs/jquery.counterup/jquery.counterup.min.js') }}"></script>
-    <script src="{{ asset('backend/assets/libs/feather-icons/feather.min.js') }}"></script>
-
-    <!-- App js-->
-    <script src="{{ asset('backend/assets/js/app.js') }}"></script>
 
 </body>
-
 </html>
