@@ -11,11 +11,11 @@ class LoanEnforcementService
 {
     public const OVERDUE_MONTHS = 6;
 
-    public function recordCreditPayment(Credit $credit, float $amount, ?Carbon $paidAt = null, ?string $note = null): void
+    public function recordCreditPayment(Credit $credit, float $amount, ?Carbon $paidAt = null, ?string $note = null): CreditPayment
     {
         $paidAt = $paidAt ?? now();
 
-        CreditPayment::create([
+        $payment = CreditPayment::create([
             'credit_id' => $credit->id,
             'user_id' => $credit->user_id,
             'amount' => $amount,
@@ -24,6 +24,27 @@ class LoanEnforcementService
         ]);
 
         $credit->update(['last_payment_at' => $paidAt]);
+
+        $this->syncUserLoanStatus((int) $credit->user_id);
+
+        return $payment;
+    }
+
+    /**
+     * Undo a loan repayment: give the amount back to the loan, remove the payment
+     * record and recompute the last payment date and the member's loan status.
+     */
+    public function reverseCreditPayment(Credit $credit, float $amount, ?int $creditPaymentId = null): void
+    {
+        $credit->remaining_amount = min((float) $credit->amount, (float) $credit->remaining_amount + $amount);
+        $credit->status = $credit->remaining_amount > 0 ? 'active' : 'paid';
+
+        if ($creditPaymentId) {
+            CreditPayment::whereKey($creditPaymentId)->delete();
+        }
+
+        $credit->last_payment_at = CreditPayment::where('credit_id', $credit->id)->max('paid_at');
+        $credit->save();
 
         $this->syncUserLoanStatus((int) $credit->user_id);
     }

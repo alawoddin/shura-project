@@ -38,34 +38,6 @@
 
 
 
-                    {{-- Category --}}
-                    <div class="col-md-6">
-
-                        <label class="form-label">
-
-                            بخش
-
-                        </label>
-
-                        <select name="category_id" class="form-control">
-
-                            <option value="">
-
-                                انتخاب بخش
-
-                            </option>
-
-                            @foreach ($categories as $category)
-                                <option value="{{ $category->id }}">
-
-                                    {{ $category->name }}
-
-                                </option>
-                            @endforeach
-
-                        </select>
-
-                    </div>
 
                     {{-- Credit Account --}}
                     <div class="col-md-6">
@@ -191,7 +163,6 @@
                 rules: {
 
                     source_account_id: { required: true },
-                    category_id: { required: true },
 
                     user_id: {
                         required: true
@@ -209,9 +180,6 @@
 
                 messages: {
 
-                    category_id: {
-                        required: 'بخش را انتخاب کنید'
-                    },
 
                     user_id: {
                         required: 'کاربر را انتخاب کنید'

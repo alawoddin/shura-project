@@ -7,7 +7,7 @@
 
             <div class="py-3 d-flex align-items-sm-center flex-sm-row flex-column">
                 <div class="flex-grow-1">
-                    <h4 class="fs-18 fw-semibold m-0">دریافت پرداخت ها</h4>
+                    <h4 class="fs-18 fw-semibold m-0">دریافت فیس و قرض</h4>
                 </div>
 
                 <div class="text-end">
@@ -48,20 +48,27 @@
                                             <tr>
                                                 <td class="text-center">{{ $key + 1 }}</td>
                                                 <td class="text-center">{{ $item->date }}</td>
-                                                <td class="text-center">{{ $item->users->name }}</td>
+                                                <td class="text-center">{{ $item->users->name ?? '—' }}</td>
                                                 <td class="text-center">{{ $item->description }}</td>
                                                 <td class="text-center">
                                                     <span class="badge {{ ($item->transaction_type ?? 'credit') === 'debit' ? 'bg-warning' : 'bg-success' }}">
                                                         {{ ($item->transaction_type ?? 'credit') === 'debit' ? 'بدهکار' : 'بستانکار' }}
                                                     </span>
                                                 </td>
-                                                <td class="text-center">{{ $item->category->name }}</td>
+                                                <td class="text-center">
+                                                    {{ $item->category->name ?? '—' }}
+                                                    @if ($item->credit_id)
+                                                        <span class="badge bg-info">قسط قرض #{{ $item->credit_id }}</span>
+                                                    @endif
+                                                </td>
                                                 <td class="text-center">{{ $item->month_of ?? '-' }}</td>
                                                 <td class="text-center">{{ $item->amount }}</td>
                                                 
 
                                                 <td class="text-center">
-                                                    <a href="{{ route('edit.receive.payment', $item->id) }}" class="btn btn-success btn-sm">ویرایش</a>
+                                                    @unless ($item->credit_id)
+                                                        <a href="{{ route('edit.receive.payment', $item->id) }}" class="btn btn-success btn-sm">ویرایش</a>
+                                                    @endunless
 
                                                     <a href="{{ route('delete.receive.payment', $item->id) }}" class="btn btn-danger btn-sm" id="delete">حذف</a>
                                                 </td>

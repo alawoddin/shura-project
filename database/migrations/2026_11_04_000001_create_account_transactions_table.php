@@ -10,8 +10,8 @@ return new class extends Migration
     {
         Schema::create('account_transactions', function (Blueprint $table) {
             $table->id();
-            // deposit = دریافت پول به حساب, withdraw = ارسال پول از حساب, transfer = انتقال بین دو حساب
-            $table->enum('type', ['deposit', 'withdraw', 'transfer']);
+            // deposit = دریافت پول به حساب, transfer = انتقال حساب به حساب
+            $table->enum('type', ['deposit', 'transfer']);
             $table->foreignId('from_account_id')->nullable()->constrained('categories')->nullOnDelete();
             $table->foreignId('to_account_id')->nullable()->constrained('categories')->nullOnDelete();
             $table->decimal('amount', 15, 2);

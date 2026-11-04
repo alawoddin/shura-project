@@ -20,7 +20,7 @@
                             <input type="hidden" name="id" value="{{ $editdata->id }}">
 
                             <div class="col-md-6">
-                                <label>بخش</label>
+                                <label class="form-label">حساب درآمد</label>
                                 <select name="category_id" class="form-control">
                                     @foreach ($categories as $category)
                                         <option value="{{ $category->id }}" {{ $editdata->category_id == $category->id ? 'selected' : '' }}>

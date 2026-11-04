@@ -49,16 +49,6 @@
                                 </select>
                             </div>
 
-                            <div class="col-md-6">
-                                <label>بخش</label>
-                                <select name="category_id" class="form-control">
-                                    @foreach ($categories as $category)
-                                        <option value="{{ $category->id }}" {{ $editdata->category_id == $category->id ? 'selected' : '' }}>
-                                            {{ $category->name }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
 
                     
 
@@ -106,9 +96,6 @@
                     user_id: {
                         required: true,
                     },
-                    category_id: {
-                        required: true,
-                    },
                     amount: {
                         required: true,
                         number: true,
@@ -122,9 +109,6 @@
                 messages: {
                     user_id: {
                         required: 'لطفاً کاربر را انتخاب کنید',
-                    },
-                    category_id: {
-                        required: 'لطفاً بخش را انتخاب کنید',
                     },
                     amount: {
                         required: 'لطفاً مقدار را وارد کنید',

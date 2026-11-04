@@ -29,7 +29,7 @@
                         هیچ حساب کمک‌ها تعریف نشده است. لطفاً ابتدا در
                         <a href="{{ route('add.category') }}">بخش حساب‌ها</a>
                         یک حساب با نوع «حساب کمک‌ها» بسازید و از صفحه
-                        <a href="{{ route('all.account.transactions') }}">ارسال و دریافت پول</a>
+                        <a href="{{ route('all.account.transactions') }}">انتقال بین حساب‌ها</a>
                         به آن پول واریز کنید.
                     </div>
                 @endif
@@ -71,15 +71,6 @@
                                 </select>
                             </div>
 
-                            <div class="col-md-6">
-                                <label>بخش</label>
-                                <select name="category_id" class="form-control">
-                                    <option value="">انتخاب بخش</option>
-                                    @foreach ($categories as $category)
-                                        <option value="{{ $category->id }}">{{ $category->name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
 
                             <div class="col-md-6">
                                 <label class="form-label">مقدار</label>
@@ -118,9 +109,6 @@
                     user_id: {
                         required: true,
                     },
-                    category_id: {
-                        required: true,
-                    },
                     amount: {
                         required: true,
                         number: true,
@@ -135,9 +123,6 @@
                 messages: {
                     user_id: {
                         required: 'لطفاً کاربر را انتخاب کنید',
-                    },
-                    category_id: {
-                        required: 'لطفاً بخش را انتخاب کنید',
                     },
                     amount: {
                         required: 'لطفاً مقدار را وارد کنید',

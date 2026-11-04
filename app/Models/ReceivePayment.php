@@ -32,5 +32,15 @@ class ReceivePayment extends Model
         );
     }
 
+    public function credit()
+    {
+        return $this->belongsTo(Credit::class);
+    }
+
+    public function isLoanRepayment(): bool
+    {
+        return $this->credit_id !== null;
+    }
+
     
 }

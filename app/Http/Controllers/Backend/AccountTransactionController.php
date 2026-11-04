@@ -13,20 +13,31 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 
 /**
- * ارسال و دریافت پول در حساب‌ها
- * Deposit money into an account, withdraw (send) money out of an account,
- * or transfer money between two accounts.
+ * انتقال بین حساب‌ها (transfer) و دریافت پول (deposit) for money accounts.
  */
 class AccountTransactionController extends Controller
 {
     public function __construct(protected FinancialService $financialService) {}
 
+    /** انتقال بین حساب‌ها — move money from one account to another. */
     public function index(Request $request)
+    {
+        return $this->page($request, 'transfer');
+    }
+
+    /** دریافت پول — receive money into an account. */
+    public function deposits(Request $request)
+    {
+        return $this->page($request, 'deposit');
+    }
+
+    protected function page(Request $request, string $mode)
     {
         $accounts = Category::moneyAccounts()->orderBy('account_type')->orderBy('name')->get();
         $selectedAccountId = $request->integer('account') ?: null;
 
         $transactions = AccountTransaction::with(['fromAccount', 'toAccount', 'creator'])
+            ->where('type', $mode)
             ->when($selectedAccountId, function ($query) use ($selectedAccountId) {
                 $query->where(function ($q) use ($selectedAccountId) {
                     $q->where('from_account_id', $selectedAccountId)
@@ -37,47 +48,45 @@ class AccountTransactionController extends Controller
             ->latest('id')
             ->get();
 
-        $types = AccountTransaction::TYPES;
-
         return view('admin.pages.account_transaction.index', compact(
             'accounts',
             'transactions',
-            'types',
-            'selectedAccountId'
+            'selectedAccountId',
+            'mode'
         ));
     }
 
     public function store(Request $request)
     {
         $accountIds = Category::moneyAccounts()->pluck('id')->all();
+        $isTransfer = $request->input('type') === 'transfer';
 
         $request->validate([
             'type' => ['required', Rule::in(array_keys(AccountTransaction::TYPES))],
             'from_account_id' => [
-                Rule::requiredIf(in_array($request->type, ['withdraw', 'transfer'], true)),
+                Rule::requiredIf($isTransfer),
                 'nullable',
                 Rule::in($accountIds),
             ],
             'to_account_id' => [
-                Rule::requiredIf(in_array($request->type, ['deposit', 'transfer'], true)),
-                'nullable',
+                'required',
                 Rule::in($accountIds),
-                'different:from_account_id',
+                $isTransfer ? 'different:from_account_id' : 'nullable',
             ],
             'amount' => 'required|numeric|min:0.01',
             'date' => 'required|date',
             'party' => 'nullable|string|max:255',
             'description' => 'nullable|string',
         ], [
-            'from_account_id.required' => 'لطفاً حساب ارسال‌کننده را انتخاب کنید.',
-            'to_account_id.required' => 'لطفاً حساب دریافت‌کننده را انتخاب کنید.',
-            'to_account_id.different' => 'حساب ارسال‌کننده و دریافت‌کننده نباید یکی باشد.',
+            'from_account_id.required' => 'لطفاً حساب مبدأ را انتخاب کنید.',
+            'to_account_id.required' => 'لطفاً حساب مقصد را انتخاب کنید.',
+            'to_account_id.different' => 'حساب مبدأ و مقصد نباید یکی باشد.',
             'amount.min' => 'مقدار باید بیشتر از صفر باشد.',
         ]);
 
         $type = $request->type;
-        $fromId = in_array($type, ['withdraw', 'transfer'], true) ? (int) $request->from_account_id : null;
-        $toId = in_array($type, ['deposit', 'transfer'], true) ? (int) $request->to_account_id : null;
+        $fromId = $isTransfer ? (int) $request->from_account_id : null;
+        $toId = (int) $request->to_account_id;
         $amount = (float) $request->amount;
 
         try {
@@ -86,9 +95,7 @@ class AccountTransactionController extends Controller
                     $this->financialService->decreaseAccountBalance($fromId, $amount);
                 }
 
-                if ($toId) {
-                    $this->financialService->increaseAccountBalance($toId, $amount);
-                }
+                $this->financialService->increaseAccountBalance($toId, $amount);
 
                 AccountTransaction::create([
                     'type' => $type,
@@ -96,7 +103,7 @@ class AccountTransactionController extends Controller
                     'to_account_id' => $toId,
                     'amount' => $amount,
                     'date' => $request->date,
-                    'party' => $request->party,
+                    'party' => $type === 'transfer' ? null : $request->party,
                     'description' => $request->description,
                     'created_by' => Auth::id(),
                 ]);
@@ -108,10 +115,12 @@ class AccountTransactionController extends Controller
             ]);
         }
 
+        $route = $type === 'deposit' ? 'all.account.deposits' : 'all.account.transactions';
+
         return redirect()
-            ->route('all.account.transactions', array_filter(['account' => $request->integer('return_account') ?: null]))
+            ->route($route, array_filter(['account' => $request->integer('return_account') ?: null]))
             ->with([
-                'message' => 'تراکنش با موفقیت ثبت شد',
+                'message' => $type === 'deposit' ? 'پول با موفقیت دریافت شد' : 'انتقال با موفقیت انجام شد',
                 'alert-type' => 'success',
             ]);
     }

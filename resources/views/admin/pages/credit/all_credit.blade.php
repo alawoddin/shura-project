@@ -66,7 +66,7 @@
 
                                     <th>کاربر</th>
 
-                                    <th>بخش</th>
+                                    <th>حساب</th>
 
                                     <th>تاریخ</th>
 
@@ -112,7 +112,7 @@
 
                                         <td>
 
-                                            {{ $item->category->name }}
+                                            {{ $item->sourceAccount->name ?? '—' }}
 
                                         </td>
 

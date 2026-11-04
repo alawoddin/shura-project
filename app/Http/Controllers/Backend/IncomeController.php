@@ -11,6 +11,7 @@ use App\Models\Undeposited;
 use App\Services\FinancialService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 
 class IncomeController extends Controller
 {
@@ -32,17 +33,13 @@ class IncomeController extends Controller
         $categories = Category::incomeSources()->get();
         $users = User::all();
 
-        if ($categories->isEmpty()) {
-            $categories = Category::all();
-        }
-
         return view('admin.pages.income.add_income', compact('categories', 'users'));
     }
 
     public function StoreIncome(Request $request)
     {
         $request->validate([
-            'category_id' => 'required|exists:categories,id',
+            'category_id' => ['required', Rule::exists('categories', 'id')->where('account_type', 'income')],
             'creditor_name' => 'required|string',
             'amount' => 'required|numeric|min:0.01',
             'date' => 'required|date',
@@ -80,12 +77,10 @@ class IncomeController extends Controller
     public function EditIncome(int $id)
     {
         $editdata = Income::findOrFail($id);
-        $categories = Category::incomeSources()->get();
+        $categories = Category::incomeSources()
+            ->orWhere('id', $editdata->category_id)
+            ->get();
         $users = User::all();
-
-        if ($categories->isEmpty()) {
-            $categories = Category::all();
-        }
 
         return view('admin.pages.income.edit_income', compact('editdata', 'categories', 'users'));
     }
@@ -95,7 +90,16 @@ class IncomeController extends Controller
         $income_id = $request->id;
 
         $request->validate([
-            'category_id' => 'required|exists:categories,id',
+            'category_id' => [
+                'required',
+                function ($attribute, $value, $fail) use ($income_id) {
+                    $isCurrent = (int) Income::whereKey($income_id)->value('category_id') === (int) $value;
+
+                    if (! $isCurrent && ! Category::incomeSources()->whereKey($value)->exists()) {
+                        $fail('لطفاً یک حساب درآمد را انتخاب کنید.');
+                    }
+                },
+            ],
             'creditor_name' => 'required|string',
             'amount' => 'required|numeric|min:0.01',
             'date' => 'required|date',

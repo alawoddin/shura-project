@@ -189,8 +189,8 @@
                 <div class="panel-head">
                     <h5>موجودی حساب‌ها</h5>
                     <span>
-                        درآمد و پول دریافتی منهای مصارف، کمک‌ها، قرض‌ها و پول ارسالی
-                        · <a href="{{ route('all.account.transactions') }}">ارسال و دریافت پول</a>
+                        درآمد و پول دریافتی منهای مصارف، کمک‌ها، قرض‌ها و انتقال‌ها
+                        · <a href="{{ route('all.account.transactions') }}">انتقال بین حساب‌ها</a>
                     </span>
                 </div>
                 <div class="table-responsive">
@@ -203,7 +203,7 @@
                                 <th>مصارف</th>
                                 <th>کمک‌ها</th>
                                 <th>قرض‌ها</th>
-                                <th>ارسالی</th>
+                                <th>انتقال خروجی</th>
                                 <th>مجموع خروجی</th>
                                 <th>موجودی فعلی</th>
                             </tr>
@@ -246,160 +246,6 @@
                 </div>
             </div>
 
-            <!-- Stats tables -->
-            <div class="row">
-                <div class="col-md-6 col-xl-6">
-                    <div class="card overflow-hidden">
-
-                        <div class="card-header">
-                            <div class="d-flex align-items-center">
-                                <div class="border border-dark rounded-2 me-2 widget-icons-sections">
-                                    <i data-feather="table" class="widgets-icons"></i>
-                                </div>
-                                <h5 class="card-title mb-0">اطلاعات آماری</h5>
-                            </div>
-                        </div>
-
-                        <div class="card-body p-0">
-                            <div class="table-responsive">
-                                <table class="table table-traffic mb-0">
-                                    <tbody>
-                                        <thead>
-                                            <tr>
-                                                <th>
-                                                    بخش
-                                                </th>
-                                                <th>
-                                                    مجموع
-                                                </th>
-                                                <th>
-                                                    ماه جاری
-                                                </th>
-                                            </tr>
-                                        </thead>
-                                        <tr>
-                                            <td>مجموع درآمد</td>
-                                            <td>{{ number_format($totalIncomeAll, 2) }}</td>
-                                            <td>{{ number_format($monthIncomeAll, 2) }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>درآمد واریز شده</td>
-                                            <td>{{ number_format($totalIncome, 2) }}</td>
-                                            <td>{{ number_format($monthIncome, 2) }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>دریافتی بستانکار</td>
-                                            <td>{{ number_format($totalReceiveCredit, 2) }}</td>
-                                            <td>{{ number_format($monthReceiveCredit, 2) }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>دریافتی بدهکار</td>
-                                            <td>{{ number_format($totalReceiveDebit, 2) }}</td>
-                                            <td>{{ number_format($monthReceiveDebit, 2) }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>دریافتی خالص</td>
-                                            <td>{{ number_format($totalReceive, 2) }}</td>
-                                            <td>{{ number_format($monthReceive, 2) }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>بستانکار (Credit)</td>
-                                            <td>{{ number_format($totalCredit, 2) }}</td>
-                                            <td>{{ number_format($monthCredit, 2) }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>بدهکار (Debit)</td>
-                                            <td>{{ number_format($totalDebit, 2) }}</td>
-                                            <td>{{ number_format($monthDebit, 2) }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>مجموع مصارف</td>
-                                            <td>{{ number_format($totalExpense, 2) }}</td>
-                                            <td>{{ number_format($monthExpense, 2) }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>مجموع کمک‌ها</td>
-                                            <td>{{ number_format($totalAids, 2) }}</td>
-                                            <td>{{ number_format($monthAids, 2) }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>اعتبار موجود</td>
-                                            <td>{{ number_format($totalcredit, 2) }}</td>
-                                            <td>{{ number_format($monthCreditAvailable, 2) }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>مانده قرض‌ها</td>
-                                            <td>{{ number_format($remaining_amount, 2) }}</td>
-                                            <td>{{ number_format($monthLoansRemaining, 2) }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>بلانس فعلی</td>
-                                            <td>{{ number_format($currentBalance, 2) }}</td>
-                                            <td>{{ number_format($monthCurrentBalance, 2) }}</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-
-
-                <div class="col-md-6 col-xl-6">
-                    <div class="card overflow-hidden">
-
-                        <div class="card-header">
-                            <div class="d-flex align-items-center">
-                                <div class="border border-dark rounded-2 me-2 widget-icons-sections">
-                                    <i data-feather="tablet" class="widgets-icons"></i>
-                                </div>
-                                <h5 class="card-title mb-0">بهترین منابع درآمد</h5>
-                            </div>
-                        </div>
-
-                        <div class="card-body p-0">
-                            <div class="table-responsive">
-                                <table class="table table-traffic mb-0">
-                                    <tbody>
-                                        <thead>
-                                            <tr>
-                                                <th>
-                                                    نوع درآمد
-                                                </th>
-                                                <th colspan="2">
-                                                    مبلغ
-                                                </th>
-                                            </tr>
-                                        </thead>
-                                        @foreach ($incomes as $item)
-                                            @php
-                                                $percent = $totalIncomeAll > 0 ? ($item->total / $totalIncomeAll) * 100 : 0;
-                                            @endphp
-                                            <tr>
-                                                <td>
-                                                    {{ $item->category->name }}
-                                                </td>
-                                                <td>
-                                                    {{ number_format($item->total) }}
-                                                </td>
-                                                <td class="w-50">
-                                                    <div class="progress progress-md">
-                                                        <div class="progress-bar bg-primary"
-                                                            style="width:{{ $percent }}%">
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- End Monthly Sales -->
 
         </div> <!-- container-fluid -->
     </div>  

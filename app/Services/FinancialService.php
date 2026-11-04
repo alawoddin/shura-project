@@ -33,7 +33,7 @@ class FinancialService
             ', [$month, $year, 'transferred', 'transferred', $month, $year])
             ->first();
 
-        $receive = ReceivePayment::selectRaw('
+        $receive = ReceivePayment::whereNull('credit_id')->selectRaw('
                 COALESCE(SUM(CASE WHEN transaction_type = "credit" THEN amount ELSE 0 END), 0) as total_credit,
                 COALESCE(SUM(CASE WHEN transaction_type = "debit" THEN amount ELSE 0 END), 0) as total_debit,
                 COALESCE(SUM(CASE WHEN transaction_type = "credit" AND MONTH(date) = ? AND YEAR(date) = ? THEN amount ELSE 0 END), 0) as month_credit,
@@ -179,7 +179,7 @@ class FinancialService
         };
 
         $expenseQuery = Expense::query();
-        $receiveQuery = ReceivePayment::query();
+        $receiveQuery = ReceivePayment::query()->whereNull('credit_id');
         $incomeQuery = Income::query();
         $transferredIncomeQuery = Income::whereHas('undeposited', fn ($q) => $q->where('status', 'transferred'));
         $aidQuery = Aids::query();

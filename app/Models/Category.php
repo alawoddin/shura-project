@@ -32,6 +32,20 @@ class Category extends Model
         return $query->where('account_type', 'cash');
     }
 
+    /** Payment types allowed on the «دریافت فیس و قرض» page: member fee and loan accounts. */
+    public function scopeFeeAndLoanTypes($query)
+    {
+        return $query->where(function ($q) {
+            $q->where('is_monthly_fee', true)
+                ->orWhere('account_type', 'receivable');
+        });
+    }
+
+    public function isLoanType(): bool
+    {
+        return $this->account_type === 'receivable' && ! $this->is_monthly_fee;
+    }
+
     public function scopeAidAccounts($query)
     {
         return $query->where('account_type', 'aid');

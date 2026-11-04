@@ -162,6 +162,7 @@ Route::prefix('admin')->middleware(['auth' ,IsAdmin::class ])->group(function ()
         Route::post('/update/receive/payment',  'UpdateReceivePayment')->name('update.receive.payment');
         Route::get('/delete/receive/payment/{id}', 'DeleteReceivePayment')->name('delete.receive.payment');
         Route::get('/receive/payment/member-fee-status/{user}', 'MemberFeeStatus')->name('receive.payment.member.fee.status');
+        Route::get('/receive/payment/member-loans/{user}', 'MemberLoans')->name('receive.payment.member.loans');
     });
 
     
@@ -191,9 +192,10 @@ Route::prefix('admin')->middleware(['auth' ,IsAdmin::class ])->group(function ()
         Route::get('/delete/aid/{id}', 'DeleteAid')->name('delete.aid');
     });
 
-    // ارسال و دریافت پول در حساب‌ها
+    // انتقال بین حساب‌ها و دریافت پول
     Route::controller(AccountTransactionController::class)->group(function () {
         Route::get('/account/transactions', 'index')->name('all.account.transactions');
+        Route::get('/account/deposits', 'deposits')->name('all.account.deposits');
         Route::post('/account/transactions', 'store')->name('store.account.transaction');
         Route::get('/account/transactions/delete/{id}', 'destroy')->name('delete.account.transaction');
     });

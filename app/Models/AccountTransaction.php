@@ -19,7 +19,6 @@ class AccountTransaction extends Model
 
     public const TYPES = [
         'deposit' => 'دریافت پول',
-        'withdraw' => 'ارسال پول',
         'transfer' => 'انتقال بین حساب‌ها',
     ];
 

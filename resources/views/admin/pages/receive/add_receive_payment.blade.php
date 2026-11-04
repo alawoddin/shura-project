@@ -5,16 +5,26 @@
     <div class="container-fluid">
         <div class="py-3">
             <h4 class="fw-semibold">
-                اضافه کردن دریافت پرداخت
+                دریافت فیس و قرض
             </h4>
         </div>
         <div class="card">
             <div class="card-header">
                 <h5>
-                    دریافت پرداخت
+                    ثبت دریافت فیس اعضا یا قسط قرض
                 </h5>
             </div>
             <div class="card-body">
+                @if ($errors->any())
+                    <div class="alert alert-danger">{{ $errors->first() }}</div>
+                @endif
+                @if ($categories->isEmpty())
+                    <div class="alert alert-warning">
+                        هیچ نوع پرداخت «فیس ماهانه» یا «قرض» تعریف نشده است. لطفاً در
+                        <a href="{{ route('add.category') }}">بخش حساب‌ها</a>
+                        یک حساب با تیک «فیس ماهانه» یا نوع «حساب‌های دریافتنی» (قرض) بسازید.
+                    </div>
+                @endif
                 <form id="myForm" action="{{ route('store.receive.payment') }}" method="POST" class="row g-3">
                     @csrf
                     {{-- Date --}}
@@ -37,7 +47,7 @@
                         </select>
                     </div>
                     {{-- Transaction Type --}}
-                    <div class="col-md-6">
+                    <div class="col-md-6" id="transactionTypeField">
                         <label class="form-label">نوع تراکنش</label>
                         <select name="transaction_type" class="form-control">
                             <option value="credit" {{ old('transaction_type', 'credit') === 'credit' ? 'selected' : '' }}>
@@ -56,17 +66,35 @@
                             @foreach ($categories as $category)
                                 <option value="{{ $category->id }}"
                                     data-is-monthly-fee="{{ $category->is_monthly_fee ? '1' : '0' }}"
+                                    data-is-loan="{{ $category->isLoanType() ? '1' : '0' }}"
                                     {{ old('category_id') == $category->id ? 'selected' : '' }}>
                                     {{ $category->name }}
+                                    {{ $category->is_monthly_fee ? '(فیس ماهانه)' : '(قرض)' }}
                                 </option>
                             @endforeach
                         </select>
                     </div>
                     {{-- For the month of --}}
                     <div class="col-md-6" id="monthField">
-                        <label class="form-label">برای ماه</label>
+                        <label class="form-label">از ماه</label>
                         <input type="month" name="month_of" id="month_of" class="form-control"
                             value="{{ old('month_of') }}" disabled>
+                    </div>
+                    {{-- Number of months paid at once --}}
+                    <div class="col-md-6" id="monthsCountField">
+                        <label class="form-label">تعداد ماه (پرداخت یکجا)</label>
+                        <input type="number" min="1" max="{{ \App\Http\Controllers\Backend\ReceivePaymentController::MAX_FEE_MONTHS }}"
+                            name="months_count" id="months_count" class="form-control"
+                            value="{{ old('months_count', 1) }}" disabled>
+                        <small class="text-muted" id="monthsRangeHint"></small>
+                    </div>
+                    {{-- Loan (for loan repayments) --}}
+                    <div class="col-md-6" id="loanField" style="display: none;">
+                        <label class="form-label">قرض</label>
+                        <select name="credit_id" id="credit_id" class="form-control" disabled>
+                            <option value="">ابتدا عضو را انتخاب کنید</option>
+                        </select>
+                        <small class="text-muted" id="loanHint"></small>
                     </div>
                     {{-- Amount --}}
                     <div class="col-md-6">
@@ -101,21 +129,32 @@
     <script>
         $(document).ready(function() {
             const feeStatusUrl = @json(route('receive.payment.member.fee.status', ['user' => '__USER__']));
+            const memberLoansUrl = @json(route('receive.payment.member.loans', ['user' => '__USER__']));
+            const oldCreditId = @json(old('credit_id'));
             let feeStatus = null;
 
-            function isMonthlyFeeSelected() {
-                return $('#category').find(':selected').data('is-monthly-fee') == 1;
+            function selectedCategory() {
+                return $('#category').find(':selected');
             }
 
-            function toggleMonthField() {
-                if (isMonthlyFeeSelected()) {
-                    $('#month_of').prop('disabled', false).prop('required', true);
-                    $('#monthField label').removeClass('text-muted');
-                } else {
-                    $('#month_of').prop('disabled', true).prop('required', false).val('');
-                    $('#monthField label').addClass('text-muted');
-                    $('#feeRemainingBox').hide();
-                }
+            function isMonthlyFeeSelected() {
+                return selectedCategory().data('is-monthly-fee') == 1;
+            }
+
+            function isLoanSelected() {
+                return selectedCategory().data('is-loan') == 1;
+            }
+
+            function monthsCount() {
+                const value = parseInt($('#months_count').val(), 10);
+                return isNaN(value) || value < 1 ? 1 : value;
+            }
+
+            function addMonths(month, count) {
+                if (!month) return '';
+                const parts = month.split('-');
+                const date = new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1 + count, 1);
+                return date.getFullYear() + '-' + String(date.getMonth() + 1).padStart(2, '0');
             }
 
             function formatMoney(value) {
@@ -123,6 +162,64 @@
                     minimumFractionDigits: 2,
                     maximumFractionDigits: 2
                 });
+            }
+
+            function toggleFields() {
+                const fee = isMonthlyFeeSelected();
+                const loan = isLoanSelected();
+
+                $('#month_of').prop('disabled', !fee).prop('required', fee);
+                $('#months_count').prop('disabled', !fee);
+                $('#monthField, #monthsCountField').toggle(fee);
+                if (!fee) {
+                    $('#month_of').val('');
+                    $('#feeRemainingBox').hide();
+                }
+
+                $('#credit_id').prop('disabled', !loan).prop('required', loan);
+                $('#loanField').toggle(loan);
+
+                // A loan repayment is always money received (credit).
+                if (loan) {
+                    $('select[name="transaction_type"]').val('credit');
+                }
+                $('#transactionTypeField').toggle(!loan);
+            }
+
+            function updateMonthsRangeHint() {
+                const start = $('#month_of').val();
+                const count = monthsCount();
+
+                if (!start || count <= 1) {
+                    $('#monthsRangeHint').text('');
+                    return;
+                }
+
+                $('#monthsRangeHint').text('ماه‌ها: ' + start + ' تا ' + addMonths(start, count - 1));
+            }
+
+            // Fill the amount for the selected months: unpaid remainder for past months, full fee for later months.
+            function applyFeeAmount() {
+                if (!isMonthlyFeeSelected() || !feeStatus) return;
+
+                const start = $('#month_of').val();
+                const count = monthsCount();
+                const monthlyFee = Number(feeStatus.monthly_fee || 0);
+                const unpaid = {};
+                (feeStatus.months || []).forEach(function(item) {
+                    unpaid[item.month] = Number(item.remaining);
+                });
+
+                let total = 0;
+                for (let i = 0; i < count; i++) {
+                    const month = addMonths(start, i);
+                    total += Object.prototype.hasOwnProperty.call(unpaid, month) ? unpaid[month] : monthlyFee;
+                }
+
+                if (total > 0) {
+                    $('#amount').val(total.toFixed(2));
+                }
+                updateMonthsRangeHint();
             }
 
             function renderFeeRemaining() {
@@ -146,7 +243,7 @@
                     box.removeClass('alert-danger').addClass('alert-success');
                     $('#feeRemainingSummary').text('بدهی فیس به سیستم ندارد. همه ماه‌ها پرداخت شده‌اند.');
                     $('#feeRemainingList').empty();
-                    $('#feePayHint').empty();
+                    $('#feePayHint').text('می‌توانید فیس ماه‌های آینده را هم یکجا پرداخت کنید.');
                 } else {
                     box.removeClass('alert-success').addClass('alert-danger');
                     $('#feeRemainingSummary').text(
@@ -164,30 +261,12 @@
                     }).join('');
                     $('#feeRemainingList').html(rows);
                     $('#feePayHint').html(
-                        'اگر الان ۱ ماه بپردازد، بعد از ذخیره سیستم دوباره چک می‌کند و ماه‌های باقی‌مانده را نشان می‌دهد.'
+                        'برای پرداخت چند ماه یکجا، «تعداد ماه» را وارد کنید. مثلاً ' + count +
+                        ' ماه = تمام بدهی (' + formatMoney(remainingAmount) + ').'
                     );
                 }
 
                 $('#feeRemainingBox').show();
-            }
-
-            function applyOldestUnpaidMonth() {
-                if (!feeStatus) return;
-
-                if (feeStatus.oldest_unpaid_month && !$('#month_of').val()) {
-                    $('#month_of').val(feeStatus.oldest_unpaid_month);
-                }
-
-                const selectedMonth = $('#month_of').val();
-                const match = (feeStatus.months || []).find(function(item) {
-                    return item.month === selectedMonth;
-                });
-
-                if (match && match.remaining > 0) {
-                    $('#amount').val(match.remaining);
-                } else if (feeStatus.monthly_fee) {
-                    $('#amount').val(feeStatus.monthly_fee);
-                }
             }
 
             function loadFeeStatus() {
@@ -203,7 +282,10 @@
                     .done(function(data) {
                         feeStatus = data;
                         renderFeeRemaining();
-                        applyOldestUnpaidMonth();
+                        if (feeStatus.oldest_unpaid_month && !$('#month_of').val()) {
+                            $('#month_of').val(feeStatus.oldest_unpaid_month);
+                        }
+                        applyFeeAmount();
                     })
                     .fail(function() {
                         feeStatus = null;
@@ -211,30 +293,78 @@
                     });
             }
 
-            toggleMonthField();
+            function loadMemberLoans() {
+                const userId = $('#user_id').val();
+                const select = $('#credit_id');
+
+                if (!isLoanSelected()) return;
+
+                if (!userId) {
+                    select.html('<option value="">ابتدا عضو را انتخاب کنید</option>');
+                    $('#loanHint').text('');
+                    return;
+                }
+
+                $.get(memberLoansUrl.replace('__USER__', userId))
+                    .done(function(data) {
+                        const loans = data.loans || [];
+
+                        if (!loans.length) {
+                            select.html('<option value="">این عضو قرض فعال ندارد</option>');
+                            $('#loanHint').text('');
+                            return;
+                        }
+
+                        const options = ['<option value="">انتخاب قرض</option>'].concat(loans.map(function(loan) {
+                            return '<option value="' + loan.id + '" data-remaining="' + loan.remaining_amount + '"' +
+                                (String(loan.id) === String(oldCreditId) ? ' selected' : '') + '>' +
+                                'قرض ' + formatMoney(loan.amount) + ' — تاریخ ' + loan.date +
+                                ' — باقی: ' + formatMoney(loan.remaining_amount) +
+                                '</option>';
+                        }));
+                        select.html(options.join(''));
+
+                        if (loans.length === 1 && !select.val()) {
+                            select.val(String(loans[0].id));
+                        }
+                        select.trigger('change');
+                    })
+                    .fail(function() {
+                        select.html('<option value="">خطا در دریافت قرض‌ها</option>');
+                    });
+            }
+
+            toggleFields();
             loadFeeStatus();
+            loadMemberLoans();
 
             $('#category').change(function() {
-                toggleMonthField();
+                toggleFields();
                 loadFeeStatus();
+                loadMemberLoans();
             });
 
             $('#user_id').change(function() {
                 loadFeeStatus();
+                loadMemberLoans();
             });
 
-            $('#month_of').change(function() {
-                if (!feeStatus || !feeStatus.months) return;
+            $('#month_of, #months_count').on('change input', function() {
+                applyFeeAmount();
+            });
 
-                const selectedMonth = $(this).val();
-                const match = feeStatus.months.find(function(item) {
-                    return item.month === selectedMonth;
-                });
+            $('#credit_id').change(function() {
+                const remaining = $(this).find(':selected').data('remaining');
 
-                if (match && match.remaining > 0) {
-                    $('#amount').val(match.remaining);
-                } else if (feeStatus.monthly_fee) {
-                    $('#amount').val(feeStatus.monthly_fee);
+                if (remaining) {
+                    $('#loanHint').text('باقی‌مانده این قرض: ' + formatMoney(remaining));
+                    $('#amount').attr('max', remaining);
+                    if (!$('#amount').val()) {
+                        $('#amount').val(Number(remaining).toFixed(2));
+                    }
+                } else {
+                    $('#loanHint').text('');
+                    $('#amount').removeAttr('max');
                 }
             });
 
@@ -249,14 +379,22 @@
                         required: function() {
                             return isMonthlyFeeSelected();
                         }
+                    },
+                    months_count: { digits: true, min: 1, max: {{ \App\Http\Controllers\Backend\ReceivePaymentController::MAX_FEE_MONTHS }} },
+                    credit_id: {
+                        required: function() {
+                            return isLoanSelected();
+                        }
                     }
                 },
                 messages: {
                     user_id: { required: 'عضو را انتخاب کنید' },
                     category_id: { required: 'نوع پرداخت را انتخاب کنید' },
-                    amount: { required: 'مقدار را وارد کنید' },
+                    amount: { required: 'مقدار را وارد کنید', max: 'مقدار از باقی‌مانده قرض بیشتر است' },
                     date: { required: 'تاریخ را انتخاب کنید' },
-                    month_of: { required: 'ماه را انتخاب کنید' }
+                    month_of: { required: 'ماه را انتخاب کنید' },
+                    months_count: { min: 'حداقل ۱ ماه', max: 'تعداد ماه زیاد است' },
+                    credit_id: { required: 'قرض را انتخاب کنید' }
                 },
                 errorElement: 'span',
                 errorPlacement: function(error, element) {

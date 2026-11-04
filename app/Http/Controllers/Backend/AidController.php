@@ -40,10 +40,9 @@ class AidController extends Controller
         [$users, $blockedUsers] = $this->loanEnforcement->partitionByDebt(
             User::where('role', 'user')->orderBy('name')->get()
         );
-        $categories = Category::all();
         $sourceAccounts = Category::aidAccounts()->orderBy('name')->get();
 
-        return view('admin.pages.aid.add_aid', compact('users', 'blockedUsers', 'categories', 'sourceAccounts'));
+        return view('admin.pages.aid.add_aid', compact('users', 'blockedUsers', 'sourceAccounts'));
     }
 
     /**
@@ -70,7 +69,6 @@ class AidController extends Controller
     {
         $request->validate([
             'user_id' => 'required|exists:users,id',
-            'category_id' => 'required|exists:categories,id',
             'source_account_id' => $this->aidAccountRule(),
             'amount' => 'required|numeric|min:0.01',
             'date' => 'required|date',
@@ -97,7 +95,7 @@ class AidController extends Controller
 
                 Aids::create([
                     'user_id' => $request->user_id,
-                    'category_id' => $request->category_id,
+                    'category_id' => $request->source_account_id,
                     'source_account_id' => $request->source_account_id,
                     'amount' => $request->amount,
                     'date' => $request->date,
@@ -123,13 +121,12 @@ class AidController extends Controller
     {
         $editdata = Aids::findOrFail($id);
         $users = User::where('role', 'user')->orderBy('name')->get();
-        $categories = Category::all();
         $sourceAccounts = Category::aidAccounts()
             ->orWhere('id', $editdata->source_account_id)
             ->orderBy('name')
             ->get();
 
-        return view('admin.pages.aid.edit_aid', compact('editdata', 'users', 'categories', 'sourceAccounts'));
+        return view('admin.pages.aid.edit_aid', compact('editdata', 'users', 'sourceAccounts'));
     }
 
     public function UpdateAid(Request $request)
@@ -137,7 +134,6 @@ class AidController extends Controller
         $request->validate([
             'id' => 'required|exists:aids,id',
             'user_id' => 'required|exists:users,id',
-            'category_id' => 'required|exists:categories,id',
             'source_account_id' => $this->aidAccountRule(
                 (int) Aids::whereKey($request->id)->value('source_account_id') ?: null
             ),
@@ -179,7 +175,7 @@ class AidController extends Controller
 
                 $aid->update([
                     'user_id' => $request->user_id,
-                    'category_id' => $request->category_id,
+                    'category_id' => $request->source_account_id,
                     'source_account_id' => $request->source_account_id,
                     'amount' => $request->amount,
                     'date' => $request->date,

@@ -18,11 +18,21 @@
                     </div><!-- end card header -->
 
                     <div class="card-body">
+                        @if ($errors->any())
+                            <div class="alert alert-danger">{{ $errors->first() }}</div>
+                        @endif
+                        @if ($categories->isEmpty())
+                            <div class="alert alert-warning">
+                                هیچ حساب درآمد تعریف نشده است. لطفاً در
+                                <a href="{{ route('add.category') }}">بخش حساب‌ها</a>
+                                یک حساب با نوع «منبع درآمد» بسازید.
+                            </div>
+                        @endif
                         <form action="{{ route('store.income') }}" method="POST" class="row g-3">
                             @csrf
 
                             <div class="col-md-6">
-                                <label>بخش</label>
+                                <label class="form-label">حساب درآمد</label>
                                 <select name="category_id" class="form-control">
                                     @foreach ($categories as $category)
                                         <option value="{{ $category->id }}">{{ $category->name }}</option>

@@ -33,16 +33,6 @@
                                 </select>
                             </div>
 
-                            <div class="col-md-6">
-                                <label>بخش</label>
-                                <select name="category_id" class="form-control">
-                                    @foreach ($categories as $category)
-                                        <option value="{{ $category->id }}" {{ $credit->category_id == $category->id ? 'selected' : '' }}>
-                                            {{ $category->name }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
 
                             <div class="col-md-6">
                                 <label class="form-label">اسم</label>
@@ -99,9 +89,6 @@
         $(document).ready(function() {
             $('#myForm').validate({
                 rules: {
-                    category_id: {
-                        required: true,
-                    },
                     user_id: {
                         required: true,
                     },
@@ -109,9 +96,6 @@
 
                 },
                 messages: {
-                    category_id: {
-                        required: 'Please Select Category',
-                    },
                     user_id: {
                         required: 'Please Select User',
                     },

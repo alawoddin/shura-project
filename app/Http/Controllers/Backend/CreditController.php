@@ -6,6 +6,7 @@ use App\Exceptions\InsufficientBalanceException;
 use App\Http\Controllers\Controller;
 use App\Models\Credit;
 use App\Models\Category;
+use App\Models\ReceivePayment;
 use App\Models\User;
 use App\Services\FinancialService;
 use App\Services\LoanEnforcementService;
@@ -36,17 +37,15 @@ class CreditController extends Controller
         [$users] = $this->loanEnforcement->partitionByDebt(
             User::where('role', 'user')->where('status', '!=', 'suspended')->orderBy('name')->get()
         );
-        $categories = Category::all();
         $sourceAccounts = Category::cashAccounts()->get();
 
-        return view('admin.pages.credit.add_credit', compact('users', 'categories', 'sourceAccounts'));
+        return view('admin.pages.credit.add_credit', compact('users', 'sourceAccounts'));
     }
 
     public function StoreCredit(Request $request)
     {
         $request->validate([
             'user_id' => 'required|exists:users,id',
-            'category_id' => 'required|exists:categories,id',
             'source_account_id' => 'required|exists:categories,id',
             'date' => 'required|date',
             'amount' => 'required|numeric|min:0.01',
@@ -73,7 +72,7 @@ class CreditController extends Controller
 
                 Credit::create([
                     'user_id' => $request->user_id,
-                    'category_id' => $request->category_id,
+                    'category_id' => $request->source_account_id,
                     'source_account_id' => $request->source_account_id,
                     'date' => $request->date,
                     'amount' => $request->amount,
@@ -101,10 +100,9 @@ class CreditController extends Controller
     {
         $credit = Credit::findOrFail($id);
         $users = User::where('role', 'user')->get();
-        $categories = Category::all();
         $sourceAccounts = Category::cashAccounts()->get();
 
-        return view('admin.pages.credit.edit_credit', compact('credit', 'users', 'categories', 'sourceAccounts'));
+        return view('admin.pages.credit.edit_credit', compact('credit', 'users', 'sourceAccounts'));
     }
 
     public function UpdateCredit(Request $request)
@@ -112,7 +110,6 @@ class CreditController extends Controller
         $request->validate([
             'id' => 'required|exists:credits,id',
             'user_id' => 'required|exists:users,id',
-            'category_id' => 'required|exists:categories,id',
             'source_account_id' => 'required|exists:categories,id',
             'date' => 'required|date',
             'amount' => 'required|numeric|min:0.01',
@@ -144,7 +141,7 @@ class CreditController extends Controller
 
                 $credit->update([
                     'user_id' => $request->user_id,
-                    'category_id' => $request->category_id,
+                    'category_id' => $request->source_account_id,
                     'source_account_id' => $request->source_account_id,
                     'date' => $request->date,
                     'amount' => $newAmount,
@@ -177,6 +174,7 @@ class CreditController extends Controller
         DB::transaction(function () use ($id) {
             $credit = Credit::findOrFail($id);
             $this->financialService->reverseLoanDisbursement($credit);
+            ReceivePayment::where('credit_id', $credit->id)->delete();
             $credit->delete();
         });
 

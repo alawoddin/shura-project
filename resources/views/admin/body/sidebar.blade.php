@@ -90,6 +90,16 @@
                         <a href="{{ route('all.receive.payment') }}"
                            class="tp-link {{ request()->routeIs('all.receive.payment') ? 'active' : '' }}">
                             <i data-feather="credit-card"></i>
+                            <span>دریافت فیس و قرض</span>
+                        </a>
+                    </li>
+                @endif
+
+                @if ($adminUser->can('all.aid') || $adminUser->can('all.category'))
+                    <li>
+                        <a href="{{ route('all.account.deposits') }}"
+                           class="tp-link {{ request()->routeIs('all.account.deposits') ? 'active' : '' }}">
+                            <i data-feather="download"></i>
                             <span>دریافت پول</span>
                         </a>
                     </li>
@@ -130,7 +140,7 @@
                         <a href="{{ route('all.account.transactions') }}"
                            class="tp-link {{ request()->routeIs('all.account.transactions') ? 'active' : '' }}">
                             <i data-feather="repeat"></i>
-                            <span>ارسال و دریافت پول</span>
+                            <span>انتقال بین حساب‌ها</span>
                         </a>
                     </li>
                 @endif
