@@ -29,7 +29,7 @@
                                     <label class="form-label">نوع حساب</label>
                                         <select name="account_type" class="form-control">
                                             <option value="">عمومی</option>
-                                            <option value="receivable" {{ $category->account_type == 'receivable' ? 'selected' : '' }}>حساب های دریافتنی</option>
+                                            <option value="receivable" {{ $category->account_type == 'receivable' ? 'selected' : '' }}>حساب های دریافتنی (قرض)</option>
                                             <option value="payable" {{ $category->account_type == 'payable' ? 'selected' : '' }}>حساب های پرداختنی</option>
                                             <option value="cash" {{ $category->account_type == 'cash' ? 'selected' : '' }}>حساب نقدی / صندوق</option>
                                             <option value="aid" {{ $category->account_type == 'aid' ? 'selected' : '' }}>حساب کمک‌ها</option>

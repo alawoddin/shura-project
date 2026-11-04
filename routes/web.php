@@ -206,6 +206,8 @@ Route::prefix('admin')->middleware(['auth' ,IsAdmin::class ])->group(function ()
         Route::post('search/reports/bydate', 'SearchReportsByDate')->name('search.reports.by.date');
         Route::post('/search/reports/bymonth', 'AllReportsByMonth')->name('search.reports.by.month');
         Route::post('/search/reports/year', 'AllReportsByYear')->name('search.reports.by.year');
+        Route::get('/annual/reports', 'AnnualReport')->name('annual.report');
+        Route::get('/users/reports', 'UsersReport')->name('users.report');
     });
 
     Route::controller(RoleController::class)->middleware('can.manage.access')->group(function() {

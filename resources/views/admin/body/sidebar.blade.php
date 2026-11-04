@@ -21,7 +21,9 @@
 
                 $isReportRoute = request()->routeIs(
                     'all.report',
-                    'all.member.financial.report'
+                    'all.member.financial.report',
+                    'users.report',
+                    'annual.report'
                 );
 
                 $isSettingsRoute = request()->routeIs(
@@ -189,7 +191,21 @@
                                     <li>
                                         <a href="{{ route('all.report') }}"
                                            class="tp-link {{ request()->routeIs('all.report') ? 'active' : '' }}">
-                                            تمام گزارش‌ها
+                                            گزارشات عمومی
+                                        </a>
+                                    </li>
+
+                                    <li>
+                                        <a href="{{ route('users.report') }}"
+                                           class="tp-link {{ request()->routeIs('users.report') ? 'active' : '' }}">
+                                            گزارش کاربران
+                                        </a>
+                                    </li>
+
+                                    <li>
+                                        <a href="{{ route('annual.report') }}"
+                                           class="tp-link {{ request()->routeIs('annual.report') ? 'active' : '' }}">
+                                            گزارشات سالانه
                                         </a>
                                     </li>
                                 @endif

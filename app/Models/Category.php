@@ -60,7 +60,7 @@ class Category extends Model
     public function getAccountTypeLabelAttribute(): string
     {
         return [
-            'receivable' => 'حساب‌های دریافتنی',
+            'receivable' => 'حساب‌های دریافتنی (قرض)',
             'payable' => 'حساب‌های پرداختنی',
             'cash' => 'حساب نقدی / صندوق',
             'aid' => 'حساب کمک‌ها',

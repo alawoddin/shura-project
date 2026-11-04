@@ -31,7 +31,7 @@
                                         <option value="expense">Expense Account</option>
                                         <option value="payment_type">Payment Type</option> --}}
 
-                                        <option value="receivable">حساب‌های دریافتنی</option>
+                                        <option value="receivable">حساب‌های دریافتنی (قرض)</option>
                                         <option value="payable">حساب‌های پرداختنی</option>
                                         <option value="cash">حساب نقدی / صندوق</option>
                                         <option value="aid">حساب کمک‌ها</option>

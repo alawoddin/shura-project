@@ -7,7 +7,7 @@
 
             <div class="py-3 d-flex align-items-sm-center flex-sm-row flex-column">
                 <div class="flex-grow-1">
-                    <h4 class="fs-18 fw-semibold m-0">گذارش مصارفات </h4>
+                    <h4 class="fs-18 fw-semibold m-0">گزارشات عمومی</h4>
                 </div>
 
                 {{-- <div class="text-end">
@@ -98,8 +98,7 @@
                                     <div class="card">
                                         <div class="card-body">
 
-                                            <form action="{{ route('search.reports.by.year') }}" method="post">
-                                                @csrf
+                                            <form action="{{ route('annual.report') }}" method="get">
 
                                                 <h5>جستجو بر اساس سال</h5>
 
@@ -107,13 +106,9 @@
                                                     <label class="form-label">انتخاب سال</label>
 
                                                     <select name="year" class="form-select">
-                                                        <option value="">Select Year</option>
-                                                        <option value="2025">2025</option>
-                                                        <option value="2026">2026</option>
-                                                        <option value="2027">2027</option>
-                                                        <option value="2028">2028</option>
-                                                        <option value="2029">2029</option>
-                                                        <option value="2030">2030</option>
+                                                        @for ($y = now()->year; $y >= 2025; $y--)
+                                                            <option value="{{ $y }}">{{ $y }}</option>
+                                                        @endfor
                                                     </select>
                                                 </div>
 
