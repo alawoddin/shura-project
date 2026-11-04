@@ -32,6 +32,7 @@
                                             <option value="receivable" {{ $category->account_type == 'receivable' ? 'selected' : '' }}>حساب های دریافتنی</option>
                                             <option value="payable" {{ $category->account_type == 'payable' ? 'selected' : '' }}>حساب های پرداختنی</option>
                                             <option value="cash" {{ $category->account_type == 'cash' ? 'selected' : '' }}>حساب نقدی / صندوق</option>
+                                            <option value="aid" {{ $category->account_type == 'aid' ? 'selected' : '' }}>حساب کمک‌ها</option>
                                             <option value="income" {{ $category->account_type == 'income' ? 'selected' : '' }}>منبع درآمد</option>
                                             <option value="expense" {{ $category->account_type == 'expense' ? 'selected' : '' }}>حساب مصارف</option>
                                             <option value="payment_type" {{ $category->account_type == 'payment_type' ? 'selected' : '' }}>نوع پرداخت</option>

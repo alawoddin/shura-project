@@ -224,6 +224,7 @@
 
 .shura-dash .tag.cash { background: var(--blue-soft); color: var(--blue); }
 .shura-dash .tag.income { background: var(--gold-soft); color: var(--gold); }
+.shura-dash .tag.aid { background: var(--green-soft); color: var(--green); }
 .shura-dash .tag.active { background: var(--green-soft); color: var(--green); }
 .shura-dash .tag.paid { background: var(--blue-soft); color: var(--blue); }
 

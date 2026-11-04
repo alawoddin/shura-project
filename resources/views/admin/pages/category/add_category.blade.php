@@ -34,6 +34,7 @@
                                         <option value="receivable">حساب‌های دریافتنی</option>
                                         <option value="payable">حساب‌های پرداختنی</option>
                                         <option value="cash">حساب نقدی / صندوق</option>
+                                        <option value="aid">حساب کمک‌ها</option>
                                         <option value="income">منبع درآمد</option>
                                         <option value="expense">حساب مصارف</option>
                                         <option value="payment_type">نوع پرداخت</option>

@@ -68,17 +68,40 @@ class LoanEnforcementService
             ->exists();
     }
 
+    public function __construct(protected FinancialService $financialService) {}
+
+    /**
+     * Number of unpaid monthly-fee months (system debt) for the member.
+     */
+    public function unpaidFeeMonths(User $user): int
+    {
+        return (int) $this->financialService->getMemberFeeRemaining($user)['unpaid_months_count'];
+    }
+
+    public function userHasOverdueFeeDebt(User $user): bool
+    {
+        return $this->unpaidFeeMonths($user) >= self::OVERDUE_MONTHS;
+    }
+
+    /**
+     * A member who has been in debt for 6 months or more (unpaid loan or unpaid
+     * monthly fees) is blocked: no aid and no new loan.
+     */
+    public function isBlockedForDebt(User $user): bool
+    {
+        return $user->status === 'suspended'
+            || $this->userHasOverdueLoan($user)
+            || $this->userHasOverdueFeeDebt($user);
+    }
+
     public function canReceiveAid(User $user): bool
     {
-        if ($user->status === 'suspended') {
-            return false;
-        }
+        return ! $this->isBlockedForDebt($user);
+    }
 
-        if ($this->userHasOverdueLoan($user)) {
-            return false;
-        }
-
-        return true;
+    public function canReceiveLoan(User $user): bool
+    {
+        return ! $this->isBlockedForDebt($user);
     }
 
     public function aidBlockReason(User $user): ?string
@@ -88,10 +111,36 @@ class LoanEnforcementService
         }
 
         if ($this->userHasOverdueLoan($user)) {
-            return 'این کاربر بیش از ۶ ماه قرض خود را پرداخت نکرده و واجد دریافت کمک نیست.';
+            return 'این کاربر بیش از ۶ ماه قرض خود را پرداخت نکرده و واجد دریافت کمک یا قرض نیست.';
+        }
+
+        if ($this->userHasOverdueFeeDebt($user)) {
+            return 'این کاربر ' . $this->unpaidFeeMonths($user) . ' ماه فیس ماهانه بدهکار است (بیش از ۶ ماه) و واجد دریافت کمک یا قرض نیست.';
         }
 
         return null;
+    }
+
+    /**
+     * Split members into eligible and debt-blocked lists (for form dropdowns).
+     *
+     * @return array{0: \Illuminate\Support\Collection, 1: \Illuminate\Support\Collection}
+     */
+    public function partitionByDebt($users): array
+    {
+        $blocked = collect();
+        $eligible = collect();
+
+        foreach ($users as $user) {
+            if ($this->isBlockedForDebt($user)) {
+                $user->debt_block_reason = $this->aidBlockReason($user);
+                $blocked->push($user);
+            } else {
+                $eligible->push($user);
+            }
+        }
+
+        return [$eligible, $blocked];
     }
 
     public function syncUserLoanStatus(int $userId): void

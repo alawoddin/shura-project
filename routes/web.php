@@ -14,6 +14,7 @@ use App\Http\Controllers\Backend\MemberFinancialReportController;
 use App\Http\Controllers\Backend\UnpaidPaymentController;
 use App\Http\Controllers\Backend\UsersController;
 use App\Http\Controllers\Backend\AidController;
+use App\Http\Controllers\Backend\AccountTransactionController;
 use App\Http\Controllers\Backend\EthnicBranchController;
 use App\Http\Controllers\Backend\RepresentativeController;
 use App\Http\Controllers\Backend\KeyPersonController;
@@ -188,6 +189,13 @@ Route::prefix('admin')->middleware(['auth' ,IsAdmin::class ])->group(function ()
         Route::get('/edit/aid/{id}', 'EditAid')->name('edit.aid');
         Route::post('/update/aid',  'UpdateAid')->name('update.aid');
         Route::get('/delete/aid/{id}', 'DeleteAid')->name('delete.aid');
+    });
+
+    // ارسال و دریافت پول در حساب‌ها
+    Route::controller(AccountTransactionController::class)->group(function () {
+        Route::get('/account/transactions', 'index')->name('all.account.transactions');
+        Route::post('/account/transactions', 'store')->name('store.account.transaction');
+        Route::get('/account/transactions/delete/{id}', 'destroy')->name('delete.account.transaction');
     });
 
      // Main Reports

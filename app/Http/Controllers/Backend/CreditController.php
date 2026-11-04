@@ -33,7 +33,9 @@ class CreditController extends Controller
 
     public function AddCredit()
     {
-        $users = User::where('role', 'user')->where('status', '!=', 'suspended')->get();
+        [$users] = $this->loanEnforcement->partitionByDebt(
+            User::where('role', 'user')->where('status', '!=', 'suspended')->orderBy('name')->get()
+        );
         $categories = Category::all();
         $sourceAccounts = Category::cashAccounts()->get();
 
@@ -50,6 +52,17 @@ class CreditController extends Controller
             'amount' => 'required|numeric|min:0.01',
             'description' => 'nullable|string',
         ]);
+
+        $user = User::findOrFail($request->user_id);
+        $this->loanEnforcement->syncUserLoanStatus((int) $user->id);
+        $user->refresh();
+
+        if (! $this->loanEnforcement->canReceiveLoan($user)) {
+            return back()->withInput()->with([
+                'message' => $this->loanEnforcement->aidBlockReason($user),
+                'alert-type' => 'error',
+            ]);
+        }
 
         try {
             DB::transaction(function () use ($request) {

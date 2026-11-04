@@ -10,7 +10,7 @@
             <div class="col-xl-12">
                 <div class="card">
                     <div class="card-header">
-                        <h5 class="card-title mb-0">اضافه کردن کمک</h5>
+                        <h5 class="card-title mb-0">ویرایش کمک</h5>
                     </div><!-- end card header -->
 
                     <div class="card-body">
@@ -37,13 +37,13 @@
 
 
                             <div class="col-md-6">
-                                <label>Aid Source Account</label>
+                                <label class="form-label">حساب کمک‌ها</label>
                                 <select name="source_account_id" class="form-control">
                                     <option value="">انتخاب حساب</option>
                                     @foreach ($sourceAccounts as $account)
                                         <option value="{{ $account->id }}"
                                             {{ $editdata->source_account_id == $account->id ? 'selected' : '' }}>
-                                            {{ $account->name }}
+                                            {{ $account->name }} (موجودی: {{ number_format($account->balance, 2) }})
                                         </option>
                                     @endforeach
                                 </select>

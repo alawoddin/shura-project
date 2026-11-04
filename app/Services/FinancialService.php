@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Exceptions\InsufficientBalanceException;
+use App\Models\AccountTransaction;
 use App\Models\Aids;
 use App\Models\Category;
 use App\Models\Credit;
@@ -282,8 +283,19 @@ class FinancialService
     public function getAccountBalanceSummaries()
     {
         $cashAccounts = Category::cashAccounts()->orderBy('name')->get();
+        $aidAccounts = Category::aidAccounts()->orderBy('name')->get();
         $incomeAccounts = Category::incomeSources()->orderBy('name')->get();
-        $accounts = $cashAccounts->concat($incomeAccounts);
+        $accounts = $cashAccounts->concat($aidAccounts)->concat($incomeAccounts);
+
+        $txIn = AccountTransaction::whereNotNull('to_account_id')
+            ->selectRaw('to_account_id, SUM(amount) as total')
+            ->groupBy('to_account_id')
+            ->pluck('total', 'to_account_id');
+
+        $txOut = AccountTransaction::whereNotNull('from_account_id')
+            ->selectRaw('from_account_id, SUM(amount) as total')
+            ->groupBy('from_account_id')
+            ->pluck('total', 'from_account_id');
 
         $expenseTotals = Expense::selectRaw('source_account_id, SUM(amount) as total')
             ->groupBy('source_account_id')
@@ -309,14 +321,16 @@ class FinancialService
             ->groupBy('category_id')
             ->pluck('total', 'category_id');
 
-        return $accounts->map(function ($account) use ($expenseTotals, $aidTotals, $loanTotals, $transferTotals, $incomeByCategory) {
+        return $accounts->map(function ($account) use ($expenseTotals, $aidTotals, $loanTotals, $transferTotals, $incomeByCategory, $txIn, $txOut) {
             $expenseOut = (float) ($expenseTotals[$account->id] ?? 0);
             $aidOut = (float) ($aidTotals[$account->id] ?? 0);
             $loanOut = (float) ($loanTotals[$account->id] ?? 0);
             $transferIn = (float) ($transferTotals[$account->id] ?? 0);
             $incomeIn = (float) ($incomeByCategory[$account->id] ?? 0);
-            $moneyIn = $account->account_type === 'cash' ? $transferIn : $incomeIn;
-            $moneyOut = $expenseOut + $aidOut + $loanOut;
+            $receivedIn = (float) ($txIn[$account->id] ?? 0);
+            $sentOut = (float) ($txOut[$account->id] ?? 0);
+            $moneyIn = ($account->account_type === 'income' ? $incomeIn : $transferIn) + $receivedIn;
+            $moneyOut = $expenseOut + $aidOut + $loanOut + $sentOut;
 
             return [
                 'id' => $account->id,
@@ -326,6 +340,8 @@ class FinancialService
                 'expense_out' => $expenseOut,
                 'aid_out' => $aidOut,
                 'loan_out' => $loanOut,
+                'sent_out' => $sentOut,
+                'received_in' => $receivedIn,
                 'money_out' => $moneyOut,
                 'remaining' => (float) $account->balance,
             ];

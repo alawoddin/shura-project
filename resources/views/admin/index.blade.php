@@ -188,7 +188,10 @@
             <div class="panel">
                 <div class="panel-head">
                     <h5>موجودی حساب‌ها</h5>
-                    <span>درآمد منهای مصارف، کمک‌ها و قرض‌ها</span>
+                    <span>
+                        درآمد و پول دریافتی منهای مصارف، کمک‌ها، قرض‌ها و پول ارسالی
+                        · <a href="{{ route('all.account.transactions') }}">ارسال و دریافت پول</a>
+                    </span>
                 </div>
                 <div class="table-responsive">
                     <table class="table mb-0">
@@ -196,10 +199,11 @@
                             <tr>
                                 <th>حساب</th>
                                 <th>نوع</th>
-                                <th>درآمد واریزی</th>
+                                <th>درآمد / دریافتی</th>
                                 <th>مصارف</th>
                                 <th>کمک‌ها</th>
                                 <th>قرض‌ها</th>
+                                <th>ارسالی</th>
                                 <th>مجموع خروجی</th>
                                 <th>موجودی فعلی</th>
                             </tr>
@@ -207,16 +211,26 @@
                         <tbody>
                             @forelse ($accountSummaries as $account)
                                 <tr>
-                                    <td>{{ $account['name'] }}</td>
+                                    @php
+                                        $accountTypeTag = match ($account['account_type']) {
+                                            'cash' => ['cash', 'نقدی'],
+                                            'aid' => ['aid', 'کمک‌ها'],
+                                            default => ['income', 'درآمد'],
+                                        };
+                                    @endphp
                                     <td>
-                                        <span class="tag {{ $account['account_type'] === 'cash' ? 'cash' : 'income' }}">
-                                            {{ $account['account_type'] === 'cash' ? 'نقدی' : 'درآمد' }}
-                                        </span>
+                                        <a href="{{ route('all.account.transactions', ['account' => $account['id']]) }}" class="text-reset">
+                                            {{ $account['name'] }}
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <span class="tag {{ $accountTypeTag[0] }}">{{ $accountTypeTag[1] }}</span>
                                     </td>
                                     <td class="text-success">{{ number_format($account['money_in'], 2) }}</td>
                                     <td class="text-danger">{{ number_format($account['expense_out'], 2) }}</td>
                                     <td class="text-danger">{{ number_format($account['aid_out'], 2) }}</td>
                                     <td class="text-danger">{{ number_format($account['loan_out'], 2) }}</td>
+                                    <td class="text-danger">{{ number_format($account['sent_out'], 2) }}</td>
                                     <td class="fw-semibold">{{ number_format($account['money_out'], 2) }}</td>
                                     <td class="fw-semibold {{ $account['remaining'] >= 0 ? 'text-success' : 'text-danger' }}">
                                         {{ number_format($account['remaining'], 2) }}
@@ -224,7 +238,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="8" class="text-center text-muted">حسابی یافت نشد</td>
+                                    <td colspan="9" class="text-center text-muted">حسابی یافت نشد</td>
                                 </tr>
                             @endforelse
                         </tbody>

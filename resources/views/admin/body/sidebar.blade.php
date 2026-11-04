@@ -125,6 +125,16 @@
                     </li>
                 @endif
 
+                @if ($adminUser->can('all.aid') || $adminUser->can('all.category'))
+                    <li>
+                        <a href="{{ route('all.account.transactions') }}"
+                           class="tp-link {{ request()->routeIs('all.account.transactions') ? 'active' : '' }}">
+                            <i data-feather="repeat"></i>
+                            <span>ارسال و دریافت پول</span>
+                        </a>
+                    </li>
+                @endif
+
                 @if ($adminUser->can('all.credits'))
                     <li>
                         <a href="{{ route('all.credits') }}"

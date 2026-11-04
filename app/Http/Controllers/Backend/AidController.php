@@ -21,18 +21,49 @@ class AidController extends Controller
 
     public function AllAids()
     {
-        $alldata = Aids::with(['user', 'category', 'sourceAccount'])->get();
+        $alldata = Aids::with(['user', 'category', 'sourceAccount'])->latest('date')->get();
+        $aidAccounts = Category::aidAccounts()->orderBy('name')->get();
 
-        return view('admin.pages.aid.all_aids', compact('alldata'));
+        $aidTotals = Aids::selectRaw('source_account_id, SUM(amount) as total')
+            ->groupBy('source_account_id')
+            ->pluck('total', 'source_account_id');
+
+        [, $blockedUsers] = $this->loanEnforcement->partitionByDebt(
+            User::where('role', 'user')->orderBy('name')->get()
+        );
+
+        return view('admin.pages.aid.all_aids', compact('alldata', 'aidAccounts', 'aidTotals', 'blockedUsers'));
     }
 
     public function AddAid()
     {
-        $users = User::where('role', 'user')->orderBy('name')->get();
+        [$users, $blockedUsers] = $this->loanEnforcement->partitionByDebt(
+            User::where('role', 'user')->orderBy('name')->get()
+        );
         $categories = Category::all();
-        $sourceAccounts = Category::cashAccounts()->get();
+        $sourceAccounts = Category::aidAccounts()->orderBy('name')->get();
 
-        return view('admin.pages.aid.add_aid', compact('users', 'categories', 'sourceAccounts'));
+        return view('admin.pages.aid.add_aid', compact('users', 'blockedUsers', 'categories', 'sourceAccounts'));
+    }
+
+    /**
+     * Aid may only be paid from an account marked as an aid account.
+     * When editing, the account already stored on the record stays valid.
+     */
+    protected function aidAccountRule(?int $currentAccountId = null): array
+    {
+        return [
+            'required',
+            function ($attribute, $value, $fail) use ($currentAccountId) {
+                if ($currentAccountId && (int) $value === $currentAccountId) {
+                    return;
+                }
+
+                if (! Category::aidAccounts()->whereKey($value)->exists()) {
+                    $fail('لطفاً یک حساب کمک‌ها را انتخاب کنید.');
+                }
+            },
+        ];
     }
 
     public function StoreAid(Request $request)
@@ -40,7 +71,7 @@ class AidController extends Controller
         $request->validate([
             'user_id' => 'required|exists:users,id',
             'category_id' => 'required|exists:categories,id',
-            'source_account_id' => 'required|exists:categories,id',
+            'source_account_id' => $this->aidAccountRule(),
             'amount' => 'required|numeric|min:0.01',
             'date' => 'required|date',
             'description' => 'nullable|string',
@@ -48,6 +79,7 @@ class AidController extends Controller
 
         $user = User::findOrFail($request->user_id);
         $this->loanEnforcement->syncUserLoanStatus((int) $user->id);
+        $user->refresh();
 
         if (! $this->loanEnforcement->canReceiveAid($user)) {
             return back()->withInput()->with([
@@ -90,9 +122,12 @@ class AidController extends Controller
     public function EditAid($id)
     {
         $editdata = Aids::findOrFail($id);
-        $users = User::where('role', 'user')->get();
+        $users = User::where('role', 'user')->orderBy('name')->get();
         $categories = Category::all();
-        $sourceAccounts = Category::cashAccounts()->get();
+        $sourceAccounts = Category::aidAccounts()
+            ->orWhere('id', $editdata->source_account_id)
+            ->orderBy('name')
+            ->get();
 
         return view('admin.pages.aid.edit_aid', compact('editdata', 'users', 'categories', 'sourceAccounts'));
     }
@@ -103,7 +138,9 @@ class AidController extends Controller
             'id' => 'required|exists:aids,id',
             'user_id' => 'required|exists:users,id',
             'category_id' => 'required|exists:categories,id',
-            'source_account_id' => 'required|exists:categories,id',
+            'source_account_id' => $this->aidAccountRule(
+                (int) Aids::whereKey($request->id)->value('source_account_id') ?: null
+            ),
             'amount' => 'required|numeric|min:0.01',
             'date' => 'required|date',
             'description' => 'nullable|string',
@@ -111,6 +148,7 @@ class AidController extends Controller
 
         $user = User::findOrFail($request->user_id);
         $this->loanEnforcement->syncUserLoanStatus((int) $user->id);
+        $user->refresh();
 
         if (! $this->loanEnforcement->canReceiveAid($user)) {
             return back()->withInput()->with([

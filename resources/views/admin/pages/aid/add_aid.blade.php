@@ -12,8 +12,27 @@
                     <div class="alert alert-danger">{{ $errors->first() }}</div>
                 @endif
                 <div class="alert alert-warning">
-                    اعضایی که بیش از ۶ ماه قرض خود را پرداخت نکرده‌اند، واجد دریافت کمک نیستند.
+                    اعضایی که بیش از ۶ ماه قرضدار هستند (قرض یا فیس ماهانه پرداخت‌نشده)، واجد دریافت کمک نیستند و در لیست اعضا نمایش داده نمی‌شوند.
+                    @if ($blockedUsers->count())
+                        <details class="mt-2">
+                            <summary>{{ $blockedUsers->count() }} عضو مسدود به دلیل قرض</summary>
+                            <ul class="mb-0 mt-2">
+                                @foreach ($blockedUsers as $bUser)
+                                    <li><strong>{{ $bUser->name }}</strong> — {{ $bUser->debt_block_reason }}</li>
+                                @endforeach
+                            </ul>
+                        </details>
+                    @endif
                 </div>
+                @if ($sourceAccounts->isEmpty())
+                    <div class="alert alert-danger">
+                        هیچ حساب کمک‌ها تعریف نشده است. لطفاً ابتدا در
+                        <a href="{{ route('add.category') }}">بخش حساب‌ها</a>
+                        یک حساب با نوع «حساب کمک‌ها» بسازید و از صفحه
+                        <a href="{{ route('all.account.transactions') }}">ارسال و دریافت پول</a>
+                        به آن پول واریز کنید.
+                    </div>
+                @endif
                 <div class="card">
                     <div class="card-header">
                         <h5 class="card-title mb-0">اضافه کردن کمک</h5>
@@ -35,20 +54,19 @@
                                     @foreach ($users as $user)
                                         <option value="{{ $user->id }}" @selected(old('user_id') == $user->id)>
                                             {{ $user->name }}
-                                            @if($user->status === 'suspended')
-                                                — تعلیق (قرض)
-                                            @endif
                                         </option>
                                     @endforeach
                                 </select>
                             </div>
 
                             <div class="col-md-6">
-                                <label class="form-label">حساب ها</label>
+                                <label class="form-label">حساب کمک‌ها</label>
                                 <select name="source_account_id" class="form-control">
-                                    <option value="">انتخاب حساب</option>
+                                    <option value="">انتخاب حساب کمک‌ها</option>
                                     @foreach ($sourceAccounts as $account)
-                                        <option value="{{ $account->id }}">{{ $account->name }}</option>
+                                        <option value="{{ $account->id }}" @selected(old('source_account_id') == $account->id)>
+                                            {{ $account->name }} (موجودی: {{ number_format($account->balance, 2) }})
+                                        </option>
                                     @endforeach
                                 </select>
                             </div>
@@ -113,6 +131,7 @@
                     date: {
                         required: true,
                     },
+                },
                 messages: {
                     user_id: {
                         required: 'لطفاً کاربر را انتخاب کنید',
@@ -123,6 +142,9 @@
                     amount: {
                         required: 'لطفاً مقدار را وارد کنید',
                         number: 'فقط عدد وارد کنید',
+                    },
+                    source_account_id: {
+                        required: 'لطفاً حساب کمک‌ها را انتخاب کنید',
                     },
                     date: {
                         required: 'لطفاً تاریخ را انتخاب کنید',
