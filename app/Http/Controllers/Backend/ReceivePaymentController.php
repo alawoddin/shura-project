@@ -89,7 +89,7 @@ class ReceivePaymentController extends Controller
                     }
                 },
             ],
-            'transaction_type' => 'required|in:credit,debit',
+            'transaction_type' => 'nullable|in:credit',
             'date' => 'required|date',
             'amount' => 'required|numeric|min:0.01',
             'description' => 'nullable|string',
@@ -98,8 +98,12 @@ class ReceivePaymentController extends Controller
             'credit_id' => 'nullable|exists:credits,id',
         ], [
             'month_of.date_format' => 'ماه را درست انتخاب کنید.',
+            'transaction_type.in' => 'در این صفحه فقط دریافت (بستانکار) مجاز است.',
             'months_count.max' => 'حداکثر ' . self::MAX_FEE_MONTHS . ' ماه را می‌توانید یکجا پرداخت کنید.',
         ]);
+
+        // Only credit (money received) is allowed on this page.
+        $validated['transaction_type'] = 'credit';
 
         $category = Category::findOrFail($validated['category_id']);
 
@@ -292,12 +296,15 @@ class ReceivePaymentController extends Controller
             'id' => 'required|exists:receive_payments,id',
             'user_id' => 'required|exists:users,id',
             'category_id' => 'required|exists:categories,id',
-            'transaction_type' => 'required|in:credit,debit',
+            'transaction_type' => 'nullable|in:credit',
             'date' => 'required|date',
             'amount' => 'required|numeric|min:0.01',
             'description' => 'nullable|string',
             'month_of' => 'nullable|string',
         ]);
+
+        // Only credit (money received) is allowed on this page.
+        $validated['transaction_type'] = 'credit';
 
         $category = Category::findOrFail($validated['category_id']);
         $payment = ReceivePayment::findOrFail($validated['id']);
