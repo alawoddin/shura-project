@@ -195,8 +195,15 @@
                                 @if ($adminUser->can('all.report'))
                                     <li>
                                         <a href="{{ route('all.report') }}"
-                                           class="tp-link {{ request()->routeIs('all.report', 'annual.report', 'search.reports.by.date', 'search.reports.by.month') ? 'active' : '' }}">
+                                           class="tp-link {{ request()->routeIs('all.report', 'search.reports.by.date', 'search.reports.by.month') ? 'active' : '' }}">
                                             گزارشات عمومی
+                                        </a>
+                                    </li>
+
+                                    <li>
+                                        <a href="{{ route('annual.report') }}"
+                                           class="tp-link {{ request()->routeIs('annual.report') ? 'active' : '' }}">
+                                            گزارشات سالانه
                                         </a>
                                     </li>
                                 @endif
