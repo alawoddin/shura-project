@@ -130,33 +130,63 @@ class ReportController extends Controller
     }
 
     /**
-     * گزارش کاربران — choose one member and see that member's full report:
-     * fees, loans (with payments), aid received and debt status.
+     * گزارش کاربران — choose one member and a period (all / one day / one month / one year)
+     * and see that member's loans, loan payments, fees and aid for that period,
+     * with a day-by-day or month-by-month breakdown.
      */
     public function UsersReport(Request $request)
     {
         $members = User::where('role', 'user')->orderBy('name')->get(['id', 'name', 'father_name', 'status']);
         $selectedId = $request->integer('user_id') ?: null;
 
+        $period = in_array($request->input('period'), ['all', 'day', 'month', 'year'], true)
+            ? $request->input('period')
+            : 'all';
+        $dayInput = (string) $request->input('day', now()->toDateString());
+        $monthInput = (string) $request->input('month', now()->format('Y-m'));
+        $yearInput = (int) $request->input('year', now()->year);
+
         if (! $selectedId) {
-            return view('admin.pages.report.users_report', ['members' => $members, 'member' => null]);
+            return view('admin.pages.report.users_report', [
+                'members' => $members,
+                'member' => null,
+                'period' => $period,
+                'dayInput' => $dayInput,
+                'monthInput' => $monthInput,
+                'yearInput' => $yearInput,
+            ]);
         }
 
         $member = User::where('role', 'user')->findOrFail($selectedId);
 
-        // Fees
-        $feeStatus = $this->financialService->getMemberFeeRemaining($member);
-        $feePayments = ReceivePayment::with('category')
+        // ── The chosen period ────────────────────────────────────────────────
+        [$from, $to, $periodLabel] = $this->userReportPeriod($period, $dayInput, $monthInput, $yearInput);
+        $inPeriod = function ($query, string $column) use ($from, $to) {
+            if ($from && $to) {
+                $query->whereBetween($column, [$from->toDateString(), $to->toDateString()]);
+            }
+
+            return $query;
+        };
+        $inPeriodDateTime = function ($query, string $column) use ($from, $to) {
+            if ($from && $to) {
+                $query->whereBetween($column, [$from->copy()->startOfDay(), $to->copy()->endOfDay()]);
+            }
+
+            return $query;
+        };
+
+        // Fees paid in the period
+        $feePayments = $inPeriod(ReceivePayment::with('category')
             ->where('user_id', $member->id)
-            ->whereNull('credit_id')
+            ->whereNull('credit_id'), 'date')
             ->orderByDesc('date')
             ->orderByDesc('id')
             ->get();
-        $feesPaid = (float) $feePayments->where('transaction_type', 'credit')->sum('amount');
 
-        // Loans (کریدیت‌ها)
-        $loans = Credit::with(['sourceAccount', 'payments' => fn ($q) => $q->orderByDesc('paid_at')])
-            ->where('user_id', $member->id)
+        // Loans taken in the period (with all their payments)
+        $loans = $inPeriod(Credit::with(['sourceAccount', 'payments' => fn ($q) => $q->orderByDesc('paid_at')])
+            ->where('user_id', $member->id), 'date')
             ->orderByDesc('date')
             ->get()
             ->map(function (Credit $credit) {
@@ -169,37 +199,133 @@ class ReportController extends Controller
                 return $credit;
             });
 
-        // Aid received
-        $aids = Aids::with('sourceAccount')
-            ->where('user_id', $member->id)
+        // Loan payments made in the period (for any of the member's loans)
+        $loanPayments = $inPeriodDateTime(CreditPayment::with('credit')
+            ->where('user_id', $member->id), 'paid_at')
+            ->orderByDesc('paid_at')
+            ->get();
+
+        // Aid received in the period
+        $aids = $inPeriod(Aids::with('sourceAccount')
+            ->where('user_id', $member->id), 'date')
             ->orderByDesc('date')
             ->get();
 
+        // ── Totals for the period ────────────────────────────────────────────
+        $feesPaid = (float) $feePayments->where('transaction_type', 'credit')->sum('amount')
+            - (float) $feePayments->where('transaction_type', 'debit')->sum('amount');
+
         $summary = [
             'monthly_fee' => (float) $member->monthly_fee,
-            'fees_paid' => $feesPaid,
-            'unpaid_months' => (int) $feeStatus['unpaid_months_count'],
-            'fee_debt' => (float) $feeStatus['remaining_amount'],
-            'loans_total' => (float) $loans->sum('amount'),
-            'loans_paid' => (float) $loans->sum('paid_amount'),
-            'loans_remaining' => (float) $loans->where('status', 'active')->sum('remaining_amount'),
+            'loans_taken' => (float) $loans->sum('amount'),
             'loans_count' => $loans->count(),
+            'loan_payments' => (float) $loanPayments->sum('amount'),
+            'loan_payments_count' => $loanPayments->count(),
+            'fees_paid' => $feesPaid,
+            'fee_records' => $feePayments->count(),
             'aid_total' => (float) $aids->sum('amount'),
             'aid_count' => $aids->count(),
         ];
+
+        // ── Current status (today, not tied to the period) ───────────────────
+        $feeStatus = $this->financialService->getMemberFeeRemaining($member);
+        $current = [
+            'loans_remaining' => (float) Credit::where('user_id', $member->id)->where('status', 'active')->sum('remaining_amount'),
+            'active_loans' => Credit::where('user_id', $member->id)->where('status', 'active')->where('remaining_amount', '>', 0)->count(),
+            'unpaid_months' => (int) $feeStatus['unpaid_months_count'],
+            'fee_debt' => (float) $feeStatus['remaining_amount'],
+        ];
+
+        // ── Breakdown: day by day for a month, month by month for a year / all ──
+        $breakdown = $this->userReportBreakdown($period, $from, $to, $loans, $loanPayments, $feePayments, $aids);
 
         $blockReason = $this->loanEnforcement->aidBlockReason($member);
 
         return view('admin.pages.report.users_report', compact(
             'members',
             'member',
+            'period',
+            'dayInput',
+            'monthInput',
+            'yearInput',
+            'periodLabel',
             'feeStatus',
             'feePayments',
             'loans',
+            'loanPayments',
             'aids',
             'summary',
+            'current',
+            'breakdown',
             'blockReason'
         ));
+    }
+
+    /**
+     * @return array{0: ?\Carbon\Carbon, 1: ?\Carbon\Carbon, 2: string}
+     */
+    protected function userReportPeriod(string $period, string $day, string $month, int $year): array
+    {
+        try {
+            return match ($period) {
+                'day' => [
+                    \Carbon\Carbon::parse($day)->startOfDay(),
+                    \Carbon\Carbon::parse($day)->endOfDay(),
+                    'روز ' . \Carbon\Carbon::parse($day)->format('Y-m-d'),
+                ],
+                'month' => [
+                    \Carbon\Carbon::createFromFormat('Y-m-d', $month . '-01')->startOfMonth(),
+                    \Carbon\Carbon::createFromFormat('Y-m-d', $month . '-01')->endOfMonth(),
+                    'ماه ' . $month,
+                ],
+                'year' => [
+                    \Carbon\Carbon::create($year, 1, 1)->startOfYear(),
+                    \Carbon\Carbon::create($year, 1, 1)->endOfYear(),
+                    'سال ' . $year,
+                ],
+                default => [null, null, 'همه زمان‌ها'],
+            };
+        } catch (\Throwable) {
+            return [null, null, 'همه زمان‌ها'];
+        }
+    }
+
+    /**
+     * Rows of [label, loans taken, loan payments, fees paid, aid] grouped by day (month period)
+     * or by month (year / all periods). Empty for a single day.
+     */
+    protected function userReportBreakdown(string $period, $from, $to, $loans, $loanPayments, $feePayments, $aids): array
+    {
+        if ($period === 'day') {
+            return [];
+        }
+
+        $format = $period === 'month' ? 'Y-m-d' : 'Y-m';
+        $key = fn ($date) => \Carbon\Carbon::parse($date)->format($format);
+
+        $rows = [];
+        $add = function (string $bucket, string $field, float $amount) use (&$rows) {
+            $rows[$bucket] ??= ['label' => $bucket, 'loans' => 0.0, 'loan_payments' => 0.0, 'fees' => 0.0, 'aid' => 0.0];
+            $rows[$bucket][$field] += $amount;
+        };
+
+        foreach ($loans as $loan) {
+            $add($key($loan->date), 'loans', (float) $loan->amount);
+        }
+        foreach ($loanPayments as $payment) {
+            $add($key($payment->paid_at), 'loan_payments', (float) $payment->amount);
+        }
+        foreach ($feePayments as $payment) {
+            $sign = $payment->transaction_type === 'debit' ? -1 : 1;
+            $add($key($payment->date), 'fees', $sign * (float) $payment->amount);
+        }
+        foreach ($aids as $aid) {
+            $add($key($aid->date), 'aid', (float) $aid->amount);
+        }
+
+        krsort($rows);
+
+        return array_values($rows);
     }
 
     /**

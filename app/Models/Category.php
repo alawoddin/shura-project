@@ -70,6 +70,16 @@ class Category extends Model
         ][$this->account_type] ?? 'عمومی';
     }
 
+    /**
+     * A member-fee account: ticked «فیس ماهانه», or named as a fee account
+     * (the word "fee" or «فیس», e.g. "Member Fee Income"). Not shown on the income page.
+     */
+    public function isMemberFeeAccount(): bool
+    {
+        return (bool) $this->is_monthly_fee
+            || preg_match('/\bfees?\b|فیس/iu', (string) $this->name) === 1;
+    }
+
     public function scopeIncomeSources($query)
     {
         return $query->where('account_type', 'income');

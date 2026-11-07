@@ -33,7 +33,10 @@ class IncomeController extends Controller
 
     public function AddIncome()
     {
-        $categories = Category::incomeSources()->where('is_monthly_fee', false)->get();
+        // Member-fee accounts are not offered on the income page.
+        $categories = Category::incomeSources()->get()
+            ->reject(fn (Category $category) => $category->isMemberFeeAccount())
+            ->values();
         $users = User::all();
 
         return view('admin.pages.income.add_income', compact('categories', 'users'));
@@ -42,7 +45,16 @@ class IncomeController extends Controller
     public function StoreIncome(Request $request)
     {
         $request->validate([
-            'category_id' => ['required', Rule::exists('categories', 'id')->where('account_type', 'income')->where('is_monthly_fee', 0)],
+            'category_id' => [
+                'required',
+                function ($attribute, $value, $fail) {
+                    $category = Category::incomeSources()->find($value);
+
+                    if (! $category || $category->isMemberFeeAccount()) {
+                        $fail('لطفاً یک حساب درآمد را انتخاب کنید (حساب‌های فیس اعضا مجاز نیست).');
+                    }
+                },
+            ],
             'creditor_name' => 'required|string',
             'amount' => 'required|numeric|min:0.01',
             'date' => 'required|date',
@@ -80,11 +92,15 @@ class IncomeController extends Controller
     public function EditIncome(int $id)
     {
         $editdata = Income::findOrFail($id);
-        $categories = Category::where(function ($q) {
-                $q->where('account_type', 'income')->where('is_monthly_fee', false);
-            })
-            ->orWhere('id', $editdata->category_id)
-            ->get();
+        // Member-fee accounts are not offered; the account already saved on this income stays selectable.
+        $categories = Category::incomeSources()->get()
+            ->reject(fn (Category $category) => $category->isMemberFeeAccount()
+                && $category->id !== (int) $editdata->category_id)
+            ->values();
+
+        if (! $categories->contains('id', $editdata->category_id) && ($current = Category::find($editdata->category_id))) {
+            $categories->push($current);
+        }
         $users = User::all();
 
         return view('admin.pages.income.edit_income', compact('editdata', 'categories', 'users'));
@@ -100,8 +116,10 @@ class IncomeController extends Controller
                 function ($attribute, $value, $fail) use ($income_id) {
                     $isCurrent = (int) Income::whereKey($income_id)->value('category_id') === (int) $value;
 
-                    if (! $isCurrent && ! Category::incomeSources()->where('is_monthly_fee', false)->whereKey($value)->exists()) {
-                        $fail('لطفاً یک حساب درآمد را انتخاب کنید.');
+                    $category = Category::incomeSources()->find($value);
+
+                    if (! $isCurrent && (! $category || $category->isMemberFeeAccount())) {
+                        $fail('لطفاً یک حساب درآمد را انتخاب کنید (حساب‌های فیس اعضا مجاز نیست).');
                     }
                 },
             ],
