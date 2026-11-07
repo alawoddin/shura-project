@@ -3,18 +3,8 @@
 @section('admin')
 
 @php
-$fa = [
-    'all.users' => 'صفحه کاربران',
-    'all.category' => 'صفحه بخش ها',
-    'all.income' => 'صفحه درآمد ها',
-    'all.undeposited' => 'واریز نشده ها',
-    'all.recieve.payment' => 'دریافت پرداخت',
-    'all.financial.report' => 'گزارش مالی',
-    'all.credits' => 'کریدت ها',
-    'all.aid' => 'کمک ها',
-    'all.expense' => 'مصارف',
-    'all.report' => 'راپور ها',
-];
+$fa = collect(config('shura_permissions.permissions'))->map(fn ($p) => $p[1])->all();
+$groupFa = config('shura_permissions.groups');
 @endphp
 
 <div class="content">

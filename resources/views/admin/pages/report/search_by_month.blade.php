@@ -53,6 +53,10 @@
                     <div class="card-body text-center">
                         <h5>بلانس</h5>
                         <h2>{{ number_format($balance) }}</h2>
+                        <small class="text-muted d-block">
+                            قرض داده شده: {{ number_format($totalLoans) }}
+                            | قسط دریافتی: {{ number_format($totalLoanRepayments) }}
+                        </small>
                     </div>
                 </div>
             </div>

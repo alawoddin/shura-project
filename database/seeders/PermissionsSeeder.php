@@ -14,19 +14,11 @@ class PermissionsSeeder extends Seeder
     {
         app()[PermissionRegistrar::class]->forgetCachedPermissions();
 
-        $permissions = [
-            ['name' => 'all.users', 'group_name' => 'Users'],
-            ['name' => 'all.category', 'group_name' => 'Category'],
-            ['name' => 'all.income', 'group_name' => 'Income'],
-            ['name' => 'all.undeposited', 'group_name' => 'Undeposited'],
-            ['name' => 'all.recieve.payment', 'group_name' => 'Recieve'],
-            ['name' => 'all.financial.report', 'group_name' => 'Financial'],
-            ['name' => 'all.credits', 'group_name' => 'Credits'],
-            ['name' => 'all.aid', 'group_name' => 'Aid'],
-            ['name' => 'all.expense', 'group_name' => 'Expense'],
-            ['name' => 'all.report', 'group_name' => 'Reports'],
-            ['name' => 'manage.roles', 'group_name' => 'Access'],
-        ];
+        // The list (with Persian names) lives in config/shura_permissions.php.
+        $permissions = collect(config('shura_permissions.permissions'))
+            ->map(fn ($item, $name) => ['name' => $name, 'group_name' => $item[0]])
+            ->values()
+            ->all();
 
         foreach ($permissions as $permission) {
             $existing = Permission::where('name', $permission['name'])

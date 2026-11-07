@@ -23,7 +23,9 @@
                     'all.report',
                     'all.member.financial.report',
                     'users.report',
-                    'annual.report'
+                    'annual.report',
+                    'search.reports.by.date',
+                    'search.reports.by.month'
                 );
 
                 $isSettingsRoute = request()->routeIs(
@@ -66,13 +68,15 @@
                     </li>
                 @endif
 
-                <li>
-                    <a href="{{ route('all.key.people') }}"
-                       class="tp-link {{ request()->routeIs('all.key.people') ? 'active' : '' }}">
-                        <i data-feather="award"></i>
-                        <span>افراد کلیدی</span>
-                    </a>
-                </li>
+                @if ($adminUser->can('all.key.people'))
+                    <li>
+                        <a href="{{ route('all.key.people') }}"
+                           class="tp-link {{ request()->routeIs('all.key.people') ? 'active' : '' }}">
+                            <i data-feather="award"></i>
+                            <span>افراد کلیدی</span>
+                        </a>
+                    </li>
+                @endif
 
 
                 {{-- 3. Finance --}}
@@ -97,7 +101,7 @@
                     </li>
                 @endif
 
-                <!-- @if ($adminUser->can('all.aid') || $adminUser->can('all.category'))
+                <!-- @if ($adminUser->can('all.account.transactions'))
                     <li>
                         <a href="{{ route('all.account.deposits') }}"
                            class="tp-link {{ request()->routeIs('all.account.deposits') ? 'active' : '' }}">
@@ -137,7 +141,7 @@
                     </li>
                 @endif
 
-                @if ($adminUser->can('all.aid') || $adminUser->can('all.category'))
+                @if ($adminUser->can('all.account.transactions'))
                     <li>
                         <a href="{{ route('all.account.transactions') }}"
                            class="tp-link {{ request()->routeIs('all.account.transactions') ? 'active' : '' }}">
@@ -161,7 +165,8 @@
                 {{-- 4. Reports --}}
                 @if (
                     $adminUser->can('all.financial.report') ||
-                    $adminUser->can('all.report')
+                    $adminUser->can('all.report') ||
+                    $adminUser->can('all.users.report')
                 )
 
                     <li>
@@ -190,22 +195,17 @@
                                 @if ($adminUser->can('all.report'))
                                     <li>
                                         <a href="{{ route('all.report') }}"
-                                           class="tp-link {{ request()->routeIs('all.report') ? 'active' : '' }}">
+                                           class="tp-link {{ request()->routeIs('all.report', 'annual.report', 'search.reports.by.date', 'search.reports.by.month') ? 'active' : '' }}">
                                             گزارشات عمومی
                                         </a>
                                     </li>
+                                @endif
 
+                                @if ($adminUser->can('all.users.report'))
                                     <li>
                                         <a href="{{ route('users.report') }}"
                                            class="tp-link {{ request()->routeIs('users.report') ? 'active' : '' }}">
                                             گزارش کاربران
-                                        </a>
-                                    </li>
-
-                                    <li>
-                                        <a href="{{ route('annual.report') }}"
-                                           class="tp-link {{ request()->routeIs('annual.report') ? 'active' : '' }}">
-                                            گزارشات سالانه
                                         </a>
                                     </li>
                                 @endif
@@ -320,21 +320,25 @@
 
                 {{-- 7. Support and Maintenance --}}
 
-                <li>
-                    <a href="{{ route('admin.backup') }}"
-                       class="tp-link {{ request()->routeIs('admin.backup') ? 'active' : '' }}">
-                        <i data-feather="database"></i>
-                        <span>پشتیبان‌گیری</span>
-                    </a>
-                </li>
+                @if ($adminUser->canManageAccess())
+                    <li>
+                        <a href="{{ route('admin.backup') }}"
+                           class="tp-link {{ request()->routeIs('admin.backup') ? 'active' : '' }}">
+                            <i data-feather="database"></i>
+                            <span>پشتیبان‌گیری</span>
+                        </a>
+                    </li>
+                @endif
 
-                <li>
-                    <a href="{{ route('admin.activity.logs') }}"
-                       class="tp-link {{ request()->routeIs('admin.activity.logs') ? 'active' : '' }}">
-                        <i data-feather="activity"></i>
-                        <span>گزارش فعالیت‌ها</span>
-                    </a>
-                </li>
+                @if ($adminUser->can('all.activity.logs'))
+                    <li>
+                        <a href="{{ route('admin.activity.logs') }}"
+                           class="tp-link {{ request()->routeIs('admin.activity.logs') ? 'active' : '' }}">
+                            <i data-feather="activity"></i>
+                            <span>گزارش فعالیت‌ها</span>
+                        </a>
+                    </li>
+                @endif
 
             </ul>
         </div>

@@ -41,31 +41,8 @@
                                     </thead>
 
                                     @php
-                                        $permissionNames = [
-                                            'all.users' => 'صفحه کاربران',
-                                            'all.category' => 'صفحه بخش ها',
-                                            'all.income' => 'صفحه درآمد ها',
-                                            'all.undeposited' => 'صفحه واریز نشده ها',
-                                            'all.recieve.payment' => 'صفحه دریافت پرداخت ها',
-                                            'all.financial.report' => 'صفحه گدارش مالی اعضا',
-                                            'all.credits' => ' صفحه کریدت ها',
-                                            'all.aid' => 'صفحه کمک ها',
-                                            'all.expense' => 'صفحه مصارف',
-                                            'all.report' => 'صفحه راپور ها',
-                                        ];
-
-                                        $groupNames = [
-                                            'Users' => 'کاربران',
-                                            'Category' => 'بخش ها',
-                                            'Income' => 'درآمد ها',
-                                            'Undeposited' => 'واریز نشده',
-                                            'Recieve' => 'دریافت پرداخت',
-                                            'Financial' => 'گزارش مالی اعضا',
-                                            'Credits' => 'کریدت ها',
-                                            'Aid' => 'کمک ها',
-                                            'Expense' => 'مصارف',
-                                            'Reports' => 'راپور ها',
-                                        ];
+                                        $permissionNames = collect(config('shura_permissions.permissions'))->map(fn ($p) => $p[1])->all();
+                                        $groupNames = config('shura_permissions.groups');
                                     @endphp
 
                                     <tbody>

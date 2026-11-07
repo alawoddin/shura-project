@@ -24,33 +24,8 @@
 <div class="card-body">
 
 @php
-$fa = [
-    'all.users' => 'صفحه کاربران',
-    'all.category' => 'صفحه بخش ها',
-    'all.income' => 'صفحه درآمد ها',
-    'all.undeposited' => 'واریز نشده ها',
-    'all.recieve.payment' => 'دریافت پرداخت',
-    'all.financial.report' => 'گزارش مالی',
-    'all.credits' => 'کریدت ها',
-    'all.aid' => 'کمک ها',
-    'all.expense' => 'مصارف',
-    'all.report' => 'راپور ها',
-    'manage.roles' => 'مدیریت نقش ها',
-];
-
-$groupFa = [
-    'Users' => 'کاربران',
-    'Category' => 'بخش ها',
-    'Income' => 'درآمد ها',
-    'Undeposited' => 'واریز نشده',
-    'Recieve' => 'دریافت پرداخت',
-    'Financial' => 'گزارش مالی',
-    'Credits' => 'کریدت ها',
-    'Aid' => 'کمک ها',
-    'Expense' => 'مصارف',
-    'Reports' => 'راپور ها',
-    'Access' => 'مدیریت دسترسی',
-];
+$fa = collect(config('shura_permissions.permissions'))->map(fn ($p) => $p[1])->all();
+$groupFa = config('shura_permissions.groups');
 @endphp
 
      <form action="{{ route('admin.roles.update',$role->id) }}" method="post" class="row g-3" enctype="multipart/form-data">

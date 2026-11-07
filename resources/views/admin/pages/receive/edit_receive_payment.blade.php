@@ -15,6 +15,9 @@
             </div>
 
             <div class="card-body">
+                @if ($errors->any())
+                    <div class="alert alert-danger">{{ $errors->first() }}</div>
+                @endif
 
                 <form id="myForm" action="{{ route('update.receive.payment') }}" method="POST" class="row g-3">
 
@@ -60,19 +63,15 @@
                         </select>
                     </div>
 
-                    {{-- For the month of --}}
-                    <div class="col-md-6" id="monthField">
-                        <label class="form-label">برای ماه</label>
-                        <input type="month" name="month_of" id="month_of" class="form-control"
-                            value="{{ old('month_of', $editData->month_of) }}">
-                    </div>
-
                     {{-- Amount --}}
                     <div class="col-md-6">
                         <label class="form-label">مقدار</label>
                         <input type="number" step="0.01" name="amount" id="amount" class="form-control"
                             value="{{ old('amount', $editData->amount) }}">
                     </div>
+
+                    {{-- Months --}}
+                    @include('admin.pages.receive.partials.month_picker')
 
                     <div class="col-12" id="feeRemainingBox" style="display: none;">
                         <div class="alert alert-warning mb-0">
@@ -105,21 +104,14 @@
     <script>
         $(document).ready(function() {
             const feeStatusUrl = @json(route('receive.payment.member.fee.status', ['user' => '__USER__']));
+            const editingPaymentId = @json($editData->id);
+            const originalUserId = @json((string) $editData->user_id);
+            let preselectMonths = @json(array_values(array_filter((array) old('months', [$editData->month_of]))));
             let feeStatus = null;
+            let firstLoad = true;
 
             function isMonthlyFeeSelected() {
                 return $('#category').find(':selected').data('is-monthly-fee') == 1;
-            }
-
-            function toggleMonthField() {
-                if (isMonthlyFeeSelected()) {
-                    $('#month_of').prop('disabled', false).prop('required', true);
-                    $('#monthField label').removeClass('text-muted');
-                } else {
-                    $('#month_of').prop('disabled', true).prop('required', false).val('');
-                    $('#monthField label').addClass('text-muted');
-                    $('#feeRemainingBox').hide();
-                }
             }
 
             function formatMoney(value) {
@@ -128,6 +120,24 @@
                     maximumFractionDigits: 2
                 });
             }
+
+            function toggleMonthField() {
+                const fee = isMonthlyFeeSelected();
+
+                $('#monthsField').toggle(fee);
+                $('#feeMonthPicker input').prop('disabled', function() {
+                    return !fee || $(this).closest('.fee-month').hasClass('is-paid');
+                });
+                if (!fee) {
+                    $('#feeRemainingBox').hide();
+                }
+            }
+
+            // The amount follows the selected months. On first load keep the saved amount.
+            FeeMonthPicker.onChange(function(total) {
+                if (firstLoad || !isMonthlyFeeSelected()) return;
+                $('#amount').val(total > 0 ? total.toFixed(2) : '');
+            });
 
             function renderFeeRemaining() {
                 if (!isMonthlyFeeSelected() || !feeStatus) {
@@ -167,17 +177,30 @@
                 if (!userId || !isMonthlyFeeSelected()) {
                     feeStatus = null;
                     $('#feeRemainingBox').hide();
+                    FeeMonthPicker.clear();
                     return;
                 }
 
-                $.get(feeStatusUrl.replace('__USER__', userId))
+                // For the same member, leave this payment out so its own month is not shown as already paid.
+                let url = feeStatusUrl.replace('__USER__', userId);
+                if (String(userId) === originalUserId) {
+                    url += '?exclude=' + encodeURIComponent(editingPaymentId);
+                }
+
+                $.get(url)
                     .done(function(data) {
                         feeStatus = data;
                         renderFeeRemaining();
+                        FeeMonthPicker.render(data, preselectMonths);
+                        preselectMonths = [];
+                        toggleMonthField();
+                        firstLoad = false;
                     })
                     .fail(function() {
                         feeStatus = null;
                         $('#feeRemainingBox').hide();
+                        FeeMonthPicker.clear('خطا در دریافت وضعیت فیس عضو.');
+                        firstLoad = false;
                     });
             }
 
@@ -194,19 +217,20 @@
                     user_id: { required: true },
                     category_id: { required: true },
                     amount: { required: true, number: true, min: 0.01 },
-                    date: { required: true },
-                    month_of: {
-                        required: function() {
-                            return isMonthlyFeeSelected();
-                        }
-                    }
+                    date: { required: true }
                 },
                 messages: {
                     user_id: { required: 'عضو را انتخاب کنید' },
                     category_id: { required: 'نوع پرداخت را انتخاب کنید' },
                     amount: { required: 'مقدار را وارد کنید' },
-                    date: { required: 'تاریخ را انتخاب کنید' },
-                    month_of: { required: 'ماه را انتخاب کنید' }
+                    date: { required: 'تاریخ را انتخاب کنید' }
+                },
+                submitHandler: function(form) {
+                    if (isMonthlyFeeSelected() && !FeeMonthPicker.validate()) {
+                        document.getElementById('monthsField').scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        return false;
+                    }
+                    form.submit();
                 },
                 errorElement: 'span',
                 errorPlacement: function(error, element) {

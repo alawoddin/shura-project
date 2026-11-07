@@ -56,14 +56,6 @@ class ReportController extends Controller
         ));
     }
 
-    /** The old year search now opens the full annual report page. */
-    public function AllReportsByYear(Request $request)
-    {
-        $request->validate(['year' => 'required|integer|min:2000']);
-
-        return redirect()->route('annual.report', ['year' => (int) $request->year]);
-    }
-
     /**
      * گزارشات سالانه — month by month money in / money out for one year.
      */
@@ -138,63 +130,76 @@ class ReportController extends Controller
     }
 
     /**
-     * گزارش کاربران — per-member report, separate from the general reports.
+     * گزارش کاربران — choose one member and see that member's full report:
+     * fees, loans (with payments), aid received and debt status.
      */
     public function UsersReport(Request $request)
     {
-        $search = trim((string) $request->input('search', ''));
+        $members = User::where('role', 'user')->orderBy('name')->get(['id', 'name', 'father_name', 'status']);
+        $selectedId = $request->integer('user_id') ?: null;
 
-        $members = User::where('role', 'user')
-            ->when($search !== '', fn ($q) => $q->where('name', 'like', "%{$search}%"))
-            ->orderBy('name')
+        if (! $selectedId) {
+            return view('admin.pages.report.users_report', ['members' => $members, 'member' => null]);
+        }
+
+        $member = User::where('role', 'user')->findOrFail($selectedId);
+
+        // Fees
+        $feeStatus = $this->financialService->getMemberFeeRemaining($member);
+        $feePayments = ReceivePayment::with('category')
+            ->where('user_id', $member->id)
+            ->whereNull('credit_id')
+            ->orderByDesc('date')
+            ->orderByDesc('id')
+            ->get();
+        $feesPaid = (float) $feePayments->where('transaction_type', 'credit')->sum('amount');
+
+        // Loans (کریدیت‌ها)
+        $loans = Credit::with(['sourceAccount', 'payments' => fn ($q) => $q->orderByDesc('paid_at')])
+            ->where('user_id', $member->id)
+            ->orderByDesc('date')
+            ->get()
+            ->map(function (Credit $credit) {
+                $credit->paid_amount = (float) $credit->amount - (float) $credit->remaining_amount;
+                $credit->months_without_payment = $credit->status === 'active'
+                    ? $this->loanEnforcement->getMonthsWithoutPayment($credit)
+                    : 0;
+                $credit->is_overdue = $this->loanEnforcement->isCreditOverdue($credit);
+
+                return $credit;
+            });
+
+        // Aid received
+        $aids = Aids::with('sourceAccount')
+            ->where('user_id', $member->id)
+            ->orderByDesc('date')
             ->get();
 
-        $feesPaid = ReceivePayment::query()
-            ->whereNull('credit_id')
-            ->where('transaction_type', 'credit')
-            ->whereHas('category', fn ($q) => $q->where('is_monthly_fee', true))
-            ->selectRaw('user_id, SUM(amount) as total')
-            ->groupBy('user_id')
-            ->pluck('total', 'user_id');
-
-        $loanTotals = Credit::selectRaw('user_id, SUM(amount) as total, SUM(CASE WHEN status = "active" THEN remaining_amount ELSE 0 END) as remaining')
-            ->groupBy('user_id')
-            ->get()
-            ->keyBy('user_id');
-
-        $aidTotals = Aids::selectRaw('user_id, SUM(amount) as total')
-            ->groupBy('user_id')
-            ->pluck('total', 'user_id');
-
-        $rows = $members->map(function (User $member) use ($feesPaid, $loanTotals, $aidTotals) {
-            $feeStatus = $this->financialService->getMemberFeeRemaining($member);
-            $unpaidMonths = (int) $feeStatus['unpaid_months_count'];
-            $hasOverdueLoan = $this->loanEnforcement->userHasOverdueLoan($member);
-
-            return [
-                'user' => $member,
-                'monthly_fee' => (float) $member->monthly_fee,
-                'fees_paid' => (float) ($feesPaid[$member->id] ?? 0),
-                'unpaid_months' => $unpaidMonths,
-                'fee_debt' => (float) $feeStatus['remaining_amount'],
-                'loans_total' => (float) ($loanTotals[$member->id]->total ?? 0),
-                'loan_remaining' => (float) ($loanTotals[$member->id]->remaining ?? 0),
-                'aid_received' => (float) ($aidTotals[$member->id] ?? 0),
-                'blocked' => $member->status === 'suspended'
-                    || $hasOverdueLoan
-                    || $unpaidMonths >= LoanEnforcementService::OVERDUE_MONTHS,
-            ];
-        });
-
-        $totals = [
-            'fees_paid' => $rows->sum('fees_paid'),
-            'fee_debt' => $rows->sum('fee_debt'),
-            'loan_remaining' => $rows->sum('loan_remaining'),
-            'aid_received' => $rows->sum('aid_received'),
-            'blocked' => $rows->where('blocked', true)->count(),
+        $summary = [
+            'monthly_fee' => (float) $member->monthly_fee,
+            'fees_paid' => $feesPaid,
+            'unpaid_months' => (int) $feeStatus['unpaid_months_count'],
+            'fee_debt' => (float) $feeStatus['remaining_amount'],
+            'loans_total' => (float) $loans->sum('amount'),
+            'loans_paid' => (float) $loans->sum('paid_amount'),
+            'loans_remaining' => (float) $loans->where('status', 'active')->sum('remaining_amount'),
+            'loans_count' => $loans->count(),
+            'aid_total' => (float) $aids->sum('amount'),
+            'aid_count' => $aids->count(),
         ];
 
-        return view('admin.pages.report.users_report', compact('rows', 'totals', 'search'));
+        $blockReason = $this->loanEnforcement->aidBlockReason($member);
+
+        return view('admin.pages.report.users_report', compact(
+            'members',
+            'member',
+            'feeStatus',
+            'feePayments',
+            'loans',
+            'aids',
+            'summary',
+            'blockReason'
+        ));
     }
 
     /**

@@ -7,6 +7,7 @@ use App\Models\AccountTransaction;
 use App\Models\Aids;
 use App\Models\Category;
 use App\Models\Credit;
+use App\Models\CreditPayment;
 use App\Models\Expense;
 use App\Models\Income;
 use App\Models\MemberFinancialReport;
@@ -108,14 +109,23 @@ class FinancialService
         $monthLoansDisbursed = (float) $loans->month_disbursed;
         $monthLoansRemaining = (float) $loans->month_remaining;
 
+        // Loan payments received (all time and this month).
+        $totalLoansRepaid = (float) CreditPayment::sum('amount');
+        $monthLoansRepaid = (float) CreditPayment::whereMonth('paid_at', $month)
+            ->whereYear('paid_at', $year)
+            ->sum('amount');
+
         $totalMoneyIn = $totalIncome + $totalReceive;
         $totalBalance = $totalMoneyIn;
-        $currentBalance = $totalBalance - $totalExpense - $totalAids;
-        $monthCurrentBalance = ($monthIncome + $monthReceive) - $monthExpense - $monthAids;
 
-        $totalCreditPool = $totalBalance - $totalExpense - $totalAids;
-        $totalCreditAvailable = max(0, $totalCreditPool - $totalLoansRemaining);
-        $monthCreditAvailable = max(0, $monthCurrentBalance - $monthLoansRemaining);
+        // A loan (کریدیت) is money that has left the fund: it is subtracted from the
+        // balance until the member pays it back (only the unpaid remainder is subtracted).
+        $currentBalance = $totalBalance - $totalExpense - $totalAids - $totalLoansRemaining;
+        $monthLoansNet = $monthLoansDisbursed - $monthLoansRepaid;
+        $monthCurrentBalance = ($monthIncome + $monthReceive) - $monthExpense - $monthAids - $monthLoansNet;
+
+        $totalCreditAvailable = max(0, $currentBalance);
+        $monthCreditAvailable = max(0, $monthCurrentBalance);
 
         $incomes = Income::with('category')
             ->selectRaw('category_id, SUM(amount) as total')
@@ -156,6 +166,9 @@ class FinancialService
             'totalLoansRemaining' => $totalLoansRemaining,
             'monthLoansDisbursed' => $monthLoansDisbursed,
             'monthLoansRemaining' => $monthLoansRemaining,
+            'totalLoansRepaid' => $totalLoansRepaid,
+            'monthLoansRepaid' => $monthLoansRepaid,
+            'monthLoansNet' => $monthLoansNet,
             'monthCreditAvailable' => $monthCreditAvailable,
             'totalUser' => (int) $users->total_users,
             'monthUser' => (int) $users->month_users,
@@ -200,7 +213,25 @@ class FinancialService
         $totalIncomeAll = (float) $incomes->sum('amount');
         $totalIncome = (float) $transferredIncomeQuery->sum('amount');
         $totalAids = (float) $aidQuery->sum('amount');
-        $balance = ($totalReceive + $totalIncome) - $totalExpense - $totalAids;
+
+        // Loans given in the period are subtracted; loan payments received in the period are added back.
+        $loanQuery = Credit::query();
+        $applyDateFilters($loanQuery);
+        $totalLoans = (float) $loanQuery->sum('amount');
+
+        $loanRepaymentQuery = CreditPayment::query();
+        if ($date) {
+            $loanRepaymentQuery->whereDate('paid_at', $date);
+        } elseif ($month && $year) {
+            $loanRepaymentQuery->whereMonth('paid_at', $month)->whereYear('paid_at', $year);
+        } elseif ($year) {
+            $loanRepaymentQuery->whereYear('paid_at', $year);
+        } elseif ($month) {
+            $loanRepaymentQuery->whereMonth('paid_at', $month);
+        }
+        $totalLoanRepayments = (float) $loanRepaymentQuery->sum('amount');
+
+        $balance = ($totalReceive + $totalIncome + $totalLoanRepayments) - $totalExpense - $totalAids - $totalLoans;
 
         return compact(
             'expenses',
@@ -213,6 +244,8 @@ class FinancialService
             'totalIncome',
             'totalIncomeAll',
             'totalAids',
+            'totalLoans',
+            'totalLoanRepayments',
             'balance'
         );
     }
