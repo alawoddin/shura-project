@@ -89,15 +89,15 @@
 
                 @if ($adminUser->can('all.recieve.payment'))
                     <li>
-                        <a href="{{ route('all.receive.payment') }}"
-                           class="tp-link {{ request()->routeIs('all.receive.payment') ? 'active' : '' }}">
+                        <a href="{{ route('add.receive.payment') }}"
+                           class="tp-link {{ request()->routeIs('add.receive.payment') ? 'active' : '' }}">
                             <i data-feather="credit-card"></i>
                             <span>دریافت فیس و قرض</span>
                         </a>
                     </li>
                 @endif
 
-                @if ($adminUser->can('all.aid') || $adminUser->can('all.category'))
+                <!-- @if ($adminUser->can('all.aid') || $adminUser->can('all.category'))
                     <li>
                         <a href="{{ route('all.account.deposits') }}"
                            class="tp-link {{ request()->routeIs('all.account.deposits') ? 'active' : '' }}">
@@ -105,7 +105,7 @@
                             <span>دریافت پول</span>
                         </a>
                     </li>
-                @endif
+                @endif -->
 
                 @if ($adminUser->can('all.undeposited'))
                     <li>
@@ -179,12 +179,12 @@
                             <ul class="nav-second-level">
 
                                 @if ($adminUser->can('all.financial.report'))
-                                    <li>
+                                    <!-- <li>
                                         <a href="{{ route('all.member.financial.report') }}"
                                            class="tp-link {{ request()->routeIs('all.member.financial.report') ? 'active' : '' }}">
                                             گزارش مالی اعضا
                                         </a>
-                                    </li>
+                                    </li> -->
                                 @endif
 
                                 @if ($adminUser->can('all.report'))
