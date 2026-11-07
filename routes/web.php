@@ -139,7 +139,11 @@ Route::prefix('admin')->middleware(['auth' ,IsAdmin::class ])->group(function ()
     });
 
 
+<<<<<<< HEAD
         Route::controller(ExpenseController::class)->middleware('permission:all.expense')->group(function () {
+=======
+        Route::controller(ExpenseController::class)->group(function () {
+>>>>>>> origin/main
         Route::get('/all/expense', 'AllExpense')->name('all.expense');
         Route::get('/add/expense', 'AddExpense')->name('add.expense');
         Route::post('/store/expense', 'StoreExpense')->name('store.expense');
@@ -169,7 +173,11 @@ Route::prefix('admin')->middleware(['auth' ,IsAdmin::class ])->group(function ()
     });
 
 
+<<<<<<< HEAD
     Route::controller(UnpaidPaymentController::class)->middleware('permission:all.recieve.payment')->group(function () {
+=======
+    Route::controller(UnpaidPaymentController::class)->group(function () {
+>>>>>>> origin/main
         Route::post('/unpaid/payments/mark-reviewed', 'markReviewed')->name('unpaid.payments.mark.reviewed');
 
         Route::post('/unpaid/payments/mark-all-reviewed', 'markAllReviewed')->name('unpaid.payments.mark.all');
