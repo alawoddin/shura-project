@@ -15,6 +15,7 @@
                     <span>مبلغ فعلی</span>
                     <strong>{{ number_format($currentBalance, 2) }}</strong>
                     <small>ماه جاری: {{ number_format($monthCurrentBalance, 2) }}</small>
+                    <small>قرض‌های پرداخت‌نشده کم شده: {{ number_format($totalLoansRemaining, 2) }}</small>
                 </div>
             </div>
 
@@ -135,9 +136,19 @@
                                     <td>{{ number_format($monthAids, 2) }}</td>
                                 </tr>
                                 <tr>
-                                    <td>اعتبار موجود / باقی قرض</td>
+                                    <td>قرض‌ها (پرداخت‌نشده — از بلانس کم شده)</td>
+                                    <td class="text-danger">{{ number_format($totalLoansRemaining, 2) }}</td>
+                                    <td class="text-danger">{{ number_format($monthLoansNet, 2) }}</td>
+                                </tr>
+                                <tr>
+                                    <td>قسط‌های دریافتی قرض</td>
+                                    <td class="text-success">{{ number_format($totalLoansRepaid, 2) }}</td>
+                                    <td class="text-success">{{ number_format($monthLoansRepaid, 2) }}</td>
+                                </tr>
+                                <tr>
+                                    <td>اعتبار موجود</td>
                                     <td>{{ number_format($totalcredit, 2) }}</td>
-                                    <td>{{ number_format($remaining_amount, 2) }}</td>
+                                    <td>{{ number_format($monthCreditAvailable, 2) }}</td>
                                 </tr>
                                 <tr>
                                     <td>بلانس فعلی</td>

@@ -13,6 +13,7 @@ use App\Services\LoanEnforcementService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 
 /**
  * دریافت فیس و قرض
@@ -42,12 +43,13 @@ class ReceivePaymentController extends Controller
         return view('admin.pages.receive.add_receive_payment', compact('users', 'categories'));
     }
 
-    public function MemberFeeStatus(int $userId)
+    public function MemberFeeStatus(Request $request, int $userId)
     {
         $user = User::where('role', 'user')->findOrFail($userId);
+        $excludeId = $request->integer('exclude') ?: null;
 
         return response()->json(
-            $this->financialService->getMemberFeeRemaining($user)
+            $this->financialService->getMemberFeeRemaining($user, $excludeId ? (string) $excludeId : null)
         );
     }
 
@@ -93,14 +95,10 @@ class ReceivePaymentController extends Controller
             'date' => 'required|date',
             'amount' => 'required|numeric|min:0.01',
             'description' => 'nullable|string',
-            'month_of' => 'nullable|date_format:Y-m',
-            'months_count' => 'nullable|integer|min:1|max:' . self::MAX_FEE_MONTHS,
+            'months' => 'nullable|array|max:' . self::MAX_FEE_MONTHS,
+            'months.*' => 'date_format:Y-m|distinct',
             'credit_id' => 'nullable|exists:credits,id',
-        ], [
-            'month_of.date_format' => 'ماه را درست انتخاب کنید.',
-            'transaction_type.in' => 'در این صفحه فقط دریافت (بستانکار) مجاز است.',
-            'months_count.max' => 'حداکثر ' . self::MAX_FEE_MONTHS . ' ماه را می‌توانید یکجا پرداخت کنید.',
-        ]);
+        ], $this->monthValidationMessages());
 
         // Only credit (money received) is allowed on this page.
         $validated['transaction_type'] = 'credit';
@@ -115,33 +113,22 @@ class ReceivePaymentController extends Controller
     }
 
     /**
-     * Fee payment for one or several months at once (فیس چند ماه یکجا).
+     * Fee payment for the months the admin selected (e.g. Jan, Feb, Aug).
      * One record is created per month so the monthly fee report stays correct.
      */
     protected function storeFeePayments(Request $request, array $validated, Category $category)
     {
-        $monthsCount = 1;
-
-        if ($category->is_monthly_fee) {
-            $request->validate(['month_of' => 'required|date_format:Y-m'], [
-                'month_of.required' => 'لطفاً ماه را انتخاب کنید.',
-            ]);
-            $monthsCount = (int) ($validated['months_count'] ?? 1);
-        }
-
         $total = round((float) $validated['amount'], 2);
-        $perMonth = floor(($total / $monthsCount) * 100) / 100;
-        $startMonth = $category->is_monthly_fee
-            ? Carbon::createFromFormat('Y-m-d', $validated['month_of'] . '-01')->startOfMonth()
-            : null;
+        $member = User::findOrFail($validated['user_id']);
+
+        // [month => amount]; a fee type without months is a single record with no month.
+        $amounts = $category->is_monthly_fee
+            ? $this->feeMonthAmounts($member, $request->input('months', []), $total)
+            : [null => $total];
 
         try {
-            DB::transaction(function () use ($validated, $monthsCount, $total, $perMonth, $startMonth) {
-                for ($i = 0; $i < $monthsCount; $i++) {
-                    $isLast = $i === $monthsCount - 1;
-                    // The last month takes the rounding remainder so the sum equals the total.
-                    $amount = $isLast ? round($total - $perMonth * ($monthsCount - 1), 2) : $perMonth;
-
+            DB::transaction(function () use ($validated, $amounts) {
+                foreach ($amounts as $month => $amount) {
                     $payment = ReceivePayment::create([
                         'user_id' => $validated['user_id'],
                         'category_id' => $validated['category_id'],
@@ -149,7 +136,7 @@ class ReceivePaymentController extends Controller
                         'date' => $validated['date'],
                         'amount' => $amount,
                         'description' => $validated['description'] ?? null,
-                        'month_of' => $startMonth?->copy()->addMonthsNoOverflow($i)->format('Y-m'),
+                        'month_of' => $month === '' ? null : $month,
                         'review_status' => 'pending_review',
                     ]);
 
@@ -163,8 +150,9 @@ class ReceivePaymentController extends Controller
             ]);
         }
 
+        $monthsCount = count($amounts);
         $message = $monthsCount > 1
-            ? "فیس {$monthsCount} ماه با موفقیت ثبت شد"
+            ? "فیس {$monthsCount} ماه با موفقیت ثبت شد (" . implode('، ', array_keys($amounts)) . ')'
             : 'دریافت پرداخت با موفقیت اضافه شد';
 
         if ($category->is_monthly_fee) {
@@ -300,11 +288,13 @@ class ReceivePaymentController extends Controller
             'date' => 'required|date',
             'amount' => 'required|numeric|min:0.01',
             'description' => 'nullable|string',
-            'month_of' => 'nullable|string',
-        ]);
+            'months' => 'nullable|array|max:' . self::MAX_FEE_MONTHS,
+            'months.*' => 'date_format:Y-m|distinct',
+        ], $this->monthValidationMessages());
 
         // Only credit (money received) is allowed on this page.
         $validated['transaction_type'] = 'credit';
+        unset($validated['months']);
 
         $category = Category::findOrFail($validated['category_id']);
         $payment = ReceivePayment::findOrFail($validated['id']);
@@ -323,19 +313,21 @@ class ReceivePaymentController extends Controller
             ]);
         }
 
-        if ($category->is_monthly_fee) {
-            $request->validate(['month_of' => 'required|string']);
-            $validated['month_of'] = $request->month_of;
-        } else {
-            $validated['month_of'] = null;
-        }
+        $total = round((float) $validated['amount'], 2);
+        $member = User::findOrFail($validated['user_id']);
+        $excludeId = (int) $payment->user_id === (int) $member->id ? (string) $payment->id : null;
+
+        // [month => amount] for the selected months (this payment itself is left out of the "paid" check).
+        $amounts = $category->is_monthly_fee
+            ? $this->feeMonthAmounts($member, $request->input('months', []), $total, $excludeId)
+            : [null => $total];
 
         $previousType = $payment->transaction_type;
         $previousAmount = (float) $payment->amount;
         $previousCategoryId = $payment->category_id;
 
         try {
-            DB::transaction(function () use ($payment, $validated, $previousType, $previousAmount, $previousCategoryId) {
+            DB::transaction(function () use ($payment, $validated, $amounts, $previousType, $previousAmount, $previousCategoryId) {
                 $this->financialService->reverseReceivePaymentBalance(
                     $previousType,
                     $previousAmount,
@@ -343,9 +335,24 @@ class ReceivePaymentController extends Controller
                 );
 
                 unset($validated['id']);
-                $payment->update($validated);
+                $first = true;
 
-                $this->financialService->applyReceivePaymentBalance($payment->fresh());
+                foreach ($amounts as $month => $amount) {
+                    $data = array_merge($validated, [
+                        'amount' => $amount,
+                        'month_of' => $month === '' ? null : $month,
+                    ]);
+
+                    if ($first) {
+                        $payment->update($data);
+                        $this->financialService->applyReceivePaymentBalance($payment->fresh());
+                        $first = false;
+                        continue;
+                    }
+
+                    $extra = ReceivePayment::create($data + ['review_status' => 'pending_review']);
+                    $this->financialService->applyReceivePaymentBalance($extra);
+                }
             });
         } catch (InsufficientBalanceException $e) {
             return back()->withInput()->with([
@@ -360,6 +367,80 @@ class ReceivePaymentController extends Controller
         ];
 
         return redirect()->route('all.receive.payment')->with($notification);
+    }
+
+    protected function monthValidationMessages(): array
+    {
+        return [
+            'transaction_type.in' => 'در این صفحه فقط دریافت (بستانکار) مجاز است.',
+            'months.max' => 'حداکثر ' . self::MAX_FEE_MONTHS . ' ماه را می‌توانید یکجا پرداخت کنید.',
+            'months.*.date_format' => 'ماه انتخاب‌شده درست نیست.',
+            'months.*.distinct' => 'یک ماه دو بار انتخاب شده است.',
+        ];
+    }
+
+    /**
+     * Work out how much of the total goes to each selected month.
+     * If the total equals what is due for the selected months, each month gets its own due
+     * (unpaid remainder, or the monthly fee for a coming month); otherwise the total is split evenly.
+     *
+     * @return array<string, float> [Y-m => amount]
+     */
+    protected function feeMonthAmounts(User $member, array $months, float $total, ?string $excludePaymentId = null): array
+    {
+        $months = array_values(array_unique(array_filter($months)));
+        sort($months);
+
+        if (! $months) {
+            throw ValidationException::withMessages([
+                'months' => 'لطفاً حداقل یک ماه را برای پرداخت فیس انتخاب کنید.',
+            ]);
+        }
+
+        $status = $this->financialService->getMemberFeeRemaining($member, $excludePaymentId);
+        $monthlyFee = (float) $status['monthly_fee'];
+        $registerMonth = $status['register_month'];
+        $currentMonth = now()->format('Y-m');
+        $unpaid = collect($status['months'])->pluck('remaining', 'month');
+
+        $dues = [];
+
+        foreach ($months as $month) {
+            if ($monthlyFee <= 0) {
+                $dues[$month] = 0.0;
+            } elseif ($unpaid->has($month)) {
+                $dues[$month] = (float) $unpaid[$month];
+            } elseif ($month > $currentMonth) {
+                $dues[$month] = $monthlyFee;
+            } elseif ($month < $registerMonth) {
+                throw ValidationException::withMessages([
+                    'months' => "ماه {$month} قبل از ماه ثبت‌نام عضو ({$registerMonth}) است.",
+                ]);
+            } else {
+                throw ValidationException::withMessages([
+                    'months' => "فیس ماه {$month} قبلاً کامل پرداخت شده است.",
+                ]);
+            }
+        }
+
+        $dueTotal = round(array_sum($dues), 2);
+
+        if ($dueTotal > 0 && abs($dueTotal - $total) < 0.01) {
+            return array_map(fn ($due) => round($due, 2), $dues);
+        }
+
+        // Split evenly; the last month takes the rounding remainder so the sum equals the total.
+        $count = count($months);
+        $perMonth = floor(($total / $count) * 100) / 100;
+        $amounts = [];
+
+        foreach ($months as $i => $month) {
+            $amounts[$month] = $i === $count - 1
+                ? round($total - $perMonth * ($count - 1), 2)
+                : $perMonth;
+        }
+
+        return $amounts;
     }
 
     public function DeleteReceivePayment($id)

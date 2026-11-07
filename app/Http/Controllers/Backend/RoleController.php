@@ -28,13 +28,26 @@ class RoleController extends Controller
     }
 
     public function StorePermission(Request $request) {
+        $request->validate([
+            'name' => [
+                'required',
+                \Illuminate\Validation\Rule::in(array_keys(config('shura_permissions.permissions'))),
+                \Illuminate\Validation\Rule::unique('permissions', 'name')->where('guard_name', 'web'),
+            ],
+            'group_name' => ['required', \Illuminate\Validation\Rule::in(array_keys(config('shura_permissions.groups')))],
+        ], [
+            'name.required' => 'لطفاً نام مجوز را انتخاب کنید.',
+            'name.unique' => 'این مجوز قبلاً اضافه شده است.',
+            'group_name.required' => 'لطفاً گروپ را انتخاب کنید.',
+        ]);
+
         Permission::create([
             'name' => $request->name,
             'group_name' => $request->group_name,
         ]);
          $notification = [
 
-            'message' => 'اعضای فامیل موفقانه اضافه شد',
+            'message' => 'مجوز موفقانه اضافه شد',
 
             'alert-type' => 'success'
 
@@ -53,13 +66,25 @@ class RoleController extends Controller
      public function UpdatePermission(Request $request){
         $per_id = $request->id;
 
+        $request->validate([
+            'id' => 'required|exists:permissions,id',
+            'name' => [
+                'required',
+                \Illuminate\Validation\Rule::in(array_keys(config('shura_permissions.permissions'))),
+                \Illuminate\Validation\Rule::unique('permissions', 'name')->where('guard_name', 'web')->ignore($per_id),
+            ],
+            'group_name' => ['required', \Illuminate\Validation\Rule::in(array_keys(config('shura_permissions.groups')))],
+        ], [
+            'name.unique' => 'این مجوز قبلاً اضافه شده است.',
+        ]);
+
         Permission::find($per_id)->update([
             'name' => $request->name,
             'group_name' => $request->group_name,
         ]);
 
         $notification = array(
-            'message' => 'Permission Updated Successfully',
+            'message' => 'مجوز موفقانه ویرایش شد',
             'alert-type' => 'success'
          ); 
          return redirect()->route('all.permission')->with($notification); 

@@ -14,6 +14,9 @@
                     </div><!-- end card header -->
 
                     <div class="card-body">
+                        @if ($errors->any())
+                            <div class="alert alert-danger">{{ $errors->first() }}</div>
+                        @endif
                         <form action="{{ route('store.permission') }}" method="POST" class="row g-3">
                             @csrf
                             <div class="col-md-6">
@@ -22,36 +25,20 @@
 
                                 <label>نام مجوز</label>
                                 <select name="name" class="form-control">
-                                    <option value="Brand">-- انتخاب --</option>
-                                    <option value="all.users">صفحه کاربران</option>
-                                    <option value="all.category">صفحه بخش ها</option>
-                                    <option value="all.income">صفحه درآمد ها</option>
-                                    <option value="all.undeposited">صفحه واریز نشده ها</option>
-                                    <option value="all.recieve.payment">صفحه دریافت پرداخت</option>
-                                    <option value="all.financial.report">صفحه کزارش مالی اعضا</option>
-                                    <option value="all.credits">صفحه کریدت ها </option>
-                                    <option value="all.aid">صفحه کمک ها</option>
-                                    <option value="all.expense">صفحه مصارف</option>
-                                    <option value="all.report">صفحه راپور ها  </option>
-                                    <option value="manage.roles">مدیریت نقش ها و مجوز ها</option>
+                                    <option value="">-- انتخاب --</option>
+                                    @foreach (config('shura_permissions.permissions') as $permName => $permInfo)
+                                        <option value="{{ $permName }}" data-group="{{ $permInfo[0] }}">{{ $permInfo[1] }}</option>
+                                    @endforeach
                                 </select>
                             </div>
 
                             <div class="col-md-6">
                                 <label>انتخاب گروپ</label>
                                 <select name="group_name" class="form-control">
-                                    <option value="Brand">-- انتخاب --</option>
-                                    <option value="Users">کاربران</option>
-                                    <option value="Category">بخش ها</option>
-                                    <option value="Income"> درآمد ها</option>
-                                    <option value="Undeposited">واریز نشده</option>
-                                    <option value="Recieve">دریافت پرداخت</option>
-                                    <option value="Financial">گزارش مالی اعضا</option>
-                                    <option value="Credits">کریدت ها</option>
-                                    <option value="Aid">کمک ها</option>
-                                    <option value="Expense">مصارف</option>
-                                    <option value="Reports">راپور ها</option>
-                                    <option value="Access">مدیریت دسترسی</option>
+                                    <option value="">-- انتخاب --</option>
+                                    @foreach (config('shura_permissions.groups') as $groupKey => $groupLabel)
+                                        <option value="{{ $groupKey }}">{{ $groupLabel }}</option>
+                                    @endforeach
                                 </select>
                             </div>
 

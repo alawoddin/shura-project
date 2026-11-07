@@ -49,7 +49,8 @@ Route::post('/user/password/update', [ClientController::class, 'UserPasswordUpda
 ///Admin Route
 Route::prefix('admin')->middleware(['auth' ,IsAdmin::class ])->group(function () {
 
-    Route::get('/activity-logs', [ControllersActivityLogController::class, 'index'])->name('admin.activity.logs');
+    Route::get('/activity-logs', [ControllersActivityLogController::class, 'index'])->name('admin.activity.logs')
+        ->middleware('permission:all.activity.logs');
 
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
 
@@ -60,7 +61,7 @@ Route::prefix('admin')->middleware(['auth' ,IsAdmin::class ])->group(function ()
     Route::post('/password/update', [AdminController::class, 'AdminPasswordUpdate'])->name('admin.password.update');
 
     // User Management Routes
-    Route::controller(UsersController::class)->group(function () {
+    Route::controller(UsersController::class)->middleware('permission:all.users')->group(function () {
         Route::get('/all/users', 'AllUsers')->name('all.users');
         Route::get('/add/user', 'AddUser')->name('add.user');
         Route::post('/store/user', 'StoreUser')->name('store.user');
@@ -72,7 +73,7 @@ Route::prefix('admin')->middleware(['auth' ,IsAdmin::class ])->group(function ()
     });
 
     // All Ethnic Branches
-    Route::controller(EthnicBranchController::class)->group(function () {
+    Route::controller(EthnicBranchController::class)->middleware('permission:all.category')->group(function () {
         Route::get('/all/ethnic', 'AllEthnic')->name('all.ethnic');
         Route::get('/add/ethnic', 'AddEthnic')->name('add.ethnic');
         Route::post('/store/ethnic', 'StoreEthnic')->name('store.ethnic');
@@ -82,17 +83,18 @@ Route::prefix('admin')->middleware(['auth' ,IsAdmin::class ])->group(function ()
     });
 
     // Representatives
-    Route::controller(RepresentativeController::class)->group(function () {
+    Route::controller(RepresentativeController::class)->middleware('permission:all.category')->group(function () {
         Route::get('/all/representatives', 'AllRepresentatives')->name('all.representatives');
         Route::get('/add/representative', 'AddRepresentative')->name('add.representative');
         Route::post('/store/representative', 'StoreRepresentative')->name('store.representative');
         Route::get('/edit/representative/{id}', 'EditRepresentative')->name('edit.representative');
         Route::post('/update/representative', 'UpdateRepresentative')->name('update.representative');
         Route::get('/delete/representative/{id}', 'DeleteRepresentative')->name('delete.representative');
-        Route::get('/representatives/by-ethnic/{ethnicBranchId}', 'ByEthnicBranch')->name('representatives.by.ethnic');
+        Route::get('/representatives/by-ethnic/{ethnicBranchId}', 'ByEthnicBranch')->name('representatives.by.ethnic')
+            ->withoutMiddleware('permission:all.category')->middleware('permission:all.category|all.users');
     });
 
-    Route::controller(FamilyController::class)->group(function () {
+    Route::controller(FamilyController::class)->middleware('permission:all.users')->group(function () {
         Route::get('/all/users/family/{id}', 'AllUsersFamily')->name('all.users.family');
         Route::get('/add/users/family/{id}', 'AddUsersFamily')->name('add.users.family');
         Route::post('/store/users/family', 'StoreUsersFamily')->name('store.users.family');
@@ -102,7 +104,7 @@ Route::prefix('admin')->middleware(['auth' ,IsAdmin::class ])->group(function ()
         Route::get('/create-account/family/{id}', 'CreateFamilyMemberAccount')->name('create.account.family');
     });
 
-    Route::controller(KeyPersonController::class)->group(function () {
+    Route::controller(KeyPersonController::class)->middleware('permission:all.key.people')->group(function () {
         Route::get('/all/key-people', 'index')->name('all.key.people');
         Route::get('/add/key-person', 'create')->name('add.key.person');
         Route::post('/store/key-person', 'store')->name('store.key.person');
@@ -112,7 +114,7 @@ Route::prefix('admin')->middleware(['auth' ,IsAdmin::class ])->group(function ()
     });
 
 
-    Route::controller(CategoryController::class)->group(function () {
+    Route::controller(CategoryController::class)->middleware('permission:all.category')->group(function () {
         Route::get('/all/category', 'AllCategory')->name('all.category');
         Route::get('/add/category', 'AddCategory')->name('add.category');
         Route::post('/store/category', 'StoreCategory')->name('store.category');
@@ -123,19 +125,25 @@ Route::prefix('admin')->middleware(['auth' ,IsAdmin::class ])->group(function ()
     });
 
 
-        Route::controller(IncomeController::class)->group(function () {
+        Route::controller(IncomeController::class)->middleware('permission:all.income')->group(function () {
         Route::get('/all/income', 'AllIncome')->name('all.income');
         Route::get('/add/income', 'AddIncome')->name('add.income');
         Route::post('/store/income', 'StoreIncome')->name('store.income');
         Route::get('/edit/income/{id}', 'EditIncome')->name('edit.income');
         Route::post('/update/income',  'UpdateIncome')->name('update.income');
         Route::get('/delete/income/{id}', 'DeleteIncome')->name('delete.income');
-        Route::get('/undeposited', 'UndepositedIncome')->name('undeposited.income');
-        Route::post('/income/transfer/{id}', 'TransferIncome')->name('income.transfer');
+        Route::get('/undeposited', 'UndepositedIncome')->name('undeposited.income')
+            ->withoutMiddleware('permission:all.income')->middleware('permission:all.undeposited');
+        Route::post('/income/transfer/{id}', 'TransferIncome')->name('income.transfer')
+            ->withoutMiddleware('permission:all.income')->middleware('permission:all.undeposited');
     });
 
 
+<<<<<<< HEAD
+        Route::controller(ExpenseController::class)->middleware('permission:all.expense')->group(function () {
+=======
         Route::controller(ExpenseController::class)->group(function () {
+>>>>>>> origin/main
         Route::get('/all/expense', 'AllExpense')->name('all.expense');
         Route::get('/add/expense', 'AddExpense')->name('add.expense');
         Route::post('/store/expense', 'StoreExpense')->name('store.expense');
@@ -144,7 +152,7 @@ Route::prefix('admin')->middleware(['auth' ,IsAdmin::class ])->group(function ()
         Route::get('/delete/expense/{id}', 'DeleteExpense')->name('delete.expense');
     });
 
-    Route::controller(MemberFinancialReportController::class)->group(function () {
+    Route::controller(MemberFinancialReportController::class)->middleware('permission:all.financial.report')->group(function () {
         Route::get('/all/member/financial/report', 'AllMemberFinancialReport')->name('all.member.financial.report');
         Route::get('/add/financial/report', 'AddFinancialReport')->name('add.financial.report');
         Route::post('/store/financial/report', 'StoreFinancialReport')->name('store.financial.report');
@@ -153,7 +161,7 @@ Route::prefix('admin')->middleware(['auth' ,IsAdmin::class ])->group(function ()
         Route::get('/delete/financial/report/{id}', 'DeleteFinancialReport')->name('delete.financial.report');
     });
 
-        Route::controller(ReceivePaymentController::class)->group(function () {
+        Route::controller(ReceivePaymentController::class)->middleware('permission:all.recieve.payment')->group(function () {
         Route::get('/all/receive/payment', 'AllReceivePayment')->name('all.receive.payment');
         Route::get('/add/receive/payment', 'AddReceivePayment')->name('add.receive.payment');
         Route::post('/store/receive/payment', 'StoreReceivePayment')->name('store.receive.payment');
@@ -165,14 +173,18 @@ Route::prefix('admin')->middleware(['auth' ,IsAdmin::class ])->group(function ()
     });
 
 
+<<<<<<< HEAD
+    Route::controller(UnpaidPaymentController::class)->middleware('permission:all.recieve.payment')->group(function () {
+=======
     Route::controller(UnpaidPaymentController::class)->group(function () {
+>>>>>>> origin/main
         Route::post('/unpaid/payments/mark-reviewed', 'markReviewed')->name('unpaid.payments.mark.reviewed');
 
         Route::post('/unpaid/payments/mark-all-reviewed', 'markAllReviewed')->name('unpaid.payments.mark.all');
     });
 
 
-        Route::controller(CreditController::class)->group(function () {
+        Route::controller(CreditController::class)->middleware('permission:all.credits')->group(function () {
         Route::get('/all/credits', 'AllCredits')->name('all.credits');
         Route::get('/add/credit', 'AddCredit')->name('add.credit');
         Route::post('/store/credit', 'StoreCredit')->name('store.credit');
@@ -182,7 +194,7 @@ Route::prefix('admin')->middleware(['auth' ,IsAdmin::class ])->group(function ()
         Route::post('/paid/credit','PaidCredit')->name('paid.credit');
     });
 
-        Route::controller(AidController::class)->group(function () {
+        Route::controller(AidController::class)->middleware('permission:all.aid')->group(function () {
         Route::get('/all/aid', 'AllAids')->name('all.aid');
         Route::get('/add/aid', 'AddAid')->name('add.aid');
         Route::post('/store/aid', 'StoreAid')->name('store.aid');
@@ -192,7 +204,7 @@ Route::prefix('admin')->middleware(['auth' ,IsAdmin::class ])->group(function ()
     });
 
     // انتقال بین حساب‌ها و دریافت پول
-    Route::controller(AccountTransactionController::class)->group(function () {
+    Route::controller(AccountTransactionController::class)->middleware('permission:all.account.transactions')->group(function () {
         Route::get('/account/transactions', 'index')->name('all.account.transactions');
         Route::get('/account/deposits', 'deposits')->name('all.account.deposits');
         Route::post('/account/transactions', 'store')->name('store.account.transaction');
@@ -204,9 +216,9 @@ Route::prefix('admin')->middleware(['auth' ,IsAdmin::class ])->group(function ()
         Route::get('all/reports' , 'AllReport')->name('all.report');
         Route::post('search/reports/bydate', 'SearchReportsByDate')->name('search.reports.by.date');
         Route::post('/search/reports/bymonth', 'AllReportsByMonth')->name('search.reports.by.month');
-        Route::post('/search/reports/year', 'AllReportsByYear')->name('search.reports.by.year');
         Route::get('/annual/reports', 'AnnualReport')->name('annual.report');
-        Route::get('/users/reports', 'UsersReport')->name('users.report');
+        Route::get('/users/reports', 'UsersReport')->name('users.report')
+            ->withoutMiddleware('permission:all.report')->middleware('permission:all.users.report');
     });
 
     Route::controller(RoleController::class)->middleware('can.manage.access')->group(function() {

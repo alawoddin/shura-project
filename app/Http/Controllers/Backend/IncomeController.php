@@ -21,7 +21,10 @@ class IncomeController extends Controller
 
     public function AllIncome()
     {
-        $alldata = Income::with('category')->whereHas('undeposited', function ($query) {
+        // Member-fee accounts are not shown on the income page.
+        $alldata = Income::with('category')
+            ->whereDoesntHave('category', fn ($q) => $q->where('is_monthly_fee', true))
+            ->whereHas('undeposited', function ($query) {
             $query->where('status', 'transferred');
         })->latest()->get();
 
@@ -30,7 +33,7 @@ class IncomeController extends Controller
 
     public function AddIncome()
     {
-        $categories = Category::incomeSources()->get();
+        $categories = Category::incomeSources()->where('is_monthly_fee', false)->get();
         $users = User::all();
 
         return view('admin.pages.income.add_income', compact('categories', 'users'));
@@ -39,7 +42,7 @@ class IncomeController extends Controller
     public function StoreIncome(Request $request)
     {
         $request->validate([
-            'category_id' => ['required', Rule::exists('categories', 'id')->where('account_type', 'income')],
+            'category_id' => ['required', Rule::exists('categories', 'id')->where('account_type', 'income')->where('is_monthly_fee', 0)],
             'creditor_name' => 'required|string',
             'amount' => 'required|numeric|min:0.01',
             'date' => 'required|date',
@@ -77,7 +80,9 @@ class IncomeController extends Controller
     public function EditIncome(int $id)
     {
         $editdata = Income::findOrFail($id);
-        $categories = Category::incomeSources()
+        $categories = Category::where(function ($q) {
+                $q->where('account_type', 'income')->where('is_monthly_fee', false);
+            })
             ->orWhere('id', $editdata->category_id)
             ->get();
         $users = User::all();
@@ -95,7 +100,7 @@ class IncomeController extends Controller
                 function ($attribute, $value, $fail) use ($income_id) {
                     $isCurrent = (int) Income::whereKey($income_id)->value('category_id') === (int) $value;
 
-                    if (! $isCurrent && ! Category::incomeSources()->whereKey($value)->exists()) {
+                    if (! $isCurrent && ! Category::incomeSources()->where('is_monthly_fee', false)->whereKey($value)->exists()) {
                         $fail('لطفاً یک حساب درآمد را انتخاب کنید.');
                     }
                 },
@@ -164,8 +169,18 @@ class IncomeController extends Controller
             'target_account_id' => 'required|exists:categories,id',
         ]);
 
-        DB::transaction(function () use ($request, $id) {
-            $undeposited = Undeposited::with('income')->findOrFail($id);
+        $alreadyTransferred = false;
+
+        DB::transaction(function () use ($request, $id, &$alreadyTransferred) {
+            $undeposited = Undeposited::with('income')->lockForUpdate()->findOrFail($id);
+
+            // Never deposit the same income twice (double click / resubmitted form).
+            if ($undeposited->status === 'transferred') {
+                $alreadyTransferred = true;
+
+                return;
+            }
+
             $amount = (float) $undeposited->income->amount;
             $incomeCategoryId = $undeposited->income->category_id;
 
@@ -177,6 +192,13 @@ class IncomeController extends Controller
             $this->financialService->decreaseAccountBalance($incomeCategoryId, $amount, true);
             $this->financialService->increaseAccountBalance((int) $request->target_account_id, $amount);
         });
+
+        if ($alreadyTransferred) {
+            return back()->with([
+                'message' => 'این درآمد قبلاً به حساب واریز شده است.',
+                'alert-type' => 'warning',
+            ]);
+        }
 
         $notification = [
             'message' => 'مبلغ با موفقیت به حساب منتقل شد',
