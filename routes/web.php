@@ -42,7 +42,6 @@ Route::post('/user/profile/store', [ClientController::class, 'UserProfileStore']
 Route::get('/user/change/password', [ClientController::class, 'UserChangePassword'])->name('user.change.password');
 Route::post('/user/password/update', [ClientController::class, 'UserPasswordUpdate'])->name('user.password.update');
 
-
 });
 
 //End User Route
@@ -60,7 +59,7 @@ Route::prefix('admin')->middleware(['auth' ,IsAdmin::class ])->group(function ()
     Route::post('/profile/store', [AdminController::class, 'AdminProfileStore'])->name('admin.profile.store');
     Route::get('/change/password', [AdminController::class, 'AdminChangePassword'])->name('admin.change.password');
     Route::post('/password/update', [AdminController::class, 'AdminPasswordUpdate'])->name('admin.password.update');
-    
+
     // User Management Routes
     Route::controller(UsersController::class)->middleware('permission:all.users')->group(function () {
         Route::get('/all/users', 'AllUsers')->name('all.users');
@@ -139,7 +138,7 @@ Route::prefix('admin')->middleware(['auth' ,IsAdmin::class ])->group(function ()
             ->withoutMiddleware('permission:all.income')->middleware('permission:all.undeposited');
     });
 
-    
+
         Route::controller(ExpenseController::class)->middleware('permission:all.expense')->group(function () {
         Route::get('/all/expense', 'AllExpense')->name('all.expense');
         Route::get('/add/expense', 'AddExpense')->name('add.expense');
@@ -169,7 +168,7 @@ Route::prefix('admin')->middleware(['auth' ,IsAdmin::class ])->group(function ()
         Route::get('/receive/payment/member-loans/{user}', 'MemberLoans')->name('receive.payment.member.loans');
     });
 
-    
+
     Route::controller(UnpaidPaymentController::class)->middleware('permission:all.recieve.payment')->group(function () {
         Route::post('/unpaid/payments/mark-reviewed', 'markReviewed')->name('unpaid.payments.mark.reviewed');
 
@@ -259,7 +258,7 @@ Route::prefix('admin')->middleware(['auth' ,IsAdmin::class ])->group(function ()
 
 });
 
-//End Admin  Route 
+//End Admin  Route
 
 
 
@@ -276,4 +275,3 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__.'/auth.php';
-  
